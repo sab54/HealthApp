@@ -57,15 +57,15 @@ const RegistrationScreen = () => {
         setIsFormValid(validateForm());
     }, [form]);
 
-    useEffect(() => {
-        if (user) {
-            navigation.navigate('OTPVerification', {
-                phoneNumber: form.phoneNumber,
-                countryCode: form.countryCode,
-                userId: user.user_id,
-            });
-        }
-    }, [user]);
+useEffect(() => {
+    if (user) {
+        navigation.navigate('OTPVerification', {
+            phoneNumber: form.phoneNumber,
+            countryCode: form.countryCode,
+            userId: user.user_id,
+        });
+    }
+}, [user]);
 
     const getLocationAndRegister = async () => {
         let latitude = null;

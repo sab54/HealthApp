@@ -10,13 +10,14 @@ import {
     Platform,
     ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { verifyOtp, requestOtp } from '../store/actions/loginActions';
 
 const OTPVerificationScreen = () => {
     const { themeColors } = useSelector((state) => state.theme);
-    const { loading, error, isVerified } = useSelector((state) => state.auth);
+    const { loading, error, isVerified, user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const route = useRoute();
@@ -56,12 +57,19 @@ const OTPVerificationScreen = () => {
         }
     }, [autoFillOtp, otpCode]);
 
-    // 🚀 Navigate on success
-    useEffect(() => {
-        if (isVerified) {
-            navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
-        }
-    }, [isVerified]);
+useEffect(() => {
+  if (isVerified && user) {
+    AsyncStorage.setItem('userRole', user.role);
+    AsyncStorage.setItem('isApproved', String(user.is_approved));
+
+    if (user.role === 'doctor') {
+      navigation.reset({ index: 0, routes: [{ name: 'DoctorLicenseUpload' }] });
+    } else {
+      navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+    }
+  }
+}, [isVerified, user]);
+
 
     const handleOtpChange = (text, index) => {
         const newOtp = [...otp];
