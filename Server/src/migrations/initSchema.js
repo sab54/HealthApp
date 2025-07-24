@@ -17,7 +17,7 @@ function initSchema() {
         latitude REAL,
         longitude REAL,
         is_phone_verified INTEGER DEFAULT 0,
-        role TEXT DEFAULT 'patient',
+        role TEXT CHECK(role IN ('patient', 'doctor')) NOT NULL,
         is_approved INTEGER DEFAULT 0
       )
     `);

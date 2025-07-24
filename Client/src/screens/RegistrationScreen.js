@@ -32,6 +32,7 @@ const RegistrationScreen = () => {
         countryCode: '+44',
         latitude: null,
         longitude: null,
+        role: null,
     });
 
     const [showCountryPicker, setShowCountryPicker] = useState(false);
@@ -42,14 +43,15 @@ const RegistrationScreen = () => {
     };
 
     const validateForm = () => {
-        const { firstName, email, phoneNumber } = form;
+        const { firstName, email, phoneNumber, role } = form;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         return (
             firstName.trim() !== '' &&
             email.trim() !== '' &&
             emailRegex.test(email.trim()) &&
-            phoneNumber.trim().length === 10
+            phoneNumber.trim().length === 10 &&
+            role
         );
     };
 
@@ -57,15 +59,15 @@ const RegistrationScreen = () => {
         setIsFormValid(validateForm());
     }, [form]);
 
-useEffect(() => {
-    if (user) {
-        navigation.navigate('OTPVerification', {
-            phoneNumber: form.phoneNumber,
-            countryCode: form.countryCode,
-            userId: user.user_id,
-        });
-    }
-}, [user]);
+    useEffect(() => {
+        if (user) {
+            navigation.navigate('OTPVerification', {
+                phoneNumber: form.phoneNumber,
+                countryCode: form.countryCode,
+                userId: user.user_id,
+            });
+        }
+    }, [user]);
 
     const getLocationAndRegister = async () => {
         let latitude = null;
@@ -98,6 +100,7 @@ useEffect(() => {
                 country_code: form.countryCode,
                 latitude,
                 longitude,
+                role: form.role,
             })
         );
     };
@@ -183,6 +186,50 @@ useEffect(() => {
                                 )
                             }
                         />
+                    </View>
+
+                    {/* ✅ Role Selection */}
+                    <Text style={[styles.label, { color: themeColors.text }]}>
+                        Select Role *
+                    </Text>
+                    <View style={styles.roleContainer}>
+                        <TouchableOpacity
+                            style={[
+                                styles.roleButton,
+                                form.role === 'patient' &&
+                                styles.selectedRoleButton,
+                            ]}
+                            onPress={() => handleInputChange('role', 'patient')}
+                        >
+                            <Text
+                                style={[
+                                    styles.roleText,
+                                    form.role === 'patient' &&
+                                    styles.selectedRoleText,
+                                ]}
+                            >
+                                Patient
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[
+                                styles.roleButton,
+                                form.role === 'doctor' &&
+                                styles.selectedRoleButton,
+                            ]}
+                            onPress={() => handleInputChange('role', 'doctor')}
+                        >
+                            <Text
+                                style={[
+                                    styles.roleText,
+                                    form.role === 'doctor' &&
+                                    styles.selectedRoleText,
+                                ]}
+                            >
+                                Doctor
+                            </Text>
+                        </TouchableOpacity>
                     </View>
 
                     {error && (
@@ -400,6 +447,36 @@ const styles = StyleSheet.create({
         fontSize: 12,
         textAlign: 'center',
         marginTop: 5,
+    },
+    roleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: 10,
+    },
+    roleButton: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#007AFF',
+    },
+    selectedRoleButton: {
+        backgroundColor: '#007AFF',
+    },
+    roleText: {
+        fontSize: 16,
+        fontFamily: 'Poppins',
+        color: '#007AFF',
+    },
+    selectedRoleText: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    label: {
+        fontFamily: 'Poppins',
+        fontSize: 16,
+        marginTop: 10,
+        marginBottom: 5,
     },
 });
 

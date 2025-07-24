@@ -1,10 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
-// 🧩 Auth-related reducers
+//  Auth-related reducers
 import loginReducer from './reducers/loginReducer';
 import registrationReducer from './reducers/registrationReducer';
 
-// 🎨 UI-related
+//  UI-related
 import themeReducer from './reducers/themeReducer';
 
 const rootReducer = combineReducers({

@@ -1,4 +1,4 @@
-// 📁 server/src/routes/license.js
+// server/src/routes/license.js
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -13,12 +13,12 @@ const upload = multer({
 module.exports = (db) => {
   const router = express.Router();
 
-  // ✅ Allow all logged-in doctors (even if pending) to upload
+  // Allow all logged-in doctors (even if pending) to upload
   router.post('/upload', authMiddleware(), upload.single('license'), (req, res) => {
     const userId = req.user.id;
     const file = req.file;
 
-    // ✅ Check role manually
+    // Check role manually
     if (req.user.role !== 'doctor') {
       return res.status(403).json({ success: false, message: 'Only doctors can upload licenses' });
     }

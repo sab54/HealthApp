@@ -5,14 +5,14 @@ module.exports = {
       preset: 'jest-expo',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.js'],
-      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      setupFilesAfterEnv: ['<rootDir>/tests/setup/jest.setup.js'],
     },
     {
       displayName: 'android',
       preset: 'jest-expo',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.js'],
-      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      setupFilesAfterEnv: ['<rootDir>/tests/setup/jest.setup.js'],
     },
     // {
     //   displayName: 'web',
@@ -29,7 +29,7 @@ module.exports = {
       preset: 'jest-expo',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.js'],
-      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      setupFilesAfterEnv: ['<rootDir>/tests/setup/jest.setup.js'],
     }
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],

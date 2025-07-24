@@ -29,9 +29,9 @@ app.use('/api/auth', authRoute(db));
 app.use('/api/license', licenseRoute(db));
 
 app.get('/', (req, res) => {
-  res.send('✅ Server running');
+  res.send('Server running');
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server started at http://localhost:${PORT}`);
+  console.log(`Server started at http://localhost:${PORT}`);
 });

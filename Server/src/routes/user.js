@@ -8,47 +8,59 @@ module.exports = (db) => {
     router.use(bodyParser.json());
     router.use(bodyParser.urlencoded({ extended: true }));
 
-    // 📌 Register route
+    // Register route
     router.post('/register', (req, res) => {
     const {
         first_name, last_name, email, phone_number, country_code = '+91',
-        city, state, country, latitude, longitude
+        city, state, country, latitude, longitude, role
     } = req.body;
 
-    console.log('📥 Received register request with body:', req.body);
+    console.log('Received register request with body:', req.body);
+
+    if (!role || !['doctor', 'patient'].includes(role)) {
+  return res.status(400).json({ success: false, message: 'Invalid or missing role' });
+}
 
     if (!first_name || !phone_number) {
-        console.log('⚠️ Missing required fields');
+        console.log('Missing required fields');
         return res.status(400).json({ success: false, message: 'Missing fields' });
     }
 
-    console.log('📞 Checking if user already exists:', phone_number, country_code);
+    console.log('Checking if user already exists:', phone_number, country_code);
 
     db.get(`SELECT id FROM users WHERE phone_number = ? AND country_code = ?`, [phone_number, country_code], (err, row) => {
         if (err) {
-            console.error('❌ Error querying users table:', err);
+            console.error('Error querying users table:', err);
             return res.status(500).json({ success: false, message: 'DB Error' });
         }
 
         if (row) {
-            console.log('🔁 User already exists:', row);
+            console.log('User already exists:', row);
             return res.status(409).json({ success: false, message: 'User already exists' });
         }
 
         const ip = req.ip;
         const geo = require('geoip-lite').lookup(ip);
-        console.log('🌍 GeoIP Lookup:', geo);
+        console.log('GeoIP Lookup:', geo);
 
         db.run(`
-            INSERT INTO users (first_name, last_name, email, phone_number, country_code, city, state, country, latitude, longitude)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO users (first_name, last_name, email, phone_number, country_code, city, state, country, latitude, longitude, role)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            first_name, last_name || null, email?.toLowerCase() || null, phone_number, country_code,
-            city || geo?.city, state || geo?.region, country || geo?.country,
-            latitude || geo?.ll?.[0], longitude || geo?.ll?.[1]
+            first_name,
+            last_name || null,
+            email?.toLowerCase() || null,
+            phone_number,
+            country_code,
+            city || geo?.city,
+            state || geo?.region,
+            country || geo?.country,
+            latitude || geo?.ll?.[0],
+            longitude || geo?.ll?.[1],
+            role
         ], function (err) {
             if (err) {
-                console.error('❌ Error inserting user:', err);
+                console.error('Error inserting user:', err);
                 return res.status(500).json({ success: false, message: 'Insert failed' });
             }
 
@@ -56,14 +68,14 @@ module.exports = (db) => {
             const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
             const expires_at = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
-            console.log(`📨 OTP generated for user ${user_id}: ${otp_code}`);
+            console.log(`OTP generated for user ${user_id}: ${otp_code}`);
 
             db.run(`
                 INSERT INTO otp_logins (user_id, otp_code, expires_at, ip_address, user_agent)
                 VALUES (?, ?, ?, ?, ?)
             `, [user_id, otp_code, expires_at, ip, req.headers['user-agent']], (err) => {
                 if (err) {
-                    console.error('❌ OTP log insertion failed:', err);
+                    console.error('OTP log insertion failed:', err);
                     return res.status(500).json({ success: false, message: 'OTP log failed' });
                 }
 
@@ -74,7 +86,7 @@ module.exports = (db) => {
 });
 
 
-    // 📌 Request OTP
+    // Request OTP
     router.post('/request-otp', (req, res) => {
         const { phone_number, country_code = '+91' } = req.body;
         if (!phone_number) return res.status(400).json({ success: false, message: 'Phone required' });
@@ -98,7 +110,7 @@ module.exports = (db) => {
         });
     });
 
-    // 📌 Verify OTP
+    //  Verify OTP
     router.post('/verify-otp', (req, res) => {
         const { user_id, otp_code } = req.body;
         if (!user_id || !otp_code) return res.status(400).json({ success: false, message: 'Missing fields' });
@@ -125,7 +137,7 @@ module.exports = (db) => {
         });
     });
 
-    // ✅ 📌 PATCH /user/:userId/location - Update user's location
+    // PATCH /user/:userId/location - Update user's location
     router.patch('/:userId/location', (req, res) => {
         const userId = parseInt(req.params.userId);
         const { latitude, longitude } = req.body;

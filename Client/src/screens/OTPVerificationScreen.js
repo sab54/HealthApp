@@ -57,18 +57,21 @@ const OTPVerificationScreen = () => {
         }
     }, [autoFillOtp, otpCode]);
 
-useEffect(() => {
-  if (isVerified && user) {
-    AsyncStorage.setItem('userRole', user.role);
-    AsyncStorage.setItem('isApproved', String(user.is_approved));
+    useEffect(() => {
+    if (isVerified && user) {
+        console.log('User role:', user.role);
+        console.log('Is approved:', user.is_approved);
 
-    if (user.role === 'doctor') {
-      navigation.reset({ index: 0, routes: [{ name: 'DoctorLicenseUpload' }] });
-    } else {
-      navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+        AsyncStorage.setItem('userRole', user.role || '');
+        AsyncStorage.setItem('isApproved', String(user.is_approved ?? false));
+
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+        });
     }
-  }
 }, [isVerified, user]);
+
 
 
     const handleOtpChange = (text, index) => {
