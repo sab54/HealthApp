@@ -1,4 +1,4 @@
-// 📁 server/src/routes/auth.js
+// server/src/routes/auth.js
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT_SECRET || 'supersecret';

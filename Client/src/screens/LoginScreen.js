@@ -154,13 +154,25 @@ const LoginScreen = () => {
                                 style={StyleSheet.absoluteFillObject}
                             />
                         )}
-
                         <View style={styles.overlay}>
                             <ScrollView
                                 contentContainerStyle={styles.scrollContainer}
                                 keyboardShouldPersistTaps='handled'
                             >
                                 <View style={styles.loginContainer}>
+                                    {!keyboardOpen && (
+                                        <Text
+                                            style={{
+                                                fontSize: 16,
+                                                color: themeColors.inputText,
+                                                fontFamily: 'Poppins',
+                                                marginBottom: 10,
+                                                alignSelf: 'center',
+                                            }}
+                                        >
+                                            Enter phone number to continue
+                                        </Text>
+                                    )}
                                     <View style={styles.inputButtonContainer}>
                                         <TouchableOpacity
                                             onPress={() =>
@@ -256,7 +268,7 @@ const LoginScreen = () => {
                                             {typeof errorMessage === 'string'
                                                 ? errorMessage
                                                 : errorMessage?.message ||
-                                                  'Unexpected error'}
+                                                'Unexpected error'}
                                         </Text>
                                     ) : null}
 

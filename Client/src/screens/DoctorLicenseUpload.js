@@ -1,73 +1,86 @@
-// 📁 client/screens/DoctorLicenseUpload.js
+//  Client/src/screens/DoctorVerificationScreen.js
 
 import React, { useState } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import { getToken } from '../utils/tokenHelper';
-import { BASE_URL } from '../utils/config';
+import { View, Button, Image, ActivityIndicator, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
+import { verifyDoctorLicense } from '../utils/api';
+import { useNavigation } from '@react-navigation/native';
 
-export default function DoctorLicenseUpload({ navigation }) {
-  const [file, setFile] = useState(null);
+const DoctorVerificationScreen = () => {
+  const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [result, setResult] = useState(null);
+  const navigation = useNavigation();
 
-  const pickDocument = async () => {
-    const result = await DocumentPicker.getDocumentAsync({ type: '*/*' });
-    if (!result.canceled) {
-      setFile(result.assets[0]);
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImage(result.assets ? result.assets[0] : result);
     }
   };
 
-  const uploadLicense = async () => {
-    const token = await getToken(); // Already saved during OTP verification
-
-    if (!file) {
-      Alert.alert('No File', 'Please select a file first');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('license', {
-      uri: file.uri,
-      name: file.name,
-      type: file.mimeType || 'application/octet-stream',
-    });
+  const uploadImage = async () => {
+    if (!image) return;
 
     setUploading(true);
+    setResult(null);
 
     try {
-      const response = await fetch(`${BASE_URL}/api/license/upload`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-      setUploading(false);
-
-      if (response.ok) {
-        Alert.alert(
-          'Submitted',
-          'Your license is pending admin approval. Limited features available.'
-        );
-        navigation.navigate('Home');
+      const userId = await AsyncStorage.getItem('user_id');
+      console.log('Uploading license for user ID:', userId);
+      const data = await verifyDoctorLicense(image.uri, userId);
+      if (data.success) {
+        setResult('success');
+        // Update AsyncStorage here so HomeScreen knows license is approved
+        await AsyncStorage.setItem('isApproved', '1');
       } else {
-        Alert.alert('Upload Failed', data.message || 'Error uploading license.');
+        setResult('failure');
       }
-    } catch (error) {
+    } catch (err) {
+      setResult('failure');
+    } finally {
       setUploading(false);
-      Alert.alert('Error', error.message);
     }
+  };
+
+  const onContinue = () => {
+    // Navigate to Home screen
+    navigation.navigate('MainTabs');
   };
 
   return (
     <View style={{ padding: 20 }}>
-      <Text>Select and Upload Doctor License</Text>
-      <Button title="Choose File" onPress={pickDocument} />
-      {file && <Text>Selected: {file.name}</Text>}
-      <Button title="Upload" onPress={uploadLicense} disabled={uploading} />
+      <Button title="Pick License Image" onPress={pickImage} />
+
+      {image &&
+        <Image
+          source={{ uri: image.uri }}
+          style={{ width: 200, height: 200, marginTop: 10 }}
+        />
+      }
+
+      <Button
+        title="Upload and Verify"
+        onPress={uploadImage}
+        disabled={!image || uploading}
+      />
+
+      {uploading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 10 }} />}
+
+      {result && <Text style={{ marginTop: 10 }}>Verification Result: {result}</Text>}
+
+      {/* Show Continue button only on success */}
+      {result === 'success' && (
+        <Button title="Continue" onPress={onContinue} style={{ marginTop: 20 }} />
+      )}
     </View>
   );
-}
+};
+
+export default DoctorVerificationScreen;

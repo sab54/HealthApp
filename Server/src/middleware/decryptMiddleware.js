@@ -1,3 +1,4 @@
+// Server/src/middleware/decryptMiddleware.js
 const crypto = require('crypto');
 const Config = require('../../config');
 
@@ -31,7 +32,7 @@ function decrypt(encryptedInput) {
 
 module.exports = (req, res, next) => {
     try {
-        // 📦 Decrypt JSON body if present
+        // Decrypt JSON body if present
         if (
             req.is('application/json') &&
             typeof req.body === 'object' &&
@@ -41,7 +42,7 @@ module.exports = (req, res, next) => {
             req.body = JSON.parse(decrypted);
         }
 
-        // 🔓 Decrypt query payload for all methods that might send encrypted query
+        // Decrypt query payload for all methods that might send encrypted query
         const methodAllowsQueryPayload = ['GET', 'DELETE', 'HEAD']; // Add others if needed
         if (
             methodAllowsQueryPayload.includes(req.method) &&
@@ -53,7 +54,7 @@ module.exports = (req, res, next) => {
 
         next();
     } catch (err) {
-        console.error('❌ Decryption error:', err.message);
+        console.error('Decryption error:', err.message);
         return res.status(400).json({
             success: false,
             error: 'Invalid encrypted payload',

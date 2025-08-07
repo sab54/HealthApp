@@ -1,3 +1,4 @@
+// Server/src/routes/user.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const geoip = require('geoip-lite');
@@ -8,82 +9,115 @@ module.exports = (db) => {
     router.use(bodyParser.json());
     router.use(bodyParser.urlencoded({ extended: true }));
 
+    /**
+     *  GET /user - Get user by token or IP info
+     */
+    router.get('/', async (req, res) => {
+        const getToken = req.query.token;
+        const ip =
+            (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+            req.connection.remoteAddress ||
+            req.socket?.remoteAddress;
+        const geodata = geoip.lookup(ip);
+        const info = { ip, geoData: geodata };
+
+        try {
+            if (getToken) {
+                const [rows] = await db.query(
+                    'SELECT first_name, last_name, email, phone_number, profile_picture_url, country_code, role, city, state, country, latitude, longitude FROM users WHERE token = ? LIMIT 1',
+                    [getToken]
+                );
+                if (rows.length === 0) {
+                    return res
+                        .status(401)
+                        .json({ error: 'Token is incorrect' });
+                }
+                return res.json({ user: rows[0], location: info });
+            } else {
+                return res.json(info);
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Failed to process request' });
+        }
+    });
+
     // Register route
     router.post('/register', (req, res) => {
-    const {
-        first_name, last_name, email, phone_number, country_code = '+91',
-        city, state, country, latitude, longitude, role
-    } = req.body;
+        const {
+            first_name, last_name, email, phone_number, country_code = '+91',
+            city, state, country, latitude, longitude, role
+        } = req.body;
 
-    console.log('Received register request with body:', req.body);
+        console.log('Received register request with body:', req.body);
 
-    if (!role || !['doctor', 'patient'].includes(role)) {
-  return res.status(400).json({ success: false, message: 'Invalid or missing role' });
-}
-
-    if (!first_name || !phone_number) {
-        console.log('Missing required fields');
-        return res.status(400).json({ success: false, message: 'Missing fields' });
-    }
-
-    console.log('Checking if user already exists:', phone_number, country_code);
-
-    db.get(`SELECT id FROM users WHERE phone_number = ? AND country_code = ?`, [phone_number, country_code], (err, row) => {
-        if (err) {
-            console.error('Error querying users table:', err);
-            return res.status(500).json({ success: false, message: 'DB Error' });
+        if (!role || !['doctor', 'user'].includes(role)) {
+            return res.status(400).json({ success: false, message: 'Invalid or missing role' });
         }
 
-        if (row) {
-            console.log('User already exists:', row);
-            return res.status(409).json({ success: false, message: 'User already exists' });
+        if (!first_name || !phone_number) {
+            console.log('Missing required fields');
+            return res.status(400).json({ success: false, message: 'Missing fields' });
         }
 
-        const ip = req.ip;
-        const geo = require('geoip-lite').lookup(ip);
-        console.log('GeoIP Lookup:', geo);
+        console.log('Checking if user already exists:', phone_number, country_code);
 
-        db.run(`
+        db.get(`SELECT id FROM users WHERE phone_number = ? AND country_code = ?`, [phone_number, country_code], (err, row) => {
+            if (err) {
+                console.error('Error querying users table:', err);
+                return res.status(500).json({ success: false, message: 'DB Error' });
+            }
+
+            if (row) {
+                console.log('User already exists:', row);
+                return res.status(409).json({ success: false, message: 'User already exists' });
+            }
+
+            const ip = req.ip;
+            const geo = require('geoip-lite').lookup(ip);
+            console.log('GeoIP Lookup:', geo);
+
+            db.run(`
             INSERT INTO users (first_name, last_name, email, phone_number, country_code, city, state, country, latitude, longitude, role)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            first_name,
-            last_name || null,
-            email?.toLowerCase() || null,
-            phone_number,
-            country_code,
-            city || geo?.city,
-            state || geo?.region,
-            country || geo?.country,
-            latitude || geo?.ll?.[0],
-            longitude || geo?.ll?.[1],
-            role
-        ], function (err) {
-            if (err) {
-                console.error('Error inserting user:', err);
-                return res.status(500).json({ success: false, message: 'Insert failed' });
-            }
+                first_name,
+                last_name || null,
+                email?.toLowerCase() || null,
+                phone_number,
+                country_code,
+                city || geo?.city,
+                state || geo?.region,
+                country || geo?.country,
+                latitude || geo?.ll?.[0],
+                longitude || geo?.ll?.[1],
+                role
+            ], function (err) {
+                if (err) {
+                    console.error('Error inserting user:', err);
+                    return res.status(500).json({ success: false, message: 'Insert failed' });
+                }
 
-            const user_id = this.lastID;
-            const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
-            const expires_at = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+                const user_id = this.lastID;
+                const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
+                const expires_at = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
-            console.log(`OTP generated for user ${user_id}: ${otp_code}`);
+                console.log(`OTP generated for user ${user_id}: ${otp_code}`);
 
-            db.run(`
+                db.run(`
                 INSERT INTO otp_logins (user_id, otp_code, expires_at, ip_address, user_agent)
                 VALUES (?, ?, ?, ?, ?)
             `, [user_id, otp_code, expires_at, ip, req.headers['user-agent']], (err) => {
-                if (err) {
-                    console.error('OTP log insertion failed:', err);
-                    return res.status(500).json({ success: false, message: 'OTP log failed' });
-                }
+                    if (err) {
+                        console.error('OTP log insertion failed:', err);
+                        return res.status(500).json({ success: false, message: 'OTP log failed' });
+                    }
 
-                return res.json({ success: true, user_id });
+                    return res.json({ success: true, user_id });
+                });
             });
         });
     });
-});
 
 
     // Request OTP
@@ -104,7 +138,7 @@ module.exports = (db) => {
             `, [user.id, otp_code, expires_at, req.ip, req.headers['user-agent']], (err) => {
                 if (err) return res.status(500).json({ success: false, message: 'OTP gen failed' });
 
-                console.log(`📩 OTP for user ${user.id}:`, otp_code);
+                console.log(`OTP for user ${user.id}:`, otp_code);
                 return res.json({ success: true, user_id: user.id });
             });
         });
@@ -163,6 +197,71 @@ module.exports = (db) => {
             }
         );
     });
+
+
+    /**
+ *  GET /user/suggestions?q=search_term — Search active users by name, email, phone, location
+ */
+    router.get('/suggestions', (req, res) => {
+        const searchRaw = req.query.q || '';
+        const search = searchRaw.trim().toLowerCase();
+
+        if (!search) {
+            return res.status(400).json({ success: false, message: 'Missing search query' });
+        }
+
+        const like = `%${search}%`;
+        const params = [like, like, like, like, like, like, like, like, like];
+
+        const sql = `
+        SELECT * FROM users
+        WHERE is_active = 1 AND (
+            LOWER(first_name) LIKE ? OR
+            LOWER(last_name) LIKE ? OR
+            LOWER(first_name || ' ' || last_name) LIKE ? OR
+            LOWER(email) LIKE ? OR
+            phone_number LIKE ? OR
+            LOWER(city) LIKE ? OR
+            LOWER(state) LIKE ? OR
+            LOWER(postal_code) LIKE ? OR
+            LOWER(country) LIKE ?
+        )
+        ORDER BY created_at DESC
+        LIMIT 5
+    `;
+
+        db.all(sql, params, (err, rows) => {
+            if (err) {
+                console.error('GET /user/suggestions error:', err);
+                return res.status(500).json({ success: false, error: 'Query failed' });
+            }
+
+            const users = rows.map((user) => ({
+                id: user.id,
+                name: `${user.first_name} ${user.last_name || ''}`.trim(),
+                email: user.email,
+                phone_number: user.phone_number,
+                profile_picture_url: user.profile_picture_url,
+                date_of_birth: user.date_of_birth,
+                gender: user.gender,
+                address_line1: user.address_line1,
+                address_line2: user.address_line2,
+                city: user.city,
+                state: user.state,
+                postal_code: user.postal_code,
+                country: user.country,
+                latitude: user.latitude,
+                longitude: user.longitude,
+                role: user.role,
+                is_phone_verified: !!user.is_phone_verified,
+                created_at: user.created_at,
+                updated_at: user.updated_at,
+            }));
+
+            res.json({ success: true, data: users });
+        });
+    });
+
 
     return router;
 };

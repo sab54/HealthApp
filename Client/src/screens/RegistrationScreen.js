@@ -142,7 +142,7 @@ const RegistrationScreen = () => {
                         placeholder='Email *'
                         placeholderTextColor={themeColors.placeholder}
                         keyboardType='email-address'
-                        autoCapitalize='none'
+                        autoCtalize='none'
                         value={form.email}
                         onChangeText={(v) => handleInputChange('email', v)}
                     />
@@ -188,7 +188,7 @@ const RegistrationScreen = () => {
                         />
                     </View>
 
-                    {/* ✅ Role Selection */}
+                    {/* Role Selection */}
                     <Text style={[styles.label, { color: themeColors.text }]}>
                         Select Role *
                     </Text>
@@ -196,19 +196,19 @@ const RegistrationScreen = () => {
                         <TouchableOpacity
                             style={[
                                 styles.roleButton,
-                                form.role === 'patient' &&
+                                form.role === 'user' &&
                                 styles.selectedRoleButton,
                             ]}
-                            onPress={() => handleInputChange('role', 'patient')}
+                            onPress={() => handleInputChange('role', 'user')}
                         >
                             <Text
                                 style={[
                                     styles.roleText,
-                                    form.role === 'patient' &&
+                                    form.role === 'user' &&
                                     styles.selectedRoleText,
                                 ]}
                             >
-                                Patient
+                                User
                             </Text>
                         </TouchableOpacity>
 

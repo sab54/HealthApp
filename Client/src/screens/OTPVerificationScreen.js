@@ -1,3 +1,4 @@
+// src/screens/OTPVerificationScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import {
     View,
@@ -41,7 +42,7 @@ const OTPVerificationScreen = () => {
         return () => clearInterval(interval);
     }, []);
 
-    // ✅ Autofill OTP and auto-verify if flag is true
+    // Autofill OTP and auto-verify if flag is true
     useEffect(() => {
         if (autoFillOtp && otpCode && otpCode.length === 6) {
             const otpArray = otpCode.split('');
@@ -52,7 +53,7 @@ const OTPVerificationScreen = () => {
             const focusIndex = lastIndex === -1 ? 5 : lastIndex;
             inputs.current[focusIndex]?.focus();
 
-            // ✅ Auto-verify
+            //  Auto-verify
             dispatch(verifyOtp({ user_id: userId, otp_code: otpCode }));
         }
     }, [autoFillOtp, otpCode]);
@@ -62,12 +63,13 @@ const OTPVerificationScreen = () => {
         console.log('User role:', user.role);
         console.log('Is approved:', user.is_approved);
 
+        AsyncStorage.setItem('user_id', user.id.toString());
         AsyncStorage.setItem('userRole', user.role || '');
         AsyncStorage.setItem('isApproved', String(user.is_approved ?? false));
 
         navigation.reset({
             index: 0,
-            routes: [{ name: 'Home' }],
+            routes: [{ name: 'MainTabs' }],
         });
     }
 }, [isVerified, user]);
@@ -83,7 +85,7 @@ const OTPVerificationScreen = () => {
             inputs.current[index + 1]?.focus();
         }
 
-        // ✅ Auto-submit when all digits are filled
+        //  Auto-submit when all digits are filled
         const finalOtp = newOtp.join('');
         if (finalOtp.length === 6 && newOtp.every((d) => d !== '')) {
             dispatch(verifyOtp({ user_id: userId, otp_code: finalOtp }));

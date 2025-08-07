@@ -28,7 +28,7 @@ export const getThemeColors = (isDarkMode) => ({
     buttonDisabledBackground: isDarkMode ? '#2C313A' : '#cccccc', // Disabled button background
     buttonDisabledText: isDarkMode ? '#6B7280' : '#999', // Disabled button text
 
-    // ✅ Status Feedback Colors
+    // Status Feedback Colors
     success: '#4CAF50', // Success indicators (checkmarks, alerts)
     successBackground: isDarkMode ? '#234B2D' : '#d4edda', // Success alert background
     error: '#D93F2B', // Error indicators (icons, messages)

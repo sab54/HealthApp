@@ -30,7 +30,7 @@ export const registerUser = createAsyncThunk(
 
       return data;
     } catch (error) {
-      console.error('❌ Registration error:', error);
+      console.error('Registration error:', error);
       return rejectWithValue(error.message || 'Registration failed');
     }
   }

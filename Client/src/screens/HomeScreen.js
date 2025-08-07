@@ -31,14 +31,6 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>HomeScreen</Text>
-
-      {userRole ? (
-        <Text style={styles.roleText}>
-          Welcome, {userRole === 'doctor' ? 'Doctor' : 'Patient'}!
-        </Text>
-      ) : null}
-
       {userRole === 'doctor' && (
         <View style={{ marginVertical: 20 }}>
           {!isApproved ? (
