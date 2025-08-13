@@ -1,0 +1,44 @@
+node_modules/
+.expo/
+users.db
+
+.vscode/
+
+# Expo
+expo/
+dist/
+web-build/
+expo-env.d.ts
+
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+Client/package-lock.json
+Server/package-lock.json
+Server/node_modules/
+Client/node_modules/

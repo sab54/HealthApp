@@ -1,3 +1,4 @@
+// Server/src/server.js
 const express = require('express');
 const db = require('./config/db');
 const initSchema = require('./migrations/initSchema');

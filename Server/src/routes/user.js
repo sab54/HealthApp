@@ -45,8 +45,17 @@ module.exports = (db) => {
     // Register route
     router.post('/register', (req, res) => {
         const {
-            first_name, last_name, email, phone_number, country_code = '+91',
-            city, state, country, latitude, longitude, role
+            first_name,
+            last_name,
+            email,
+            phone_number,
+            country_code = '+91',
+            city,
+            state,
+            country,
+            latitude,
+            longitude,
+            role
         } = req.body;
 
         console.log('Received register request with body:', req.body);
@@ -121,9 +130,13 @@ module.exports = (db) => {
 
 
     // Request OTP
+
     router.post('/request-otp', (req, res) => {
         const { phone_number, country_code = '+91' } = req.body;
-        if (!phone_number) return res.status(400).json({ success: false, message: 'Phone required' });
+
+        if (!phone_number) {
+            return res.status(400).json({ success: false, message: 'Phone number required' });
+        }
 
         db.get(`SELECT id FROM users WHERE phone_number = ? AND country_code = ?`, [phone_number, country_code], (err, user) => {
             if (err || !user) return res.status(404).json({ success: false, message: 'User not found' });
@@ -139,13 +152,14 @@ module.exports = (db) => {
                 if (err) return res.status(500).json({ success: false, message: 'OTP gen failed' });
 
                 console.log(`OTP for user ${user.id}:`, otp_code);
-                return res.json({ success: true, user_id: user.id });
+                return res.json({ success: true, user_id: user.id, otp_code: otp_code });
             });
         });
     });
 
     //  Verify OTP
     router.post('/verify-otp', (req, res) => {
+        console.log('Received OTP request:', req.body);
         const { user_id, otp_code } = req.body;
         if (!user_id || !otp_code) return res.status(400).json({ success: false, message: 'Missing fields' });
 
@@ -261,6 +275,65 @@ module.exports = (db) => {
             res.json({ success: true, data: users });
         });
     });
+
+    // =============================
+    // 📌 POST /update-profile - Update user's first and last name
+    // =============================
+    router.post('/update-profile', (req, res) => {
+        const { user_id, first_name, last_name } = req.body;
+
+        console.log('Received update profile request with body:', req.body);
+
+        // Validate required fields
+        if (!user_id || !first_name) {
+            console.log('Missing required fields');
+            return res.status(400).json({ success: false, message: 'Missing fields' });
+        }
+
+        console.log(`Checking if user with ID ${user_id} exists...`);
+
+        // Check if user exists
+        db.get(`SELECT id FROM users WHERE id = ?`, [user_id], (err, row) => {
+            if (err) {
+                console.error('Error querying users table:', err);
+                return res.status(500).json({ success: false, message: 'DB Error' });
+            }
+
+            if (!row) {
+                console.log('User not found:', user_id);
+                return res.status(404).json({ success: false, message: 'User not found' });
+            }
+
+            // Update user details
+            db.run(`
+            UPDATE users
+            SET first_name = ?, last_name = ?
+            WHERE id = ?
+        `, [
+                first_name,
+                last_name || null,
+                user_id
+            ], function (err) {
+                if (err) {
+                    console.error('Error updating user:', err);
+                    return res.status(500).json({ success: false, message: 'Update failed' });
+                }
+
+                console.log(`User ${user_id} updated successfully`);
+                // After updating the user
+                db.get(`SELECT * FROM users WHERE id = ?`, [user_id], (err, updatedUser) => {
+                    if (err || !updatedUser) {
+                        console.error('Error fetching updated user:', err);
+                        return res.status(500).json({ success: false, message: 'Fetch failed' });
+                    }
+
+                    return res.json({ success: true, user: updatedUser });
+                });
+
+            });
+        });
+    });
+
 
 
     return router;
