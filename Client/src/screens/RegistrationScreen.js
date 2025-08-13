@@ -1,3 +1,4 @@
+// Client/src/screens/RegistrationScreen.js
 import React, { useState, useEffect } from 'react';
 import {
     View,
@@ -59,13 +60,14 @@ const RegistrationScreen = () => {
         setIsFormValid(validateForm());
     }, [form]);
 
+
     useEffect(() => {
         if (user) {
             navigation.navigate('OTPVerification', {
                 phoneNumber: form.phoneNumber,
                 countryCode: form.countryCode,
                 userId: user.user_id,
-            });
+        });
         }
     }, [user]);
 

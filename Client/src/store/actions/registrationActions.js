@@ -1,3 +1,4 @@
+// Client/src/store/actions/registrationActions.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL_USERS } from '../../utils/apiPaths.js';

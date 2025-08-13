@@ -31,35 +31,35 @@ const COUNTRY_NUMBERS = {
 
 const EMERGENCY_SERVICES = [
     {
-        label: 'Police',
-        icon: 'shield',
-        colorKey: 'error',
-        description: 'Contact law enforcement for immediate safety.',
-        mapQuery: 'Police Station',
-        presetMessages: [
-            'Help! I’m in danger. Please send police.',
-            'Urgent! Police needed immediately.',
-            'Emergency: I feel unsafe and need help now.',
-        ],
-    },
-    {
-        label: 'Fire',
-        icon: 'flame',
-        colorKey: 'warning',
-        description: 'Reach fire services in case of fire or gas hazards.',
-        mapQuery: 'Fire Station',
-        presetMessages: [
-            'There’s a fire! I need help.',
-            'Smoke detected, please send fire service.',
-            'Emergency: Fire hazard at my location.',
-        ],
-    },
-    {
         label: 'Medical',
         icon: 'medkit',
         colorKey: 'success',
         description: 'Call emergency medical responders for health crises.',
         mapQuery: 'Hospital',
+        presetMessages: [
+            'Medical emergency! Please assist.',
+            'I need an ambulance immediately.',
+            'Health emergency, urgent care needed.',
+        ],
+    },
+    {
+        label: 'Dentist',
+        icon: 'medkit',
+        colorKey: 'success',
+        description: 'Call emergency medical responders for health crises.',
+        mapQuery: 'Dentist',
+        presetMessages: [
+            'Medical emergency! Please assist.',
+            'I need an ambulance immediately.',
+            'Health emergency, urgent care needed.',
+        ],
+    },
+    {
+        label: 'Pharmacy',
+        icon: 'medkit',
+        colorKey: 'success',
+        description: 'Call emergency medical responders for health crises.',
+        mapQuery: 'Pharmacy',
         presetMessages: [
             'Medical emergency! Please assist.',
             'I need an ambulance immediately.',

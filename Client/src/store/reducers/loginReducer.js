@@ -46,7 +46,12 @@ const loginSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(logout.fulfilled, () => initialState);
+            .addCase(logout.fulfilled, () => initialState)
+
+            // 🔹 Add this to handle instant profile updates
+            .addCase('AUTH_UPDATE_USER', (state, action) => {
+                state.user = action.payload;
+            });
     },
 });
 

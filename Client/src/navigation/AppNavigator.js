@@ -34,6 +34,9 @@ import SettingsScreen from '../screens/SettingsScreen';
 import { loadThemeFromStorage } from '../store/actions/themeActions';
 import { updateUserLocation } from '../store/actions/loginActions';
 
+import { Asset } from 'expo-asset';
+import * as MediaLibrary from 'expo-media-library';
+
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -47,6 +50,28 @@ const AppNavigator = () => {
     Poppins: Poppins_400Regular,
     PoppinsBold: Poppins_700Bold,
   });
+
+    // ✅ Automatically save doctor.jpg to gallery
+  useEffect(() => {
+    const saveImageToGallery = async () => {
+      try {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status === 'granted') {
+          const asset = Asset.fromModule(require('../assets/doctor.jpg'));
+          await asset.downloadAsync(); // Ensure file is local
+          await MediaLibrary.saveToLibraryAsync(asset.localUri);
+          console.log('Image saved to gallery!');
+        } else {
+          console.log('Permission denied for MediaLibrary');
+        }
+      } catch (err) {
+        console.error('Error saving image:', err);
+      }
+    };
+
+    saveImageToGallery();
+  }, []);
+
 
   useEffect(() => {
     const init = async () => {

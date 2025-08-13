@@ -1,3 +1,4 @@
+// Client/src/store/reducers/registrationReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import { registerUser } from '../actions/registrationActions';
 

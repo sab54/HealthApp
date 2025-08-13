@@ -99,6 +99,8 @@ const LoginScreen = () => {
                 })
             ).unwrap();
 
+            console.log("OTP from server:", result.otp_code);
+
             navigation.navigate('OTPVerification', {
                 phoneNumber,
                 countryCode: selectedCountryCode,
