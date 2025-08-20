@@ -71,9 +71,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-  moodText: { fontSize: 18, fontWeight: '500', marginBottom: 20 },
-  label: { fontSize: 16, marginVertical: 10 },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20, // increased space below "Self-Reflection"
+  },
+  moodText: {
+    fontSize: 18,
+    fontWeight: '500',
+    marginBottom: 10, // reduced space below mood
+  },
+  label: {
+    fontSize: 16,
+    marginVertical: 5, // reduced space for sleep and energy labels
+  },
   button: {
     marginTop: 20,
     backgroundColor: '#755CDB',
@@ -82,7 +93,11 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'center',
   },
-  buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16
+  },
 });
 
 export default MoodDetailsModal;

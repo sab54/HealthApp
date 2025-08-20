@@ -12,18 +12,13 @@ import {
 } from 'react-native';
 import symptomsData from '../data/symptomHealth';
 
-const SymptomsModal = ({ visible, onClose, currentCount = 0, currentSymptoms = [] }) => {
-  const [selectedSymptoms, setSelectedSymptoms] = useState([]);
+const SymptomsModal = ({ visible, onClose, currentSymptoms = [], currentCount = 0 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const MAX_SYMPTOMS = 3;
-  const remaining = MAX_SYMPTOMS - currentCount;
 
   const handleSymptomSelect = (symptomObj) => {
-    if (currentCount + selectedSymptoms.length >= MAX_SYMPTOMS) return;
-    if (currentSymptoms.includes(symptomObj.symptom)) return; // ❌ Prevent duplicate
-
-    setSelectedSymptoms([symptomObj.symptom]);
+    if (currentSymptoms.includes(symptomObj.symptom) || currentCount >= MAX_SYMPTOMS) return;
     onClose(symptomObj);
   };
 
@@ -59,44 +54,31 @@ const SymptomsModal = ({ visible, onClose, currentCount = 0, currentSymptoms = [
           data={filteredSymptoms}
           keyExtractor={item => item.symptom}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
           renderItem={({ item }) => {
-            const isSelected = selectedSymptoms.includes(item.symptom);
-            const isDisabled = remaining <= 0 || currentSymptoms.includes(item.symptom);
+            const isDisabled = currentSymptoms.includes(item.symptom) || currentCount >= MAX_SYMPTOMS;
 
             return (
               <TouchableOpacity
-                style={[
-                  styles.symptomItem,
-                  isSelected && styles.selectedItem,
-                  isDisabled && styles.disabledItem,
-                ]}
+                style={[styles.symptomItem, isDisabled && styles.disabledItem]}
                 onPress={() => !isDisabled && handleSymptomSelect(item)}
                 disabled={isDisabled}
               >
                 <Image
                   source={item.image}
-                  style={[
-                    styles.symptomImage,
-                    isSelected && { tintColor: '#dddeedff' },
-                    isDisabled && { opacity: 0.3 },
-                  ]}
-                  resizeMode="contain"
+                  style={[styles.symptomImage, isDisabled && { opacity: 0.3 }]}
                 />
-                <Text
-                  style={[
-                    styles.symptomText,
-                    isSelected && styles.selectedText,
-                    isDisabled && { color: '#888' },
-                  ]}
-                >
+                <Text style={[styles.symptomText, isDisabled && { color: '#aaa' }]}>
                   {item.symptom}
                 </Text>
               </TouchableOpacity>
             );
           }}
-          contentContainerStyle={{ paddingBottom: 20 }}
         />
+
+        <TouchableOpacity style={styles.closeButton} onPress={() => onClose(null)}>
+          <Text style={styles.closeButtonText}>Done</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -105,85 +87,49 @@ const SymptomsModal = ({ visible, onClose, currentCount = 0, currentSymptoms = [
 const styles = StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
-    backgroundColor: '#E0E7FF',
+    backgroundColor: '#F4F7FF',
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 60,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#4B5563',
-  },
-  infoText: {
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-    marginBottom: 5,
-    color: '#4A4A4A',
-  },
-  selectedCountText: {
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-    color: '#D9534F',
-    marginBottom: 10,
-  },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, color: '#1F2937' },
+  infoText: { fontSize: 16, color: '#4B5563', marginBottom: 5 },
+  selectedCountText: { fontSize: 14, color: '#6B7280', marginBottom: 15 },
   searchBar: {
+    height: 44,
     borderWidth: 1,
-    borderColor: '#D0D7E2',
+    borderColor: '#D1D5DB',
     borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 12,
     marginBottom: 15,
-    fontSize: 16,
+    color: '#1F2937',
     backgroundColor: '#fff',
   },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 10,
-    color: '#4A4A4A',
-  },
+  sectionHeader: { fontSize: 18, fontWeight: '600', marginBottom: 10, color: '#1F2937' },
   symptomItem: {
     flex: 1,
-    margin: 5,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
+    backgroundColor: '#fff',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#D0D7E2',
-    backgroundColor: '#FFFFFF',
+    padding: 12,
     alignItems: 'center',
+    marginBottom: 10,
+    marginHorizontal: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 2,
   },
-  selectedItem: {
-    backgroundColor: '#80A5F4',
-    borderColor: '#007AFF',
+  disabledItem: { backgroundColor: '#E5E7EB' },
+  symptomImage: { width: 48, height: 48, marginBottom: 8 },
+  symptomText: { fontSize: 14, fontWeight: '500', color: '#1F2937', textAlign: 'center' },
+  closeButton: {
+    backgroundColor: '#4F46E5',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 20,
   },
-  disabledItem: {
-    backgroundColor: '#F0F0F0',
-    borderColor: '#ccc',
-  },
-  symptomText: {
-    fontSize: 15,
-    color: '#333',
-    textAlign: 'center',
-  },
-  selectedText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  symptomImage: {
-    width: 40,
-    height: 40,
-    marginBottom: 8,
-  },
+  closeButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 });
 
 export default SymptomsModal;

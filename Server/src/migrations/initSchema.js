@@ -33,54 +33,52 @@ function initSchema() {
         updated_at TEXT DEFAULT (datetime('now')), -- Updated manually in app logic
         deleted_at TEXT DEFAULT NULL, -- Soft delete timestamp
         UNIQUE(country_code, phone_number)
-        )
+      )
     `);
 
     db.run(`
-  INSERT OR IGNORE INTO users (
-    phone_number,
-    country_code,
-    email,
-    first_name,
-    last_name,
-    date_of_birth,
-    gender,
-    address_line1,
-    city,
-    state,
-    postal_code,
-    country,
-    is_phone_verified,
-    role,
-    is_active,
-    is_approved,
-    created_by,
-    updated_by,
-    created_at
-  ) VALUES (
-    '9999999999',
-    '+44',
-    'laura.murphy@example.com',
-    'Laura',
-    'Murphy',
-    '2004-08-10',
-    'female',
-    '13 Example Street',
-    'Birmingham',
-    'Borough',
-    'M1 2BB',
-    'United Kingdom',
-    1,
-    'user',
-    1,
-    1,
-    NULL,
-    NULL,
-    '2025-08-19 00:00:00'
-  )
-`);
-
-
+      INSERT OR IGNORE INTO users (
+        phone_number,
+        country_code,
+        email,
+        first_name,
+        last_name,
+        date_of_birth,
+        gender,
+        address_line1,
+        city,
+        state,
+        postal_code,
+        country,
+        is_phone_verified,
+        role,
+        is_active,
+        is_approved,
+        created_by,
+        updated_by,
+        created_at
+      ) VALUES (
+        '9999999999',
+        '+44',
+        'laura.murphy@example.com',
+        'Laura',
+        'Murphy',
+        '2004-08-10',
+        'female',
+        '13 Example Street',
+        'Birmingham',
+        'Borough',
+        'M1 2BB',
+        'United Kingdom',
+        1,
+        'user',
+        1,
+        1,
+        NULL,
+        NULL,
+        '2025-08-19 00:00:00'
+      )
+    `);
 
     db.run(`
       CREATE TABLE IF NOT EXISTS user_alerts (
@@ -220,17 +218,17 @@ function initSchema() {
 
     db.run(`
   CREATE TABLE IF NOT EXISTS user_daily_mood (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    date TEXT NOT NULL,
-    mood TEXT NOT NULL CHECK(mood IN ('Feeling great!', 'Not feeling good!')),
-    sleep REAL,
-    energy REAL,
-    created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    UNIQUE(user_id, date)
-  )
-`);
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        mood TEXT NOT NULL CHECK(mood IN ('Feeling great!', 'Not feeling good!')),
+        sleep REAL,
+        energy REAL,
+        created_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        UNIQUE(user_id, date)
+      )
+    `);
 
     db.run(`
       INSERT OR IGNORE INTO user_daily_mood (user_id, date, mood, sleep, energy)
@@ -242,6 +240,7 @@ function initSchema() {
       VALUES (1, '2025-08-19', 'Not feeling good!', 4.5, 3)
     `);
 
+    // user_symptoms table
     db.run(`
       CREATE TABLE IF NOT EXISTS user_symptoms (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -253,26 +252,59 @@ function initSchema() {
         notes TEXT,
         date TEXT NOT NULL,
         time TEXT NOT NULL,
-        recovered_at TEXT DEFAULT NULL,  -- new column
+        recovered_at TEXT DEFAULT NULL,
         created_at TEXT DEFAULT (datetime('now')),
         FOREIGN KEY(user_id) REFERENCES users(id)
-  )
-      `);
+      )
+    `);
 
-    // Recovery Tasks
+    // Mark Sore Throat as recovered
     db.run(`
-  CREATE TABLE IF NOT EXISTS user_daily_plan (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    symptom TEXT NOT NULL,
-    category TEXT NOT NULL, -- precautions, what_to_eat, medicines, what_not_to_take, exercises, treatment
-    task TEXT NOT NULL,
-    done INTEGER DEFAULT 0,
-    date TEXT NOT NULL, -- to separate daily plans
-    created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY(user_id) REFERENCES users(id)
-  )
-`);
+      INSERT INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time, recovered_at)
+      VALUES
+        (1, 'Sore Throat', 'moderate', '11:00', '5h', 'Pain when swallowing', '2025-08-19', '11:00', '2025-08-19 17:00:00');
+    `);
+
+    db.run(`
+      INSERT INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time)
+      VALUES
+      (1, 'Headache', 'moderate', '08:00', '2h', 'Throbbing pain', '2025-08-19', '08:00')
+    `);
+
+    //  Recovery Tasks
+    db.run(`
+      CREATE TABLE IF NOT EXISTS user_daily_plan (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        symptom TEXT NOT NULL,
+        category TEXT NOT NULL,
+        task TEXT NOT NULL,
+        done INTEGER DEFAULT 0,
+        date TEXT NOT NULL,
+        created_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY(user_id) REFERENCES users(id)
+      )
+    `);
+
+    db.run(`
+      INSERT INTO user_daily_plan (user_id, symptom, category, task, date)
+      VALUES
+      (1, 'Sore Throat', 'Care', 'Gargle with warm salt water 2–3 times daily', '2025-08-19'),
+      (1, 'Sore Throat', 'Care', 'Sip warm herbal tea throughout the day', '2025-08-19'),
+      (1, 'Sore Throat', 'Care', 'Take throat lozenges as needed', '2025-08-19'),
+      (1, 'Sore Throat', 'Diet', 'Avoid spicy or acidic foods', '2025-08-19'),
+      (1, 'Sore Throat', 'Exercise', 'Rest your voice and avoid shouting', '2025-08-19');
+    `);
+
+    db.run(`
+      INSERT INTO user_daily_plan (user_id, symptom, category, task, date)
+      VALUES
+      (1, 'Headache', 'Care', 'Drink water every 1–2 hours', '2025-08-19'),
+      (1, 'Headache', 'Care', 'Avoid bright screens for long periods', '2025-08-19'),
+      (1, 'Headache', 'Medicine', 'Take OTC paracetamol or ibuprofen if needed', '2025-08-19'),
+      (1, 'Headache', 'Care', 'Apply a cold or warm compress to forehead or neck', '2025-08-19'),
+      (1, 'Headache', 'Exercise', 'Perform neck stretches and deep breathing exercises', '2025-08-19');
+    `);
     console.log('Tables created or already exist.');
   });
 }

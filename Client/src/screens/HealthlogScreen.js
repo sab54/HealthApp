@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { format } from 'date-fns';
 import { useFocusEffect, CommonActions } from '@react-navigation/native';
+import { get } from '../utils/api';
+import { API_URL_HEALTHLOG } from '../utils/apiPaths';
 
 const HealthLogScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -25,7 +27,30 @@ const HealthLogScreen = ({ navigation, route }) => {
   const [showMoodModal, setShowMoodModal] = useState(false);
   const [selectedMood, setSelectedMood] = useState(null);
 
+  const [todaySymptoms, setTodaySymptoms] = useState([]);
+  const [recoveredSymptomsCache, setRecoveredSymptomsCache] = useState({});
+
   const today = format(new Date(), 'EEE, dd MMM yyyy'); // e.g., Tue, 20 Aug 2025
+
+  // Fetch today's symptoms including recovered info
+  const fetchTodaySymptoms = async () => {
+    if (!userId) return;
+
+    try {
+      const cached = await AsyncStorage.getItem(`recoveredSymptoms-${userId}`);
+      const recoveredCache = cached ? JSON.parse(cached) : {};
+      setRecoveredSymptomsCache(recoveredCache);
+
+      const response = await get(`${API_URL_HEALTHLOG}/today?userId=${userId}`);
+      const mappedSymptoms = (response.symptoms || []).map(s => ({
+        ...s,
+        recovered_at: recoveredCache[s.symptom] || s.recovered_at || null,
+      }));
+      setTodaySymptoms(mappedSymptoms);
+    } catch (err) {
+      console.error('Error fetching today symptoms:', err);
+    }
+  };
 
   // Fetch today's mood
   useEffect(() => {
@@ -45,15 +70,16 @@ const HealthLogScreen = ({ navigation, route }) => {
       }
     };
     fetchMood();
+    fetchTodaySymptoms();
   }, [dispatch, userId, navigation]);
 
-  // Open SymptomsModal if navigated from another screen
   useFocusEffect(
     React.useCallback(() => {
+      fetchTodaySymptoms();
       if (route.params?.showSymptoms) {
         setShowSymptoms(true);
       }
-    }, [route.params])
+    }, [route.params, userId])
   );
 
   const handleMoodSelect = (mood) => {
@@ -70,14 +96,12 @@ const HealthLogScreen = ({ navigation, route }) => {
     }
 
     try {
-      // ✅ Submit mood along with sleep and energy immediately
       await dispatch(submitMood({ user_id: userId, mood, sleep, energy })).unwrap();
       await AsyncStorage.removeItem('moodSkipped');
 
       if (mood === 'Feeling great!') {
         navigation.replace('MainTabs');
       } else {
-        // ✅ Open Symptoms modal AFTER mood is stored
         setShowSymptoms(true);
       }
     } catch (err) {
@@ -103,6 +127,7 @@ const HealthLogScreen = ({ navigation, route }) => {
 
   const handleSymptomDetailsClose = () => {
     setShowSymptomDetails(false);
+    fetchTodaySymptoms(); // Refresh symptoms after detail modal closes
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -164,7 +189,14 @@ const HealthLogScreen = ({ navigation, route }) => {
       )}
 
       {/* Symptoms Modal */}
-      {showSymptoms && <SymptomsModal visible={showSymptoms} onClose={handleSymptomsClose} />}
+      {showSymptoms && (
+        <SymptomsModal
+          visible={showSymptoms}
+          onClose={handleSymptomsClose}
+          currentSymptoms={todaySymptoms.filter(s => !s.recovered_at).map(s => s.symptom)}
+        />
+      )}
+
       {showSymptomDetails && selectedSymptom && (
         <SymptomDetailModal
           visible={showSymptomDetails}

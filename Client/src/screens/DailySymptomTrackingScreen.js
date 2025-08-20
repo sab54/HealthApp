@@ -24,39 +24,45 @@ const DailySymptomTrackerScreen = () => {
 
   const [symptoms, setSymptoms] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [showSymptomsModal, setShowSymptomsModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedSymptom, setSelectedSymptom] = useState(null);
-
   const [recoveredSymptomsCache, setRecoveredSymptomsCache] = useState({});
-
   const MAX_SYMPTOMS = 3;
-  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const today = new Date().toISOString().split('T')[0];
 
-  // Fetch today's symptoms
+  // Fetch today + previous unrecovered symptoms
   const fetchTodaySymptoms = async () => {
     if (!userId) return;
     setLoading(true);
     try {
-      // Load persisted cache from AsyncStorage
+      // Load today's recovered cache
       const cached = await AsyncStorage.getItem(`recoveredSymptoms-${userId}-${today}`);
       const recoveredCache = cached ? JSON.parse(cached) : {};
       setRecoveredSymptomsCache(recoveredCache);
 
+      // Fetch all symptoms from backend
       const response = await get(`${API_URL_HEALTHLOG}/today?userId=${userId}`);
-      const mappedSymptoms = (response.symptoms || [])
-        .map(s => ({
-          ...s,
-          recovered_at: recoveredCache[s.symptom] || s.recovered_at || null,
-          date: s.date || today,
-          onsetTime: s.onsetTime || s.onset_time || ''
-        }))
-        .filter(s => s.date === today);
+      const fetchedSymptoms = (response.symptoms || []).map(s => ({
+        ...s,
+        recovered_at: recoveredCache[s.symptom] || s.recovered_at || null,
+        date: s.date || today,
+        onsetTime: s.onsetTime || s.onset_time || '',
+        severity: s.severity || 'mild',
+      }));
 
-      setSymptoms(mappedSymptoms);
+      // Sort: unrecovered first (oldest first), recovered last
+      fetchedSymptoms.sort((a, b) => {
+        if (!a.recovered_at && b.recovered_at) return -1;
+        if (a.recovered_at && !b.recovered_at) return 1;
+        if (!a.recovered_at && !b.recovered_at) return new Date(a.date) - new Date(b.date);
+        return 0;
+      });
+
+      setSymptoms(fetchedSymptoms);
     } catch (err) {
       console.error('Error fetching symptoms:', err);
+      Alert.alert('Error', 'Failed to fetch symptoms from server.');
     } finally {
       setLoading(false);
     }
@@ -73,78 +79,93 @@ const DailySymptomTrackerScreen = () => {
   );
 
   const handleSymptomPress = (symptom) => {
+    if (symptom.recovered_at) return;
     navigation.navigate('SymptomRecoveryPlan', { symptom });
   };
 
-  const handleSymptomSelectFromModal = (symptom) => {
+  const handleSymptomSelectFromModal = async (symptom) => {
     setShowSymptomsModal(false);
-    if (symptom) {
-      const newSymptom = { ...symptom, date: today, onsetTime: new Date().toISOString() };
-      setSymptoms(prev => [...prev, newSymptom]);
-      setSelectedSymptom(newSymptom);
-      setShowDetailModal(true);
-    }
-  };
+    if (!symptom) return;
 
-  const handleMarkRecovered = async (symptom) => {
-    if (!userId || !symptom?.symptom) {
-      Alert.alert('Error', 'Missing user or symptom.');
+    const todayUnrecovered = symptoms.filter(s => !s.recovered_at && s.date === today).length;
+    if (todayUnrecovered >= MAX_SYMPTOMS) {
+      Alert.alert('Limit reached', `You can only add ${MAX_SYMPTOMS} symptoms per day.`);
       return;
     }
 
+    const existing = symptoms.find(
+      s => s.symptom === symptom.symptom && !s.recovered_at && s.date === today
+    );
+    if (existing) {
+      Alert.alert("Already Added", `${symptom.symptom} is already recorded and not yet recovered today.`);
+      return;
+    }
+
+    const newSymptom = { ...symptom, date: today, onsetTime: new Date().toISOString() };
+    setSymptoms(prev =>
+      [...prev, newSymptom].sort((a, b) => {
+        if (!a.recovered_at && b.recovered_at) return -1;
+        if (a.recovered_at && !b.recovered_at) return 1;
+        return new Date(a.date) - new Date(b.date);
+      })
+    );
+
+    setSelectedSymptom(newSymptom);
+    setShowDetailModal(true);
+  };
+
+  const handleMarkRecovered = async (symptom) => {
+    if (!userId || !symptom?.symptom) return;
     try {
       const recoveredAt = new Date().toISOString();
 
-      // Optimistic update
       const updatedSymptoms = symptoms.map(s =>
         s.symptom === symptom.symptom ? { ...s, recovered_at: recoveredAt } : s
       );
       setSymptoms(updatedSymptoms);
 
-      // Update cache
       const updatedCache = { ...recoveredSymptomsCache, [symptom.symptom]: recoveredAt };
       setRecoveredSymptomsCache(updatedCache);
-      await AsyncStorage.setItem(
-        `recoveredSymptoms-${userId}-${today}`,
-        JSON.stringify(updatedCache)
-      );
+      await AsyncStorage.setItem(`recoveredSymptoms-${userId}-${today}`, JSON.stringify(updatedCache));
 
-      // API call
       await post(`${API_URL_HEALTHLOG}/recoverSymptom`, {
         user_id: userId,
         symptom: symptom.symptom,
-        date: today,
+        date: symptom.date,
       });
-
     } catch (err) {
       console.error('Error marking recovered:', err);
       Alert.alert('Error', 'Failed to mark symptom as recovered.');
     }
   };
 
-  const renderSymptom = ({ item }) => (
-    <TouchableOpacity
-      style={styles.symptomCard}
-      onPress={() => handleSymptomPress(item)}
-    >
-      <Text style={styles.symptomText}>{item.symptom}</Text>
-      <Text>Severity: {item.severity}</Text>
-      <Text>Onset: {item.onsetTime}</Text>
+  const renderSymptom = ({ item }) => {
+    const isDisabled = !!item.recovered_at;
+    return (
+      <TouchableOpacity
+        style={styles.symptomCard}
+        onPress={() => handleSymptomPress(item)}
+        disabled={isDisabled}
+      >
+        <Text style={styles.symptomText}>{item.symptom}</Text>
+        <Text>Severity: {item.severity}</Text>
+        <Text>Onset: {item.onsetTime}</Text>
 
-      {!item.recovered_at ? (
-        <TouchableOpacity
-          style={styles.recoverButton}
-          onPress={() => handleMarkRecovered(item)}
-        >
-          <Text style={styles.recoverButtonText}>Mark as Recovered</Text>
-        </TouchableOpacity>
-      ) : (
-        <Text style={{ color: 'green', marginTop: 5 }}>
-          Recovered ✅ ({new Date(item.recovered_at).toLocaleTimeString()})
-        </Text>
-      )}
-    </TouchableOpacity>
-  );
+        {!item.recovered_at ? (
+          <TouchableOpacity
+            style={styles.recoverButton}
+            onPress={() => handleMarkRecovered(item)}
+          >
+            <Text style={styles.recoverButtonText}>Mark as Recovered</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={{ color: 'green', marginTop: 5 }}>
+            Recovered ✅ ({new Date(item.recovered_at).toLocaleTimeString()})
+          </Text>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   if (loading) {
     return (
@@ -155,18 +176,20 @@ const DailySymptomTrackerScreen = () => {
     );
   }
 
+  const todayUnrecoveredCount = symptoms.filter(s => !s.recovered_at && s.date === today).length;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Today's Symptoms</Text>
 
       {symptoms.length === 0 ? (
         <Text style={{ textAlign: 'center', marginTop: 20 }}>
-          No symptoms recorded today.
+          No symptoms recorded.
         </Text>
       ) : (
         <FlatList
           data={symptoms}
-          keyExtractor={(item, index) => `${item.symptom}-${index}`}
+          keyExtractor={item => `${item.symptom}-${item.date}-${item.onsetTime}`}
           renderItem={renderSymptom}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
@@ -174,19 +197,10 @@ const DailySymptomTrackerScreen = () => {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => {
-          if (symptoms.length >= MAX_SYMPTOMS) {
-            Alert.alert(
-              'Limit reached',
-              `You can only add ${MAX_SYMPTOMS} symptoms per day.`
-            );
-            return;
-          }
-          setShowSymptomsModal(true);
-        }}
+        onPress={() => setShowSymptomsModal(true)}
       >
         <Text style={styles.addButtonText}>
-          Add Symptom ({MAX_SYMPTOMS - symptoms.length} remaining)
+          Add Symptom ({MAX_SYMPTOMS - todayUnrecoveredCount} remaining)
         </Text>
       </TouchableOpacity>
 
@@ -194,7 +208,9 @@ const DailySymptomTrackerScreen = () => {
         <SymptomsModal
           visible={showSymptomsModal}
           onClose={handleSymptomSelectFromModal}
-          currentCount={symptoms.length}
+          currentCount={todayUnrecoveredCount}
+          currentSymptoms={symptoms.map(s => s.symptom)}
+          userId={userId}
         />
       )}
 
