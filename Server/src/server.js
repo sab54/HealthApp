@@ -6,6 +6,7 @@ const usersRoute = require('./routes/user');
 const authRoute = require('./routes/auth');
 const licenseRoute = require('./routes/license');
 const chatRoute = require('./routes/chat');
+const healthlogRoute = require('./routes/healthlog');
 const path = require('path');
 
 // NEW: Add these for socket support
@@ -53,6 +54,7 @@ app.use('/api/users', usersRoute(db));
 app.use('/api/auth', authRoute(db));
 app.use('/api/license', licenseRoute(db));
 app.use('/api/chat', chatRoute(db,io));
+app.use('/api/healthlog', healthlogRoute(db));
 
 // Root route
 app.get('/', (req, res) => {

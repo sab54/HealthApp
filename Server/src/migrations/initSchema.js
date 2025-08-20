@@ -37,6 +37,52 @@ function initSchema() {
     `);
 
     db.run(`
+  INSERT OR IGNORE INTO users (
+    phone_number,
+    country_code,
+    email,
+    first_name,
+    last_name,
+    date_of_birth,
+    gender,
+    address_line1,
+    city,
+    state,
+    postal_code,
+    country,
+    is_phone_verified,
+    role,
+    is_active,
+    is_approved,
+    created_by,
+    updated_by,
+    created_at
+  ) VALUES (
+    '9999999999',
+    '+44',
+    'laura.murphy@example.com',
+    'Laura',
+    'Murphy',
+    '2004-08-10',
+    'female',
+    '13 Example Street',
+    'Birmingham',
+    'Borough',
+    'M1 2BB',
+    'United Kingdom',
+    1,
+    'user',
+    1,
+    1,
+    NULL,
+    NULL,
+    '2025-08-19 00:00:00'
+  )
+`);
+
+
+
+    db.run(`
       CREATE TABLE IF NOT EXISTS user_alerts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -172,7 +218,60 @@ function initSchema() {
   )
 `);
 
+    db.run(`
+  CREATE TABLE IF NOT EXISTS user_daily_mood (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    mood TEXT NOT NULL CHECK(mood IN ('Feeling great!', 'Not feeling good!')),
+    sleep REAL,
+    energy REAL,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    UNIQUE(user_id, date)
+  )
+`);
 
+    db.run(`
+      INSERT OR IGNORE INTO user_daily_mood (user_id, date, mood, sleep, energy)
+      VALUES (1, '2025-08-18', 'Feeling great!', 8, 9)
+    `);
+
+    db.run(`
+      INSERT OR IGNORE INTO user_daily_mood (user_id, date, mood, sleep, energy)
+      VALUES (1, '2025-08-19', 'Not feeling good!', 4.5, 3)
+    `);
+
+    db.run(`
+  CREATE TABLE IF NOT EXISTS user_symptoms (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    symptom TEXT NOT NULL,
+    severity TEXT NOT NULL CHECK(severity IN ('mild', 'moderate', 'severe')),
+    onset_time TEXT NOT NULL,
+    duration TEXT,
+    notes TEXT,
+    date TEXT NOT NULL,
+    time TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
+
+    // Recovery Tasks
+    db.run(`
+  CREATE TABLE IF NOT EXISTS user_daily_plan (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    symptom TEXT NOT NULL,
+    category TEXT NOT NULL, -- precautions, what_to_eat, medicines, what_not_to_take, exercises, treatment
+    task TEXT NOT NULL,
+    done INTEGER DEFAULT 0,
+    date TEXT NOT NULL, -- to separate daily plans
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
     console.log('Tables created or already exist.');
   });
 }

@@ -1,3 +1,4 @@
+// Client/src/store/reducers/loginReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import { verifyOtp, logout, updateUserLocation } from '../actions/loginActions';
 

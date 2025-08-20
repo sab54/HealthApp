@@ -18,7 +18,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import HomeScreen from '../screens/HomeScreen';
+import DailySymptomTrackingScreen from '../screens/DailySymptomTrackingScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import CalendarScreen from '../screens/CalendarScreen';
 import ResourcesScreen from '../screens/ResourcesScreen';
 import ChatScreen from '../screens/Chat/ChatScreen';
 import { logout, updateUserLocation } from '../store/actions/loginActions';
@@ -31,6 +33,7 @@ const icons = {
     Home: 'home',
     Resources: 'document-text',
     Chat: 'chatbubble-ellipses',
+    DailyLog: 'medkit', // Add a suitable Ionicons name
 };
 
 const TabNavigator = () => {
@@ -106,6 +109,8 @@ const TabNavigator = () => {
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name='Resources' component={ResourcesScreen} />
                 <Tab.Screen name='Chat' component={ChatScreen} />
+                <Tab.Screen name="DailyLog" component={DailySymptomTrackingScreen} />
+
             </Tab.Navigator>
 
             <Modal transparent visible={modalVisible} animationType="none">
@@ -154,6 +159,23 @@ const TabNavigator = () => {
                             />
                             <Text style={styles.menuText}>
                                 Settings
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                closeModal();
+                                navigation.navigate('Calendar');
+                            }}
+                            style={styles.menuItem}
+                        >
+                            <Ionicons
+                                name='calendar-outline'
+                                size={18}
+                                color={themeColors.text}
+                            />
+                            <Text style={styles.menuText}>
+                                Calendar
                             </Text>
                         </TouchableOpacity>
 

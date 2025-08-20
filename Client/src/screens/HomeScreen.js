@@ -1,4 +1,4 @@
-//Client/src/screens/HomeScreen.js
+// Client/src/screens/HomeScreen.js
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -7,7 +7,6 @@ import {
   FlatList,
   ActivityIndicator,
   Platform,
-  Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -18,8 +17,12 @@ import { useFonts } from 'expo-font';
 // Weather + News Actions
 import { fetchWeatherData, fetchForecastData } from '../store/actions/weatherActions';
 
+// HealthLog Actions
+import { fetchTodayMood } from '../store/actions/healthlogActions';
+
 // Modules
 import WeatherCard from '../module/WeatherCard';
+import DailyWellnessCard from '../module/DailyWellnessCard'; // ✅ imported as separate module
 
 // Components
 import Footer from '../components/Footer';
@@ -36,6 +39,9 @@ const HomeScreen = () => {
     loading: loadingWeather,
     error,
   } = useSelector((state) => state.weather);
+
+  const { moodToday, sleepToday, energyToday, todaySymptoms } = useSelector(state => state.healthlog);
+
 
   const [refreshing, setRefreshing] = useState(false);
   const [fontsLoaded] = useFonts({
@@ -60,6 +66,22 @@ const HomeScreen = () => {
     fetchUserStatus();
   }, []);
 
+  // Fetch today’s mood & symptoms
+  useEffect(() => {
+    const fetchHealth = async () => {
+      const userId = await AsyncStorage.getItem('userId');
+      if (userId) {
+        try {
+          await dispatch(fetchTodayMood(userId));
+        } catch (err) {
+          console.error('Failed to fetch today mood/symptoms:', err);
+        }
+      }
+    };
+    fetchHealth();
+  }, [dispatch]);
+
+
   // Weather Data Fetch
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -76,10 +98,6 @@ const HomeScreen = () => {
     dispatch(fetchForecastData());
   }, [dispatch]);
 
-  const handleLogout = async () => {
-    await AsyncStorage.clear();
-    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
-  };
 
   const styles = createStyles(theme, insets);
 
@@ -116,6 +134,19 @@ const HomeScreen = () => {
       ),
     },
     {
+      key: 'dailyWellness',
+      render: () => (
+        <DailyWellnessCard
+          moodToday={moodToday}
+          sleepToday={sleepToday}        // ✅ pass sleep
+          energyToday={energyToday}      // ✅ pass energy
+          todaySymptoms={todaySymptoms}
+          navigation={navigation}
+          theme={theme}
+        />
+      ),
+    },
+    {
       key: 'weather',
       render: () => (
         <View style={styles.blockSpacing}>
@@ -130,27 +161,21 @@ const HomeScreen = () => {
     },
     ...(error
       ? [
-          {
-            key: 'error',
-            render: () => (
-              <Text
-                style={[
-                  styles.errorText,
-                  { color: theme.danger || 'red' },
-                ]}
-              >
-                ⚠️ Weather fetch failed: {error}
-              </Text>
-            ),
-          },
-        ]
+        {
+          key: 'error',
+          render: () => (
+            <Text style={[styles.errorText, { color: theme.danger || 'red' }]}>
+              ⚠️ Weather fetch failed: {error}
+            </Text>
+          ),
+        },
+      ]
       : []),
     {
       key: 'footer',
       render: () => (
         <View style={{ marginTop: 20 }}>
           <Footer theme={theme} />
-          <Button title="Logout" color="#e53935" onPress={handleLogout} />
         </View>
       ),
     },
@@ -161,16 +186,14 @@ const HomeScreen = () => {
       data={contentBlocks}
       keyExtractor={(item) => item.key}
       renderItem={({ item }) => item.render()}
-      contentContainerStyle={[
-        styles.container,
-        { backgroundColor: theme.background },
-      ]}
+      contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
       onRefresh={onRefresh}
     />
   );
 };
+
 
 const createStyles = (theme, insets) =>
   StyleSheet.create({
@@ -215,20 +238,6 @@ const createStyles = (theme, insets) =>
       marginTop: 20,
       textAlign: 'center',
       fontFamily: 'Poppins',
-    },
-    warning: {
-      fontSize: 16,
-      color: 'orange',
-      textAlign: 'center',
-      fontWeight: '500',
-      marginTop: 10,
-    },
-    approvedNote: {
-      fontSize: 16,
-      color: 'green',
-      textAlign: 'center',
-      fontWeight: '500',
-      marginTop: 10,
     },
   });
 

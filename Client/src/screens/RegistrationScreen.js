@@ -17,7 +17,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { CountryPicker } from 'react-native-country-codes-picker';
 import { registerUser } from '../store/actions/registrationActions';
-import * as Location from 'expo-location'; // 🚀 Replaced Geolocation with expo-location
+import * as Location from 'expo-location';
+import RadioButton from '../components/RadioButton';
 
 const RegistrationScreen = () => {
     const { themeColors } = useSelector((state) => state.theme);
@@ -67,7 +68,7 @@ const RegistrationScreen = () => {
                 phoneNumber: form.phoneNumber,
                 countryCode: form.countryCode,
                 userId: user.user_id,
-        });
+            });
         }
     }, [user]);
 
@@ -144,7 +145,7 @@ const RegistrationScreen = () => {
                         placeholder='Email *'
                         placeholderTextColor={themeColors.placeholder}
                         keyboardType='email-address'
-                        autoCtalize='none'
+                        autoCapitalize='none'
                         value={form.email}
                         onChangeText={(v) => handleInputChange('email', v)}
                     />
@@ -190,57 +191,28 @@ const RegistrationScreen = () => {
                         />
                     </View>
 
-                    {/* Role Selection */}
                     <Text style={[styles.label, { color: themeColors.text }]}>
                         Select Role *
                     </Text>
                     <View style={styles.roleContainer}>
-                        <TouchableOpacity
-                            style={[
-                                styles.roleButton,
-                                form.role === 'user' &&
-                                styles.selectedRoleButton,
-                            ]}
-                            onPress={() => handleInputChange('role', 'user')}
-                        >
-                            <Text
-                                style={[
-                                    styles.roleText,
-                                    form.role === 'user' &&
-                                    styles.selectedRoleText,
-                                ]}
-                            >
-                                User
-                            </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[
-                                styles.roleButton,
-                                form.role === 'doctor' &&
-                                styles.selectedRoleButton,
-                            ]}
-                            onPress={() => handleInputChange('role', 'doctor')}
-                        >
-                            <Text
-                                style={[
-                                    styles.roleText,
-                                    form.role === 'doctor' &&
-                                    styles.selectedRoleText,
-                                ]}
-                            >
-                                Doctor
-                            </Text>
-                        </TouchableOpacity>
+                        <RadioButton
+                            label="User"
+                            value="user"
+                            selected={form.role}
+                            onPress={(value) => handleInputChange('role', value)}
+                            themeColors={themeColors} // Passing themeColors for styling
+                        />
+                        <RadioButton
+                            label="Doctor"
+                            value="doctor"
+                            selected={form.role}
+                            onPress={(value) => handleInputChange('role', value)}
+                            themeColors={themeColors}
+                        />
                     </View>
 
                     {error && (
-                        <Text
-                            style={[
-                                styles.errorText,
-                                { color: themeColors.error },
-                            ]}
-                        >
+                        <Text style={[styles.errorText, { color: themeColors.error }]}>
                             {error}
                         </Text>
                     )}

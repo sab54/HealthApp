@@ -12,13 +12,14 @@ import { useFonts } from 'expo-font';
 
 import EmergencyShortcuts from '../module/EmergencyShortcuts';
 import Footer from '../components/Footer';
+import WeatherCard from '../module/WeatherCard'; // Added WeatherCard import
 
 const ResourcesScreen = () => {
     const theme = useSelector((state) => state.theme.themeColors);
-const [fontsLoaded] = useFonts({
-  Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
-  PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
-});
+    const [fontsLoaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+        PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    });
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -34,6 +35,10 @@ const [fontsLoaded] = useFonts({
     const styles = createStyles(theme);
 
     const primaryColor = theme.primary || theme.info || '#0078D4'; // Fallback for missing primary
+
+    const weatherData = useSelector(state => state.weather.current);
+    const forecastData = useSelector(state => state.weather.forecast);
+    const loadingWeather = useSelector(state => state.weather.loading);
 
     if (!fontsLoaded) {
         return (
@@ -60,6 +65,13 @@ const [fontsLoaded] = useFonts({
             }
         >
             <Text style={styles.title}>📚 Emergency Resources</Text>
+            {/* Added WeatherCard at the top */}
+            <WeatherCard
+                weatherData={weatherData}
+                forecastData={forecastData}
+                loadingWeather={loadingWeather}
+                theme={theme}
+            />
 
             <EmergencyShortcuts theme={theme} />
 

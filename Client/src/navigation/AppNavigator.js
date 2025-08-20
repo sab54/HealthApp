@@ -25,11 +25,17 @@ import OnboardingScreen from '../screens/onboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegistrationScreen from '../screens/RegistrationScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
+import TrendsScreen from '../screens/TrendsScreen';
+import HealthlogScreen from '../screens/HealthlogScreen';
 import DoctorLicenseUpload from '../screens/DoctorLicenseUpload';
 import TabNavigator from './TabNavigator';
 import ChatRoomScreen from '../screens/Chat/ChatRoomScreen';
 import AddPeopleScreen from '../screens/Chat/AddPeopleScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import CalendarScreen from '../screens/CalendarScreen';
+import DailyMoodReminder from '../components/DailyMoodReminder';
+
+import StepsTrackerScreen from '../screens/StepsTrackerScreen';
 
 import { loadThemeFromStorage } from '../store/actions/themeActions';
 import { updateUserLocation } from '../store/actions/loginActions';
@@ -38,6 +44,8 @@ import { Asset } from 'expo-asset';
 import * as MediaLibrary from 'expo-media-library';
 
 const Stack = createNativeStackNavigator();
+
+// ... imports stay the same
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
@@ -51,37 +59,13 @@ const AppNavigator = () => {
     PoppinsBold: Poppins_700Bold,
   });
 
-    // ✅ Automatically save doctor.jpg to gallery
-  useEffect(() => {
-    const saveImageToGallery = async () => {
-      try {
-        const { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status === 'granted') {
-          const asset = Asset.fromModule(require('../assets/doctor.jpg'));
-          await asset.downloadAsync(); // Ensure file is local
-          await MediaLibrary.saveToLibraryAsync(asset.localUri);
-          console.log('Image saved to gallery!');
-        } else {
-          console.log('Permission denied for MediaLibrary');
-        }
-      } catch (err) {
-        console.error('Error saving image:', err);
-      }
-    };
-
-    saveImageToGallery();
-  }, []);
-
-
   useEffect(() => {
     const init = async () => {
       dispatch(loadThemeFromStorage());
       await SplashScreen.preventAutoHideAsync();
       const hasSeenOnboarding = await AsyncStorage.getItem('onboarding_seen');
 
-      if (user) {
-        setInitialRoute('MainTabs');
-      } else if (hasSeenOnboarding === 'true') {
+      if (hasSeenOnboarding === 'true') {
         setInitialRoute('Login');
       } else {
         setInitialRoute('Onboarding');
@@ -90,7 +74,7 @@ const AppNavigator = () => {
       setSplashReady(true);
     };
     init();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded && isSplashReady) {
@@ -98,6 +82,7 @@ const AppNavigator = () => {
     }
   }, [fontsLoaded, isSplashReady]);
 
+  // location effect stays the same
   useEffect(() => {
     let locationSub = null;
     const startLocation = async () => {
@@ -139,17 +124,25 @@ const AppNavigator = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialRoute}>
+          {user && <DailyMoodReminder />}
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName={initialRoute}
+          >
             <Stack.Screen name="Onboarding" component={OnboardingScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Registration" component={RegistrationScreen} />
             <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
+            <Stack.Screen name="Trends" component={TrendsScreen} />
+            <Stack.Screen name="HealthLog" component={HealthlogScreen} />
+
+            <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
             <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
             <Stack.Screen name="MainTabs" component={TabNavigator} />
             <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
             <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
-
+            <Stack.Screen name="Calendar" component={CalendarScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
@@ -158,3 +151,4 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
+

@@ -21,12 +21,19 @@ export const getThemeColors = (isDarkMode) => ({
     focusOutline: isDarkMode ? '#4B9BE3' : '#0078D4', // Input focus ring color
 
     // 🔘 Buttons
-    buttonPrimaryBackground: '#0078D4', // Primary action button background
+    buttonPrimaryBackground: '#6C5BCD', // Primary action button background
     buttonPrimaryText: '#ffffff', // Text on primary buttons
     buttonSecondaryBackground: '#D93F2B', // Secondary/danger button background
     buttonSecondaryText: '#ffffff', // Text on secondary buttons
     buttonDisabledBackground: isDarkMode ? '#2C313A' : '#cccccc', // Disabled button background
     buttonDisabledText: isDarkMode ? '#6B7280' : '#999', // Disabled button text
+
+    // radio & Checkbox
+    radioBorder: isDarkMode ? '#6B7280' : '#999999',
+    radioBackground: isDarkMode ? '#1C1F26' : '#ffffff',
+    radioChecked: '#6C5BCD',
+    radioHover: isDarkMode ? '#3B4049' : '#e0e0e0',
+    radioDisabled: isDarkMode ? '#3F4753' : '#cccccc',
 
     // Status Feedback Colors
     success: '#4CAF50', // Success indicators (checkmarks, alerts)

@@ -1,3 +1,4 @@
+// Client/src/screens/LoginScreen.js
 import React, { useState, useEffect, useRef } from 'react';
 import {
     View,
@@ -10,11 +11,12 @@ import {
     TouchableWithoutFeedback,
     Platform,
     Animated,
-    ImageBackground,
+    Image,
     Dimensions,
     KeyboardAvoidingView,
     ScrollView,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -24,6 +26,8 @@ import { requestOtp } from '../store/actions/loginActions';
 import { autoSetOTP } from '../utils/config';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 
 const LoginScreen = () => {
     const { themeColors } = useSelector((state) => state.theme);
@@ -144,11 +148,46 @@ const LoginScreen = () => {
                 <Animated.View
                     style={[styles.container, { opacity: fadeAnim }]}
                 >
-                    <ImageBackground
-                        source={require('../assets/login_image.png')}
-                        style={styles.backgroundImage}
-                        resizeMode='cover'
+                    <LinearGradient
+                        colors={['#b3ccfeff', '#afabe9ff', '#ffffff']}
+                        style={styles.backgroundGradient}
                     >
+                        {!keyboardOpen && (
+                            <View style={{ position: 'absolute', top: SCREEN_WIDTH * 0.18, alignSelf: 'center', zIndex: 2 }}>
+                                <Text
+                                    style={{
+                                        fontSize: 32,
+                                        top: SCREEN_HEIGHT * 0.05,
+                                        fontFamily: 'PoppinsBold',
+                                        color:  '#eceaf8ff',
+                                        textAlign: 'center',
+                                        letterSpacing: 1,
+                                        textShadowColor: 'rgba(0,0,0,0.2)',
+                                        textShadowOffset: { width: 0, height: 2 },
+                                        textShadowRadius: 4,
+                                    }}
+                                >
+                                    Trust Cura+
+                                </Text>
+                            </View>
+                        )}
+
+
+
+                        {!keyboardOpen && (
+                            <Animated.Image
+                                source={require('../assets/doctor.png')}
+                                style={{
+                                    position: 'absolute',
+                                    top: SCREEN_WIDTH * 0.35,
+                                    alignSelf: 'center',
+                                    width: SCREEN_WIDTH * 2,
+                                    height: SCREEN_HEIGHT * 0.55,
+                                    opacity: fadeAnim,
+                                    resizeMode: 'contain',
+                                }}
+                            />
+                        )}
                         {keyboardOpen && (
                             <BlurView
                                 intensity={40}
@@ -161,6 +200,7 @@ const LoginScreen = () => {
                                 contentContainerStyle={styles.scrollContainer}
                                 keyboardShouldPersistTaps='handled'
                             >
+
                                 <View style={styles.loginContainer}>
                                     {!keyboardOpen && (
                                         <Text
@@ -168,7 +208,7 @@ const LoginScreen = () => {
                                                 fontSize: 16,
                                                 color: themeColors.inputText,
                                                 fontFamily: 'Poppins',
-                                                marginBottom: 10,
+                                                marginBottom: 15,
                                                 alignSelf: 'center',
                                             }}
                                         >
@@ -281,7 +321,7 @@ const LoginScreen = () => {
                                     >
                                         <Text
                                             style={{
-                                                marginTop: 20,
+                                                marginTop: 15,
                                                 fontFamily: 'Poppins',
                                                 fontSize: 14,
                                                 color: themeColors.inputText,
@@ -371,7 +411,7 @@ const LoginScreen = () => {
                                 enableModalAvoiding={true}
                             />
                         </View>
-                    </ImageBackground>
+                    </LinearGradient>
                 </Animated.View>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
@@ -380,7 +420,12 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    backgroundImage: { flex: 1, width: '100%', height: '100%' },
+    backgroundGradient: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+
     overlay: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -389,7 +434,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.4)',
     },
     scrollContainer: { flexGrow: 1, justifyContent: 'flex-end' },
-    loginContainer: { width: '100%', alignItems: 'center' },
+    loginContainer: { width: '100%', alignItems: 'center',  paddingBottom: 25},
     inputButtonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -428,6 +473,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Poppins',
     },
+
 });
 
 export default LoginScreen;
