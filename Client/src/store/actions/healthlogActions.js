@@ -62,3 +62,43 @@ export const fetchTodayMood = createAsyncThunk(
     }
   }
 );
+
+// Fetch today's symptoms
+export const fetchTodaySymptoms = createAsyncThunk(
+  'healthlog/fetchTodaySymptoms',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await get(`${API_URL_HEALTHLOG}/today?userId=${userId}`);
+      const today = new Date().toISOString().split('T')[0];
+
+      // Only include today's symptoms
+      const mappedSymptoms = (response.symptoms || [])
+        .map(s => ({ ...s, recovered_at: s.recovered_at || null, date: s.date || today }))
+        .filter(s => s.date === today);
+
+      return mappedSymptoms;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// Mark symptom as recovered
+export const markSymptomRecovered = createAsyncThunk(
+  'healthlog/markSymptomRecovered',
+  async ({ userId, symptom }, { rejectWithValue }) => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      await post(`${API_URL_HEALTHLOG}/recoverSymptom`, {
+        user_id: userId,
+        symptom: symptom.symptom,
+        date: today
+      });
+
+      // Return updated symptom for Redux
+      return { ...symptom, recovered_at: today };
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);

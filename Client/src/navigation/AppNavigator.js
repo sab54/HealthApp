@@ -25,8 +25,9 @@ import OnboardingScreen from '../screens/onboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegistrationScreen from '../screens/RegistrationScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
-import TrendsScreen from '../screens/TrendsScreen';
+import HealthTrackingScreen from '../screens/HealthTrackingScreen';
 import HealthlogScreen from '../screens/HealthlogScreen';
+import SymptomRecoveryPlanScreen from '../screens/SymptomRecoveryPlanScreen';
 import DoctorLicenseUpload from '../screens/DoctorLicenseUpload';
 import TabNavigator from './TabNavigator';
 import ChatRoomScreen from '../screens/Chat/ChatRoomScreen';
@@ -133,9 +134,9 @@ const AppNavigator = () => {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Registration" component={RegistrationScreen} />
             <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
-            <Stack.Screen name="Trends" component={TrendsScreen} />
+            <Stack.Screen name="HealthTracking" component={HealthTrackingScreen} />
             <Stack.Screen name="HealthLog" component={HealthlogScreen} />
-
+            <Stack.Screen name="SymptomRecoveryPlan" component={SymptomRecoveryPlanScreen} />
             <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
             <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
             <Stack.Screen name="MainTabs" component={TabNavigator} />

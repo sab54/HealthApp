@@ -33,7 +33,7 @@ const icons = {
     Home: 'home',
     Resources: 'document-text',
     Chat: 'chatbubble-ellipses',
-    DailyLog: 'medkit', // Add a suitable Ionicons name
+    DailyLog: 'medkit',
 };
 
 const TabNavigator = () => {
@@ -84,32 +84,45 @@ const TabNavigator = () => {
     return (
         <>
             <Tab.Navigator
-                screenOptions={({ route }) => ({
+                initialRouteName='Home'
+                screenOptions={({ route, navigation }) => ({
+                    headerShown: true,
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name={icons[route.name]} size={size} color={color} />
+                        <Ionicons
+                            name={icons[route.name]}
+                            size={size}
+                            color={color}
+                    />
                     ),
-                    headerStyle: {
-                        backgroundColor: themeColors.headerBackground,
-                    },
+                tabBarActiveTintColor: themeColors.link,
+                tabBarInactiveTintColor: themeColors.text,
+                headerStyle: {
+                    backgroundColor: themeColors.headerBackground,
+                    shadowColor: 'transparent',
+                },
+                tabBarStyle: {
+                    backgroundColor: themeColors.card,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    paddingBottom:
+                        Platform.OS === 'ios' ? 20 : 10 + insets.bottom,
+                    paddingTop: 5,
+                    paddingHorizontal: 16,
+                    borderTopWidth: 0,
+                    elevation: 10,
+                    height: Platform.OS === 'ios' ? 80 : 100,
+                },
                     headerLeft: () => (
                         <TouchableOpacity onPress={openModal} style={{ marginLeft: 15 }}>
                             <Ionicons name="person-circle" size={36} color={themeColors.text} />
                         </TouchableOpacity>
                     ),
-                    tabBarStyle: {
-                        backgroundColor: themeColors.card,
-                        height: 70,
-                        borderTopLeftRadius: 20,
-                        borderTopRightRadius: 20,
-                    },
-                    tabBarActiveTintColor: themeColors.link,
-                    tabBarInactiveTintColor: themeColors.text,
                 })}
             >
-                <Tab.Screen name="Home" component={HomeScreen} />
+                <Tab.Screen name='Home' component={HomeScreen} />
                 <Tab.Screen name='Resources' component={ResourcesScreen} />
                 <Tab.Screen name='Chat' component={ChatScreen} />
-                <Tab.Screen name="DailyLog" component={DailySymptomTrackingScreen} />
+                <Tab.Screen name='DailyLog' component={DailySymptomTrackingScreen} />
 
             </Tab.Navigator>
 

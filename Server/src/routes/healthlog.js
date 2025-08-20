@@ -182,26 +182,34 @@ module.exports = (db) => {
 
 
   // Fetch today's daily plan (GET route)
+  // Fetch today's daily plan (GET route) — optionally filter by symptom
   router.get("/plan", (req, res) => {
     const userId = parseInt(req.query.userId);
+    const symptom = req.query.symptom; // optional
+
     if (isNaN(userId)) {
       return res.status(400).json({ success: false, message: "Invalid user ID" });
     }
 
     const today = new Date().toISOString().split("T")[0];
 
-    db.all(
-      `SELECT category, task, done FROM user_daily_plan WHERE user_id = ? AND date = ?`,
-      [userId, today],
-      (err, rows) => {
-        if (err) {
-          console.error("DB error fetching daily plan:", err);
-          return res.status(500).json({ success: false, message: "DB error fetching plan" });
-        }
-        return res.json({ success: true, plan: rows });
+    let query = `SELECT category, task, done, symptom FROM user_daily_plan WHERE user_id = ? AND date = ?`;
+    const params = [userId, today];
+
+    if (symptom) {
+      query += " AND symptom = ?";
+      params.push(symptom);
+    }
+
+    db.all(query, params, (err, rows) => {
+      if (err) {
+        console.error("DB error fetching daily plan:", err);
+        return res.status(500).json({ success: false, message: "DB error fetching plan" });
       }
-    );
+      return res.json({ success: true, plan: rows });
+    });
   });
+
 
   // Update a plan task (toggle done/undone)
   router.post('/updatePlanTask', async (req, res) => {
@@ -242,6 +250,28 @@ module.exports = (db) => {
       }
     );
   });
+
+  router.post('/recoverSymptom', (req, res) => {
+  const { user_id, symptom, date } = req.body;
+  if (!user_id || !symptom || !date) {
+    return res.status(400).json({ success: false, message: 'Missing fields' });
+  }
+
+  const recoveredAt = new Date().toISOString();
+  db.run(
+    `UPDATE user_symptoms
+     SET recovered_at = ?
+     WHERE user_id = ? AND symptom = ? AND date = ?`,
+    [recoveredAt, user_id, symptom, date],
+    function(err) {
+      if (err) {
+        console.error('DB error marking symptom as recovered:', err);
+        return res.status(500).json({ success: false, message: 'DB error' });
+      }
+      return res.json({ success: true, message: 'Symptom marked as recovered', recovered_at: recoveredAt });
+    }
+  );
+});
 
 
   return router;

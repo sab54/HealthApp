@@ -8,21 +8,22 @@ import {
   FlatList,
   TextInput,
   StyleSheet,
+  Image,
 } from 'react-native';
 import symptomsData from '../data/symptomHealth';
-import { useNavigation } from '@react-navigation/native';
-import { Image } from 'react-native';
 
-const SymptomsModal = ({ visible, onClose }) => {
+const SymptomsModal = ({ visible, onClose, currentCount = 0, currentSymptoms = [] }) => {
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigation = useNavigation();
+
+  const MAX_SYMPTOMS = 3;
+  const remaining = MAX_SYMPTOMS - currentCount;
 
   const handleSymptomSelect = (symptomObj) => {
-    // Only one symptom can be selected at a time
-    setSelectedSymptoms([symptomObj.symptom]);
+    if (currentCount + selectedSymptoms.length >= MAX_SYMPTOMS) return;
+    if (currentSymptoms.includes(symptomObj.symptom)) return; // ❌ Prevent duplicate
 
-    // Pass the whole symptom object to next modal
+    setSelectedSymptoms([symptomObj.symptom]);
     onClose(symptomObj);
   };
 
@@ -34,6 +35,15 @@ const SymptomsModal = ({ visible, onClose }) => {
     <Modal visible={visible} animationType="slide">
       <View style={styles.fullScreenContainer}>
         <Text style={styles.title}>Select Your Symptoms</Text>
+
+        <Text style={styles.infoText}>
+          Add your symptoms (max {MAX_SYMPTOMS} per day).
+        </Text>
+        {currentCount > 0 && (
+          <Text style={styles.selectedCountText}>
+            You have already selected {currentCount} today.
+          </Text>
+        )}
 
         <TextInput
           style={styles.searchBar}
@@ -52,16 +62,24 @@ const SymptomsModal = ({ visible, onClose }) => {
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           renderItem={({ item }) => {
             const isSelected = selectedSymptoms.includes(item.symptom);
+            const isDisabled = remaining <= 0 || currentSymptoms.includes(item.symptom);
+
             return (
               <TouchableOpacity
-                style={[styles.symptomItem, isSelected && styles.selectedItem]}
-                onPress={() => handleSymptomSelect(item)}
+                style={[
+                  styles.symptomItem,
+                  isSelected && styles.selectedItem,
+                  isDisabled && styles.disabledItem,
+                ]}
+                onPress={() => !isDisabled && handleSymptomSelect(item)}
+                disabled={isDisabled}
               >
                 <Image
                   source={item.image}
                   style={[
                     styles.symptomImage,
-                    isSelected && { tintColor: '#dddeedff' }
+                    isSelected && { tintColor: '#dddeedff' },
+                    isDisabled && { opacity: 0.3 },
                   ]}
                   resizeMode="contain"
                 />
@@ -69,6 +87,7 @@ const SymptomsModal = ({ visible, onClose }) => {
                   style={[
                     styles.symptomText,
                     isSelected && styles.selectedText,
+                    isDisabled && { color: '#888' },
                   ]}
                 >
                   {item.symptom}
@@ -96,6 +115,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     color: '#4B5563',
+  },
+  infoText: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: 5,
+    color: '#4A4A4A',
+  },
+  selectedCountText: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#D9534F',
+    marginBottom: 10,
   },
   searchBar: {
     borderWidth: 1,
@@ -132,6 +165,10 @@ const styles = StyleSheet.create({
   selectedItem: {
     backgroundColor: '#80A5F4',
     borderColor: '#007AFF',
+  },
+  disabledItem: {
+    backgroundColor: '#F0F0F0',
+    borderColor: '#ccc',
   },
   symptomText: {
     fontSize: 15,

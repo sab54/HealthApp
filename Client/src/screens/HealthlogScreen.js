@@ -1,3 +1,4 @@
+// client/src/screens/HealthlogScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +8,7 @@ import SymptomDetailModal from '../modals/SymptomDetailModal';
 import MoodDetailsModal from '../modals/MoodDetailsModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { format } from 'date-fns';
 import { useFocusEffect, CommonActions } from '@react-navigation/native';
 
 const HealthLogScreen = ({ navigation, route }) => {
@@ -22,6 +24,8 @@ const HealthLogScreen = ({ navigation, route }) => {
 
   const [showMoodModal, setShowMoodModal] = useState(false);
   const [selectedMood, setSelectedMood] = useState(null);
+
+  const today = format(new Date(), 'EEE, dd MMM yyyy'); // e.g., Tue, 20 Aug 2025
 
   // Fetch today's mood
   useEffect(() => {
@@ -117,6 +121,9 @@ const HealthLogScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={{ textAlign: 'center', fontSize: 16, marginBottom: 10 }}>
+        {today}
+      </Text>
       <Text style={styles.title}>How are you feeling today?</Text>
       <Text style={styles.subtitle}>Your response will help us tailor your experience.</Text>
 

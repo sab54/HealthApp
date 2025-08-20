@@ -243,20 +243,21 @@ function initSchema() {
     `);
 
     db.run(`
-  CREATE TABLE IF NOT EXISTS user_symptoms (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    symptom TEXT NOT NULL,
-    severity TEXT NOT NULL CHECK(severity IN ('mild', 'moderate', 'severe')),
-    onset_time TEXT NOT NULL,
-    duration TEXT,
-    notes TEXT,
-    date TEXT NOT NULL,
-    time TEXT NOT NULL,
-    created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY(user_id) REFERENCES users(id)
+      CREATE TABLE IF NOT EXISTS user_symptoms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        symptom TEXT NOT NULL,
+        severity TEXT NOT NULL CHECK(severity IN ('mild', 'moderate', 'severe')),
+        onset_time TEXT NOT NULL,
+        duration TEXT,
+        notes TEXT,
+        date TEXT NOT NULL,
+        time TEXT NOT NULL,
+        recovered_at TEXT DEFAULT NULL,  -- new column
+        created_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY(user_id) REFERENCES users(id)
   )
-`);
+      `);
 
     // Recovery Tasks
     db.run(`

@@ -1,6 +1,5 @@
-// Client/src/store/reducers/healthlogReducers.js
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchTodayMood, submitMood } from '../actions/healthlogActions';
+import { fetchTodayMood, submitMood, markSymptomRecovered } from '../actions/healthlogActions';
 
 const initialState = {
   moodToday: null,
@@ -37,7 +36,10 @@ const healthlogSlice = createSlice({
         state.moodToday = action.payload.mood;
         state.sleepToday = action.payload.sleep;
         state.energyToday = action.payload.energy;
-        state.todaySymptoms = action.payload.symptoms || [];
+        state.todaySymptoms = (action.payload.symptoms || []).map(s => ({
+          ...s,
+          recovered_at: s.recovered_at || null,
+        }));
       })
       .addCase(fetchTodayMood.rejected, (state, action) => {
         state.loading = false;
@@ -52,11 +54,31 @@ const healthlogSlice = createSlice({
       .addCase(submitMood.fulfilled, (state, action) => {
         state.loading = false;
         state.moodToday = action.payload.mood;
-         state.sleepToday = action.payload.sleep;    // ✅ new
-        state.energyToday = action.payload.energy;  // ✅ new
-        state.todaySymptoms = action.payload.symptoms || [];
+        state.sleepToday = action.payload.sleep;
+        state.energyToday = action.payload.energy;
+        state.todaySymptoms = (action.payload.symptoms || []).map(s => ({
+          ...s,
+          recovered_at: s.recovered_at || null,
+        }));
       })
       .addCase(submitMood.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // markSymptomRecovered
+      .addCase(markSymptomRecovered.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(markSymptomRecovered.fulfilled, (state, action) => {
+        state.loading = false;
+        const { symptom, recovered_at } = action.payload;
+        state.todaySymptoms = state.todaySymptoms.map(s =>
+          s.symptom === symptom ? { ...s, recovered_at } : s
+        );
+      })
+      .addCase(markSymptomRecovered.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

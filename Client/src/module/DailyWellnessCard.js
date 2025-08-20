@@ -3,7 +3,6 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const DailyWellnessCard = ({ moodToday, sleepToday, energyToday, todaySymptoms, navigation, theme }) => {
-    const firstSymptom = todaySymptoms && todaySymptoms.length > 0 ? todaySymptoms[0] : null;
 
     // Convert numeric sleep (e.g., 7.5) to "7h 30m"
     const formatSleep = (sleep) => {
@@ -40,22 +39,25 @@ const DailyWellnessCard = ({ moodToday, sleepToday, energyToday, todaySymptoms, 
             </View>
 
             <Text style={[styles.cardTitle, { marginTop: 16 }]}>Symptom Log</Text>
-            {firstSymptom ? (
-                <View style={styles.symptomRow}>
-                    <Text style={styles.symptomText}>{firstSymptom.symptom}</Text>
-                    <Text style={styles.symptomSeverity}>
-                        {firstSymptom.severity} - Updated today
-                    </Text>
-                    <TouchableOpacity
-                        style={styles.viewMoreButton}
-                        onPress={() => navigation.navigate('DailyLog')}
-                    >
-                        <Text style={styles.viewMoreText}>View More</Text>
-                    </TouchableOpacity>
-                </View>
+            {todaySymptoms && todaySymptoms.length > 0 ? (
+                todaySymptoms.map((symptomObj, index) => (
+                    <View key={index} style={styles.symptomRow}>
+                        <Text style={styles.symptomText}>{symptomObj.symptom}</Text>
+                        <Text style={styles.symptomSeverity}>
+                            {symptomObj.severity} - Updated today
+                        </Text>
+                    </View>
+                ))
             ) : (
                 <Text style={styles.cardText}>No symptoms logged</Text>
             )}
+
+            <TouchableOpacity
+                style={styles.viewMoreButton}
+                onPress={() => navigation.navigate('DailyLog')}
+            >
+                <Text style={styles.viewMoreText}>View More</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -89,10 +91,10 @@ const styles = StyleSheet.create({
     symptomText: { fontSize: 16, fontWeight: '600', color: '#111' },
     symptomSeverity: { fontSize: 14, color: '#555', marginTop: 2 },
     viewMoreButton: {
-        marginTop: 6,
+        marginTop: 12,
         alignSelf: 'flex-start',
-        paddingVertical: 4,
-        paddingHorizontal: 10,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
         borderRadius: 6,
         backgroundColor: '#755CDB',
     },

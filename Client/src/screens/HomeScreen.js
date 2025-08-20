@@ -22,7 +22,7 @@ import { fetchTodayMood } from '../store/actions/healthlogActions';
 
 // Modules
 import WeatherCard from '../module/WeatherCard';
-import DailyWellnessCard from '../module/DailyWellnessCard'; // ✅ imported as separate module
+import DailyWellnessCard from '../module/DailyWellnessCard';
 
 // Components
 import Footer from '../components/Footer';
