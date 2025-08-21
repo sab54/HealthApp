@@ -4,6 +4,7 @@ const db = require('../config/db');
 function initSchema() {
   db.serialize(() => {
     // Users table
+
     db.run(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -243,30 +244,32 @@ function initSchema() {
     // user_symptoms table
     db.run(`
       CREATE TABLE IF NOT EXISTS user_symptoms (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        symptom TEXT NOT NULL,
-        severity TEXT NOT NULL CHECK(severity IN ('mild', 'moderate', 'severe')),
-        onset_time TEXT NOT NULL,
-        duration TEXT,
-        notes TEXT,
-        date TEXT NOT NULL,
-        time TEXT NOT NULL,
-        recovered_at TEXT DEFAULT NULL,
-        created_at TEXT DEFAULT (datetime('now')),
-        FOREIGN KEY(user_id) REFERENCES users(id)
-      )
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  symptom TEXT NOT NULL,
+  severity TEXT NOT NULL CHECK(severity IN ('mild','moderate','severe')),
+  onset_time TEXT NOT NULL,
+  duration TEXT,
+  notes TEXT,
+  date TEXT NOT NULL,
+  time TEXT NOT NULL,
+  recovered_at TEXT DEFAULT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  UNIQUE(user_id, symptom, date)
+);
+
     `);
 
     // Mark Sore Throat as recovered
     db.run(`
-      INSERT INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time, recovered_at)
+      INSERT OR IGNORE INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time, recovered_at)
       VALUES
         (1, 'Sore Throat', 'moderate', '11:00', '5h', 'Pain when swallowing', '2025-08-19', '11:00', '2025-08-19 17:00:00');
     `);
 
     db.run(`
-      INSERT INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time)
+      INSERT OR IGNORE INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time)
       VALUES
       (1, 'Headache', 'moderate', '08:00', '2h', 'Throbbing pain', '2025-08-19', '08:00')
     `);
@@ -287,7 +290,7 @@ function initSchema() {
     `);
 
     db.run(`
-      INSERT INTO user_daily_plan (user_id, symptom, category, task, date)
+      INSERT OR IGNORE INTO user_daily_plan (user_id, symptom, category, task, date)
       VALUES
       (1, 'Sore Throat', 'Care', 'Gargle with warm salt water 2–3 times daily', '2025-08-19'),
       (1, 'Sore Throat', 'Care', 'Sip warm herbal tea throughout the day', '2025-08-19'),
@@ -297,7 +300,7 @@ function initSchema() {
     `);
 
     db.run(`
-      INSERT INTO user_daily_plan (user_id, symptom, category, task, date)
+      INSERT OR IGNORE INTO user_daily_plan (user_id, symptom, category, task, date)
       VALUES
       (1, 'Headache', 'Care', 'Drink water every 1–2 hours', '2025-08-19'),
       (1, 'Headache', 'Care', 'Avoid bright screens for long periods', '2025-08-19'),

@@ -83,6 +83,7 @@ C:.
 ¦   ¦   ¦   ¦   DailySymptomTrackingScreen.js
 ¦   ¦   ¦   ¦   DoctorLicenseUpload.js
 ¦   ¦   ¦   ¦   HealthlogScreen.js
+¦   ¦   ¦   ¦   HealthTrackingScreen.js
 ¦   ¦   ¦   ¦   HomeScreen.js
 ¦   ¦   ¦   ¦   LoginScreen.js
 ¦   ¦   ¦   ¦   onboardingScreen.js
@@ -91,7 +92,7 @@ C:.
 ¦   ¦   ¦   ¦   ResourcesScreen.js
 ¦   ¦   ¦   ¦   SettingsScreen.js
 ¦   ¦   ¦   ¦   StepsTrackerScreen.js
-¦   ¦   ¦   ¦   TrendsScreen.js
+¦   ¦   ¦   ¦   SymptomRecoveryPlanScreen.js
 ¦   ¦   ¦   ¦   
 ¦   ¦   ¦   +---Chat
 ¦   ¦   ¦           AddPeopleScreen.js
@@ -148,6 +149,8 @@ C:.
     ¦   ¦   
     ¦   +---config
     ¦   ¦       db.js
+    ¦   +---data
+    ¦   ¦       symptomHealth.js
     ¦   ¦       
     ¦   +---middleware
     ¦   ¦       authMiddleware.js

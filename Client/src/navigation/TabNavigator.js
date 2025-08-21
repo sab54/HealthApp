@@ -1,18 +1,10 @@
 // src/navigation/TabNavigator.js
 import React, { useState, useRef } from 'react';
 import {
-    View,
-    TouchableOpacity,
-    Modal,
-    Animated,
-    Pressable,
-    Platform,
-    StyleSheet,
-    Dimensions,
-    Text,
-    Easing,
+    View, TouchableOpacity, Modal, Animated, Pressable,
+    Platform, StyleSheet, Dimensions, Text, Easing, Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,8 +15,11 @@ import SettingsScreen from '../screens/SettingsScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 import ResourcesScreen from '../screens/ResourcesScreen';
 import ChatScreen from '../screens/Chat/ChatScreen';
-import { logout, updateUserLocation } from '../store/actions/loginActions';
+import SymptomsModal from '../modals/SymptomsModal';
+import SymptomDetailModal from '../modals/SymptomDetailModal';
+import { logout } from '../store/actions/loginActions';
 import { applyThemeMode } from '../store/actions/themeActions';
+import { submitMood, fetchTodaySymptoms, fetchTodayMood} from '../store/actions/healthlogActions';
 
 const { width: screenWidth } = Dimensions.get('window');
 const Tab = createBottomTabNavigator();
@@ -36,82 +31,131 @@ const icons = {
     DailyLog: 'medkit',
 };
 
+const MAX_SYMPTOMS = 5;
+
 const TabNavigator = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.auth);
-    const { themeColors, isDarkMode } = useSelector((state) => state.theme);
-    const insets = useSafeAreaInsets();
+    const { user } = useSelector(state => state.auth);
+    const { themeColors, isDarkMode } = useSelector(state => state.theme);
+    const { todaySymptoms, moodToday } = useSelector(state => state.healthlog);
 
+    const insets = useSafeAreaInsets();
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(-240)).current;
+
     const [modalVisible, setModalVisible] = useState(false);
+    const [showSymptomsModal, setShowSymptomsModal] = useState(false);
+    const [selectedSymptom, setSelectedSymptom] = useState(null);
+    const [showSymptomDetailModal, setShowSymptomDetailModal] = useState(false);
+    const [addingSymptom, setAddingSymptom] = useState(false);
+    const [addedSymptoms, setAddedSymptoms] = useState([]);
 
     const styles = createStyles(themeColors);
 
+    // Sidebar open/close animations
     const openModal = () => {
         setModalVisible(true);
         Animated.parallel([
-            Animated.timing(fadeAnim, {
-                toValue: 1,
-                duration: 200,
-                useNativeDriver: true,
-            }),
-            Animated.spring(slideAnim, {
-                toValue: 0,
-                useNativeDriver: true,
-                friction: 8,
-            }),
+            Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+            Animated.spring(slideAnim, { toValue: 0, useNativeDriver: true, friction: 8 }),
         ]).start();
     };
-
     const closeModal = () => {
         Animated.parallel([
-            Animated.timing(fadeAnim, {
-                toValue: 0,
-                duration: 200,
-                useNativeDriver: true,
-            }),
-            Animated.timing(slideAnim, {
-                toValue: -240,
-                duration: 200,
-                easing: Easing.out(Easing.ease),
-                useNativeDriver: true,
-            }),
+            Animated.timing(fadeAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+            Animated.timing(slideAnim, { toValue: -240, duration: 200, easing: Easing.out(Easing.ease), useNativeDriver: true }),
         ]).start(() => setModalVisible(false));
+    };
+
+    // Clear addedSymptoms when symptoms modal closes
+    const handleSymptomsModalClose = (symptomObj) => {
+        setShowSymptomsModal(false);
+        if (symptomObj) {
+            console.log('Symptom selected:', symptomObj);
+            handleSymptomSelect(symptomObj);
+        }
+    };
+    // Handle selecting a symptom from modal
+    const handleSymptomSelect = async (symptomObj) => {
+        if (!symptomObj) return;
+        const symptomName = symptomObj.symptom;
+
+        const alreadyAdded = todaySymptoms.some(s => s.symptom === symptomName && !s.recovered_at);
+        if (alreadyAdded) return;
+
+        setAddedSymptoms(prev => [...prev, symptomName]); // Instant UI add
+
+        setShowSymptomsModal(false);
+
+        setSelectedSymptom(symptomObj);
+
+        // Open detail modal on next animation frame to avoid race condition
+        requestAnimationFrame(() => {
+            console.log("Opening Symptom Detail Modal for:", symptomObj.symptom);
+            setShowSymptomDetailModal(true);
+        });
+    };
+
+    const handleSymptomDetailClose = () => setShowSymptomDetailModal(false);
+
+    // Clear addedSymptoms and refresh symptoms on tab focus
+    useFocusEffect(
+        React.useCallback(() => {
+            setAddedSymptoms([]);
+            if (user?.id) {
+                dispatch(fetchTodaySymptoms(user.id));
+            }
+        }, [user?.id, dispatch])
+    );
+
+    const CustomTabBarButton = ({ children, accessibilityState }) => {
+        const focused = accessibilityState?.selected;
+        const todayUnrecovered = todaySymptoms.filter(s => !s.recovered_at).length;
+        const totalSymptomsCount = todayUnrecovered + addedSymptoms.length;
+
+        // Debug logs - remove if you want
+        console.log('todayUnrecovered:', todayUnrecovered, 'addedSymptoms:', addedSymptoms);
+
+        const disabled = todayUnrecovered + addedSymptoms.length >= MAX_SYMPTOMS || addingSymptom;
+
+        const handlePress = () => {
+            if (disabled) return;
+            setShowSymptomsModal(true);
+        };
+
+        return (
+            <TouchableOpacity
+                style={{ justifyContent: "center", alignItems: "center", marginBottom: 36, opacity: disabled ? 0.5 : 1 }}
+                onPress={handlePress}
+                disabled={disabled}
+                activeOpacity={0.8}
+            >
+                <View style={{
+                    width: 55, height: 55, borderRadius: 28,
+                    backgroundColor: themeColors.link, justifyContent: "center", alignItems: "center",
+                    shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 4, marginBottom: 5
+                }}>
+                    {children}
+                </View>
+                <Text style={{ marginTop: 4, fontSize: 10, color: focused ? themeColors.link : themeColors.text }}>
+                    Add Symptom
+                </Text>
+            </TouchableOpacity>
+        );
     };
 
     return (
         <>
             <Tab.Navigator
                 initialRouteName='Home'
-                screenOptions={({ route, navigation }) => ({
+                screenOptions={({ route }) => ({
                     headerShown: true,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name={icons[route.name]}
-                            size={size}
-                            color={color}
-                    />
-                    ),
-                tabBarActiveTintColor: themeColors.link,
-                tabBarInactiveTintColor: themeColors.text,
-                headerStyle: {
-                    backgroundColor: themeColors.headerBackground,
-                    shadowColor: 'transparent',
-                },
-                tabBarStyle: {
-                    backgroundColor: themeColors.card,
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
-                    paddingBottom:
-                        Platform.OS === 'ios' ? 20 : 10 + insets.bottom,
-                    paddingTop: 5,
-                    paddingHorizontal: 16,
-                    borderTopWidth: 0,
-                    elevation: 10,
-                    height: Platform.OS === 'ios' ? 80 : 100,
-                },
+                    tabBarIcon: ({ color, size }) => <Ionicons name={icons[route.name]} size={size} color={color} />,
+                    tabBarActiveTintColor: themeColors.link,
+                    tabBarInactiveTintColor: themeColors.text,
+                    headerStyle: { backgroundColor: themeColors.headerBackground, shadowColor: 'transparent' },
+                    tabBarStyle: { backgroundColor: themeColors.card, height: Platform.OS === 'ios' ? 80 : 100, paddingBottom: Platform.OS === 'ios' ? 20 : 10 + insets.bottom, paddingTop: 5 },
                     headerLeft: () => (
                         <TouchableOpacity onPress={openModal} style={{ marginLeft: 15 }}>
                             <Ionicons name="person-circle" size={36} color={themeColors.text} />
@@ -121,115 +165,71 @@ const TabNavigator = () => {
             >
                 <Tab.Screen name='Home' component={HomeScreen} />
                 <Tab.Screen name='Resources' component={ResourcesScreen} />
+                <Tab.Screen name="ConsultNow" component={DailySymptomTrackingScreen} options={{
+                    tabBarIcon: () => <Ionicons name="pulse" size={26} color="#fff" />,
+                    tabBarLabel: "",
+                    tabBarButton: (props) => <CustomTabBarButton {...props} />,
+                }} />
                 <Tab.Screen name='Chat' component={ChatScreen} />
                 <Tab.Screen name='DailyLog' component={DailySymptomTrackingScreen} />
-
             </Tab.Navigator>
 
+            {/* Sidebar Modal */}
             <Modal transparent visible={modalVisible} animationType="none">
-                <Pressable
-                    style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }}
-                    onPress={closeModal}
-                >
-                    <Animated.View
-                        style={[
-                            styles.sidebar,
-                            {
-                                transform: [{ translateX: slideAnim }],
-                                paddingTop: insets.top + 20,
-                            },
-                        ]}
-                        onStartShouldSetResponder={() => true}
-                    >
-                        <Text style={styles.menuText}>
-                            👋 Hello, {(user?.first_name ?? 'User').toString()}
-                        </Text>
-
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => {
-                                dispatch(applyThemeMode(isDarkMode ? 'light' : 'dark'));
-                                closeModal();
-                            }}
-                        >
+                <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }} onPress={closeModal}>
+                    <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }], paddingTop: insets.top + 20 }]} onStartShouldSetResponder={() => true}>
+                        <Text style={styles.menuText}> 👋 Hello, {(user?.first_name ?? 'User').toString()} </Text>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => { dispatch(applyThemeMode(isDarkMode ? 'light' : 'dark')); closeModal(); }}>
                             <Ionicons name={isDarkMode ? 'sunny' : 'moon'} size={20} color={themeColors.text} />
-                            <Text style={styles.menuText}>
-                                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                            </Text>
+                            <Text style={styles.menuText}> {isDarkMode ? 'Light Mode' : 'Dark Mode'} </Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => {
-                                closeModal();
-                                navigation.navigate('Settings');
-                            }}
-                            style={styles.menuItem}
-                        >
-                            <Ionicons
-                                name='settings-outline'
-                                size={18}
-                                color={themeColors.text}
-                            />
-                            <Text style={styles.menuText}>
-                                Settings
-                            </Text>
+                        <TouchableOpacity onPress={() => { closeModal(); navigation.navigate('Settings'); }} style={styles.menuItem}>
+                            <Ionicons name='settings-outline' size={18} color={themeColors.text} />
+                            <Text style={styles.menuText}> Settings </Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => {
-                                closeModal();
-                                navigation.navigate('Calendar');
-                            }}
-                            style={styles.menuItem}
-                        >
-                            <Ionicons
-                                name='calendar-outline'
-                                size={18}
-                                color={themeColors.text}
-                            />
-                            <Text style={styles.menuText}>
-                                Calendar
-                            </Text>
+                        <TouchableOpacity onPress={() => { closeModal(); navigation.navigate('Calendar'); }} style={styles.menuItem}>
+                            <Ionicons name='calendar-outline' size={18} color={themeColors.text} />
+                            <Text style={styles.menuText}> Calendar </Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => {
-                                dispatch(logout());
-                                closeModal();
-                            }}
-                        >
+                        <TouchableOpacity style={styles.menuItem} onPress={() => { dispatch(logout()); closeModal(); }}>
                             <Ionicons name="log-out-outline" size={20} color={themeColors.error || 'red'} />
                             <Text style={[styles.menuText, { color: themeColors.error || 'red' }]}>Logout</Text>
                         </TouchableOpacity>
                     </Animated.View>
                 </Pressable>
             </Modal>
+
+
+
+            <SymptomsModal
+                visible={showSymptomsModal}
+                onClose={handleSymptomsModalClose}
+                currentSymptoms={[
+                    ...todaySymptoms.filter(s => !s.recovered_at).map(s => s.symptom),
+                    ...addedSymptoms
+                ]}
+
+                addedSymptoms={addedSymptoms}
+                setAddedSymptoms={setAddedSymptoms}
+            />
+
+
+            {/* Symptom Detail Modal */}
+            {showSymptomDetailModal && selectedSymptom && (
+                <SymptomDetailModal
+                    visible={showSymptomDetailModal}
+                    symptom={selectedSymptom}
+                    onClose={handleSymptomDetailClose}
+                />
+            )}
         </>
     );
 };
 
 export default TabNavigator;
 
-const createStyles = (themeColors) =>
-    StyleSheet.create({
-        sidebar: {
-            width: screenWidth * 0.75,
-            height: '100%',
-            backgroundColor: themeColors.surface,
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            elevation: 10,
-        },
-        menuItem: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingVertical: 12,
-        },
-        menuText: {
-            marginLeft: 12,
-            fontSize: 16,
-            color: themeColors.text,
-            fontFamily: 'Poppins',
-        },
-    });
+const createStyles = (themeColors) => StyleSheet.create({
+    sidebar: { width: screenWidth * 0.75, height: '100%', backgroundColor: themeColors.surface, paddingHorizontal: 20, paddingVertical: 20, elevation: 10 },
+    menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
+    menuText: { marginLeft: 12, fontSize: 16, color: themeColors.text, fontFamily: 'Poppins' },
+});

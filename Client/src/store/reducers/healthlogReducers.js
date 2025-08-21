@@ -1,3 +1,4 @@
+// Client/src/store/reducers/healthlogReducers.js
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchTodayMood, submitMood, markSymptomRecovered } from '../actions/healthlogActions';
 

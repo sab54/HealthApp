@@ -523,23 +523,23 @@ const ChatRoomScreen = () => {
                             onSelect={handlePreparedMessage}
                             theme={themeColors}
                             options={[
-                                {
-                                    emoji: '🗓️',
-                                    label: 'Event',
-                                    action: {
-                                        messageText: '🗓️ Event issued.',
-                                        messageType: 'event',
-                                    },
-                                },
-                                {
-                                    emoji: '🧠',
-                                    label: 'Create a Quiz',
-                                    action: {
-                                        messageText:
-                                            '🧠 I would like to create a quiz.',
-                                        messageType: 'quiz',
-                                    },
-                                },
+                                // {
+                                //     emoji: '🗓️',
+                                //     label: 'Event',
+                                //     action: {
+                                //         messageText: '🗓️ Event issued.',
+                                //         messageType: 'event',
+                                //     },
+                                // },
+                                // {
+                                //     emoji: '🧠',
+                                //     label: 'Create a Quiz',
+                                //     action: {
+                                //         messageText:
+                                //             '🧠 I would like to create a quiz.',
+                                //         messageType: 'quiz',
+                                //     },
+                                // },
                                 {
                                     emoji: '📍',
                                     label: 'Location',
@@ -548,15 +548,15 @@ const ChatRoomScreen = () => {
                                         messageType: 'location',
                                     },
                                 },
-                                {
-                                    emoji: '📊',
-                                    label: 'Poll',
-                                    action: {
-                                        messageText:
-                                            '📊 Please participate in this poll.',
-                                        messageType: 'poll',
-                                    },
-                                },
+                                // {
+                                //     emoji: '📊',
+                                //     label: 'Poll',
+                                //     action: {
+                                //         messageText:
+                                //             '📊 Please participate in this poll.',
+                                //         messageType: 'poll',
+                                //     },
+                                // },
                             ]}
                         />
                         <QuizPromptModal

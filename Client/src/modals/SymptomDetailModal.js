@@ -46,6 +46,7 @@ const SymptomDetailModal = ({ visible, symptom, onClose }) => {
         symptoms: [symptomEntry],
       });
 
+
       // Generate daily plan (recurring until recovery)
       await post(`${API_URL_HEALTHLOG}/generatePlan`, {
         user_id: userId,

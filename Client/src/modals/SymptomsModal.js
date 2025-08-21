@@ -12,13 +12,29 @@ import {
 } from 'react-native';
 import symptomsData from '../data/symptomHealth';
 
-const SymptomsModal = ({ visible, onClose, currentSymptoms = [], currentCount = 0 }) => {
+const SymptomsModal = ({
+  visible,
+  onClose,
+  currentSymptoms = [],
+  addedSymptoms = [],   // from parent
+  setAddedSymptoms = () => {} // from parent
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
-
-  const MAX_SYMPTOMS = 3;
+  const MAX_SYMPTOMS = 5;
 
   const handleSymptomSelect = (symptomObj) => {
-    if (currentSymptoms.includes(symptomObj.symptom) || currentCount >= MAX_SYMPTOMS) return;
+    const totalSelected = currentSymptoms.length + addedSymptoms.length;
+
+    if (
+      currentSymptoms.includes(symptomObj.symptom) ||
+      addedSymptoms.includes(symptomObj.symptom) ||
+      totalSelected >= MAX_SYMPTOMS
+    ) return;
+
+    // Update local state instantly for UI feedback
+    setAddedSymptoms(prev => [...prev, symptomObj.symptom]);
+
+    // Pass selected symptom to parent to trigger detail page
     onClose(symptomObj);
   };
 
@@ -30,13 +46,12 @@ const SymptomsModal = ({ visible, onClose, currentSymptoms = [], currentCount = 
     <Modal visible={visible} animationType="slide">
       <View style={styles.fullScreenContainer}>
         <Text style={styles.title}>Select Your Symptoms</Text>
-
         <Text style={styles.infoText}>
           Add your symptoms (max {MAX_SYMPTOMS} per day).
         </Text>
-        {currentCount > 0 && (
+        {currentSymptoms.length + addedSymptoms.length > 0 && (
           <Text style={styles.selectedCountText}>
-            You have already selected {currentCount} today.
+            You have already selected {currentSymptoms.length + addedSymptoms.length} today.
           </Text>
         )}
 
@@ -48,15 +63,16 @@ const SymptomsModal = ({ visible, onClose, currentSymptoms = [], currentCount = 
           onChangeText={setSearchTerm}
         />
 
-        <Text style={styles.sectionHeader}>Common</Text>
-
         <FlatList
           data={filteredSymptoms}
           keyExtractor={item => item.symptom}
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
           renderItem={({ item }) => {
-            const isDisabled = currentSymptoms.includes(item.symptom) || currentCount >= MAX_SYMPTOMS;
+            const isDisabled =
+              currentSymptoms.includes(item.symptom) ||
+              addedSymptoms.includes(item.symptom) ||
+              currentSymptoms.length + addedSymptoms.length >= MAX_SYMPTOMS;
 
             return (
               <TouchableOpacity
@@ -76,7 +92,10 @@ const SymptomsModal = ({ visible, onClose, currentSymptoms = [], currentCount = 
           }}
         />
 
-        <TouchableOpacity style={styles.closeButton} onPress={() => onClose(null)}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => onClose(null)} // Done without selecting
+        >
           <Text style={styles.closeButtonText}>Done</Text>
         </TouchableOpacity>
       </View>

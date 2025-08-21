@@ -189,7 +189,9 @@ const DailySymptomTrackerScreen = () => {
       ) : (
         <FlatList
           data={symptoms}
-          keyExtractor={item => `${item.symptom}-${item.date}-${item.onsetTime}`}
+          keyExtractor={(item, index) =>
+            item.id ? item.id.toString() : `${item.symptom}-${item.date}-${item.onsetTime}-${index}`
+          }
           renderItem={renderSymptom}
           contentContainerStyle={{ paddingBottom: 20 }}
         />

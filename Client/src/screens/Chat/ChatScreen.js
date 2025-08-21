@@ -317,16 +317,16 @@ const ChatScreen = () => {
                         label: 'Start New Chat',
                         action: 'start_new_chat',
                     },
-                    {
-                        emoji: '👥',
-                        label: 'Join Local Group',
-                        action: 'join_local_group',
-                    },
-                    {
-                        emoji: '🤖',
-                        label: 'AI Chat',
-                        action: 'start_ai_chat',
-                    },
+                    // {
+                    //     emoji: '👥',
+                    //     label: 'Join Local Group',
+                    //     action: 'join_local_group',
+                    // },
+                    // {
+                    //     emoji: '🤖',
+                    //     label: 'AI Chat',
+                    //     action: 'start_ai_chat',
+                    // },
                 ]}
             />
         </KeyboardAvoidingView>
