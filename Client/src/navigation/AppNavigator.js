@@ -47,7 +47,39 @@ import * as MediaLibrary from 'expo-media-library';
 
 const Stack = createNativeStackNavigator();
 
-// ... imports stay the same
+export function AuthStackNav() {
+  return (
+    <Stack.Navigator
+      key="auth"
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Onboarding" // always start at Onboarding
+    >
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Registration" component={RegistrationScreen} />
+      <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
+    </Stack.Navigator>
+  );
+}
+
+export function AppStackNav() {
+  return (
+    <Stack.Navigator key="app" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MainTabs" component={TabNavigator} />
+      <Stack.Screen name="Chat"component={ChatScreen}/>
+      <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
+      <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
+      <Stack.Screen name="Calendar" component={CalendarScreen} />
+      <Stack.Screen name="HealthLog" component={HealthlogScreen} />
+      {/* <Stack.Screen name="PulseReader" component={PulseReader} /> */}
+      <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
+      <Stack.Screen name="HealthTracking" component={HealthTrackingScreen} />
+      <Stack.Screen name="SymptomRecoveryPlan" component={SymptomRecoveryPlanScreen} />
+    </Stack.Navigator>
+  );
+}
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
@@ -127,26 +159,7 @@ const AppNavigator = () => {
       <SafeAreaProvider>
         <NavigationContainer ref={navigationRef}>
           {user && <DailyMoodReminder />}
-          <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName={initialRoute}
-          >
-            <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Registration" component={RegistrationScreen} />
-            <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
-            <Stack.Screen name="HealthTracking" component={HealthTrackingScreen} />
-            <Stack.Screen name="HealthLog" component={HealthlogScreen} />
-            <Stack.Screen name="SymptomRecoveryPlan" component={SymptomRecoveryPlanScreen} />
-            <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
-            <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
-            <Stack.Screen name="MainTabs" component={TabNavigator} />
-            <Stack.Screen name="Chat"component={ChatScreen}/>
-            <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
-            <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-            <Stack.Screen name="Calendar" component={CalendarScreen} />
-          </Stack.Navigator>
+          {user ? <AppStackNav /> : <AuthStackNav />}
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
