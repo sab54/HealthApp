@@ -35,6 +35,7 @@ import AddPeopleScreen from '../screens/Chat/AddPeopleScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 import DailyMoodReminder from '../components/DailyMoodReminder';
+import ChatScreen from '../screens/Chat/ChatScreen';
 
 import StepsTrackerScreen from '../screens/StepsTrackerScreen';
 
@@ -140,6 +141,7 @@ const AppNavigator = () => {
             <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
             <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
             <Stack.Screen name="MainTabs" component={TabNavigator} />
+            <Stack.Screen name="Chat"component={ChatScreen}/>
             <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
             <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />

@@ -14,12 +14,12 @@ import DailySymptomTrackingScreen from '../screens/DailySymptomTrackingScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 import ResourcesScreen from '../screens/ResourcesScreen';
-import ChatScreen from '../screens/Chat/ChatScreen';
+import HealthTrackingScreen from '../screens/HealthTrackingScreen'
 import SymptomsModal from '../modals/SymptomsModal';
 import SymptomDetailModal from '../modals/SymptomDetailModal';
 import { logout } from '../store/actions/loginActions';
 import { applyThemeMode } from '../store/actions/themeActions';
-import { submitMood, fetchTodaySymptoms, fetchTodayMood} from '../store/actions/healthlogActions';
+import { fetchTodaySymptoms } from '../store/actions/healthlogActions';
 
 const { width: screenWidth } = Dimensions.get('window');
 const Tab = createBottomTabNavigator();
@@ -27,11 +27,11 @@ const Tab = createBottomTabNavigator();
 const icons = {
     Home: 'home',
     Resources: 'document-text',
-    Chat: 'chatbubble-ellipses',
+    Trends: 'trending-up',
     DailyLog: 'medkit',
 };
 
-const MAX_SYMPTOMS = 5;
+const MAX_SYMPTOMS = 3;
 
 const TabNavigator = () => {
     const navigation = useNavigation();
@@ -126,7 +126,7 @@ const TabNavigator = () => {
 
         return (
             <TouchableOpacity
-                style={{ justifyContent: "center", alignItems: "center", marginBottom: 36, opacity: disabled ? 0.5 : 1 }}
+                style={{ justifyContent: "center", alignItems: "center", marginBottom: 35, opacity: disabled ? 0.5 : 1 }}
                 onPress={handlePress}
                 disabled={disabled}
                 activeOpacity={0.8}
@@ -156,6 +156,15 @@ const TabNavigator = () => {
                     tabBarInactiveTintColor: themeColors.text,
                     headerStyle: { backgroundColor: themeColors.headerBackground, shadowColor: 'transparent' },
                     tabBarStyle: { backgroundColor: themeColors.card, height: Platform.OS === 'ios' ? 80 : 100, paddingBottom: Platform.OS === 'ios' ? 20 : 10 + insets.bottom, paddingTop: 5 },
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Chat')}
+                            style={{ marginRight: 15 }}
+                        >
+                            <Ionicons name="chatbubble-ellipses" size={26} color={themeColors.link} />
+                        </TouchableOpacity>
+                    ),
+
                     headerLeft: () => (
                         <TouchableOpacity onPress={openModal} style={{ marginLeft: 15 }}>
                             <Ionicons name="person-circle" size={36} color={themeColors.text} />
@@ -166,11 +175,16 @@ const TabNavigator = () => {
                 <Tab.Screen name='Home' component={HomeScreen} />
                 <Tab.Screen name='Resources' component={ResourcesScreen} />
                 <Tab.Screen name="ConsultNow" component={DailySymptomTrackingScreen} options={{
-                    tabBarIcon: () => <Ionicons name="pulse" size={26} color="#fff" />,
+                    tabBarIcon: () => <Ionicons name="body" size={26} color="#fff" />,
                     tabBarLabel: "",
                     tabBarButton: (props) => <CustomTabBarButton {...props} />,
                 }} />
-                <Tab.Screen name='Chat' component={ChatScreen} />
+                <Tab.Screen
+                    name='Trends'
+                    component={HealthTrackingScreen}
+                    initialParams={{ userId: user?.id }} // pass the user ID here
+                />
+
                 <Tab.Screen name='DailyLog' component={DailySymptomTrackingScreen} />
             </Tab.Navigator>
 

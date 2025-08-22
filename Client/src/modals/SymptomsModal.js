@@ -20,7 +20,7 @@ const SymptomsModal = ({
   setAddedSymptoms = () => {} // from parent
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const MAX_SYMPTOMS = 5;
+  const MAX_SYMPTOMS = 3;
 
   const handleSymptomSelect = (symptomObj) => {
     const totalSelected = currentSymptoms.length + addedSymptoms.length;

@@ -122,7 +122,7 @@ module.exports = (db) => {
                         return res.status(500).json({ success: false, message: 'OTP log failed' });
                     }
 
-                    return res.json({ success: true, user_id });
+                    return res.json({ success: true, user_id, otp_code });
                 });
             });
         });

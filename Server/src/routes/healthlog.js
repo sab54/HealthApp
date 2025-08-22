@@ -168,40 +168,58 @@ module.exports = (db) => {
   });
 
   // Generate Daily Plan Endpoint
-  router.post("/generatePlan", (req, res) => {
-    const { user_id, symptom, recurring } = req.body;
-    const today = new Date().toISOString().split("T")[0];
-    const plan = symptomHealth.find((s) => s.symptom === symptom);
+  // Generate Daily Plan Endpoint
+router.post("/generatePlan", (req, res) => {
+  const { user_id, symptom, recurring } = req.body;
+  const today = new Date().toISOString().split("T")[0];
 
-    if (!plan) return res.status(404).json({ error: "No plan found for this symptom" });
+  // Fetch the plan from symptomHealth
+  const plan = symptomHealth.find((s) => s.symptom === symptom);
+  if (!plan) return res.status(404).json({ success: false, message: "No plan found for this symptom" });
 
-    const insertPlan = (date) => {
-      const stmt = db.prepare(
-        "INSERT INTO user_daily_plan (user_id, date, symptom, category, task, done) VALUES (?, ?, ?, ?, ?, ?)"
-      );
+  // Map symptomHealth keys to DB categories
+  const CATEGORY_MAP = {
+    precautions: "Care",
+    medicines: "Medicine",
+    what_to_eat: "Diet",
+    exercises: "Exercise",
+    what_not_to_take: "Avoid",
+    treatment: "Care",
+  };
 
-      Object.entries(plan).forEach(([category, items]) => {
-        if (Array.isArray(items)) {
-          items.forEach((item) => stmt.run([user_id, date, symptom, category, item, 0]));
-        } else if (typeof items === "string") {
-          stmt.run([user_id, date, symptom, category, items, 0]);
-        }
-      });
-      stmt.finalize();
-    };
+  // Function to insert tasks for a given date
+  const insertPlan = (date) => {
+    const stmt = db.prepare(
+      "INSERT INTO user_daily_plan (user_id, date, symptom, category, task, done) VALUES (?, ?, ?, ?, ?, ?)"
+    );
 
-    if (recurring) {
-      for (let i = 0; i < 30; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() + i);
-        insertPlan(date.toISOString().split("T")[0]);
+    Object.entries(plan).forEach(([key, items]) => {
+      const dbCategory = CATEGORY_MAP[key];
+      if (!dbCategory) return; // skip unmapped keys
+      if (Array.isArray(items)) {
+        items.forEach((item) => stmt.run([user_id, date, symptom, dbCategory, item, 0]));
+      } else if (typeof items === "string") {
+        stmt.run([user_id, date, symptom, dbCategory, items, 0]);
       }
-    } else {
-      insertPlan(today);
-    }
+    });
 
-    res.json({ success: true, plan });
-  });
+    stmt.finalize();
+  };
+
+  // Insert plan either for today or recurring for next 30 days
+  if (recurring) {
+    for (let i = 0; i < 30; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      insertPlan(date.toISOString().split("T")[0]);
+    }
+  } else {
+    insertPlan(today);
+  }
+
+  return res.json({ success: true, plan });
+});
+
 
   // Fetch today's daily plan
   router.get("/plan", (req, res) => {

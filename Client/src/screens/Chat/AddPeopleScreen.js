@@ -22,6 +22,7 @@ import { useFonts } from 'expo-font';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+
 import SearchBar from '../../components/SearchBar';
 import ConfirmationModal from '../../components/ConfirmationModal';
 
@@ -46,6 +47,9 @@ const AddPeopleScreen = () => {
     const { allUsers, draftGroupUsers, loading } = useSelector(
         (state) => state.chat
     );
+    const currentUser = useSelector((state) => state.auth.user);
+
+
 
     const styles = createStyles(themeColors, insets);
     const { chatId, mode } = route.params || {};
@@ -92,7 +96,24 @@ const AddPeopleScreen = () => {
     //     );
     // });
 
-    const filteredUsers = allUsers;
+
+    const filteredUsers = allUsers.filter(user => {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch =
+            (user.name || '').toLowerCase().includes(query) ||
+            (user.email || '').toLowerCase().includes(query);
+
+        if (!matchesSearch) return false;
+
+        // Apply role-based filtering
+        if (currentUser?.role === 'user') {
+            return user.role !== 'user'; // patient sees only doctors
+        }
+
+
+        // Doctor can see anyone
+        return true;
+    });
 
     const toggleUser = (user) => {
         if (isSelected(user.id)) {
@@ -324,7 +345,7 @@ const AddPeopleScreen = () => {
                                     {
                                         backgroundColor:
                                             draftGroupUsers.length > 0 &&
-                                            !submitting
+                                                !submitting
                                                 ? themeColors.link
                                                 : themeColors.disabled,
                                     },
@@ -338,10 +359,10 @@ const AddPeopleScreen = () => {
                                     {submitting
                                         ? 'Processing...'
                                         : chatId
-                                        ? `Add (${draftGroupUsers.length})`
-                                        : draftGroupUsers.length === 1
-                                        ? 'Start Chat'
-                                        : `Create Group (${draftGroupUsers.length})`}
+                                            ? `Add (${draftGroupUsers.length})`
+                                            : draftGroupUsers.length === 1
+                                                ? 'Start Chat'
+                                                : `Create Group (${draftGroupUsers.length})`}
                                 </Text>
                             </TouchableOpacity>
 

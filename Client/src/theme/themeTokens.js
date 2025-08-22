@@ -1,80 +1,81 @@
 export const getThemeColors = (isDarkMode) => ({
     mode: isDarkMode ? 'dark' : 'light',
+
     // 🧱 Layout & Backgrounds
-    background: isDarkMode ? '#12161C' : '#ffffff', // App root background
-    card: isDarkMode ? '#1E222A' : '#f1f1f3', // Cards or blocks background
-    surface: isDarkMode ? '#181C22' : '#f9f9f9', // Neutral surfaces (modals, panels)
-    highlight: isDarkMode ? '#2A2F38' : '#e2e2e6', // For hoverable elements
-    overlay: isDarkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)', // Transparent modal overlays
+    background: isDarkMode ? '#1E1B2E' : '#ffffff', // App root background
+    card: isDarkMode ? '#2A2340' : '#f9f9ff', // Cards or blocks background
+    surface: isDarkMode ? '#26203A' : '#f5f5ff', // Neutral surfaces (modals, panels)
+    highlight: isDarkMode ? '#3A2D5C' : '#e2e2ff', // Hoverable elements
+    overlay: isDarkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)', // Modal overlays
 
     // 📝 Text & Typography
-    title: isDarkMode ? '#ffffff' : '#333333', // Main headings
-    text: isDarkMode ? '#D1D5DB' : '#5f6368', // Standard body text
-    mutedText: isDarkMode ? '#9CA3AF' : '#a0a0a0', // Less prominent text (e.g., timestamps)
-    placeholder: isDarkMode ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)', // Input placeholder color
+    title: isDarkMode ? '#ffffff' : '#1a1a2e', // Main headings
+    text: isDarkMode ? '#D1D1FF' : '#333366', // Standard body text
+    mutedText: isDarkMode ? '#A3A3C2' : '#7d7da6', // Less prominent text
+    placeholder: isDarkMode ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,128,0.3)', // Input placeholder
 
     // 🧾 Inputs & Borders
-    input: isDarkMode ? '#1C1F26' : '#ffffff', // Text input backgrounds
-    inputText: isDarkMode ? '#E5E7EB' : '#333', // Input text color
-    inputBorder: isDarkMode ? '#3F4753' : '#d9e0e6', // Input border line
-    border: isDarkMode ? '#3F4753' : '#d9e0e6', // General border color
-    focusOutline: isDarkMode ? '#4B9BE3' : '#0078D4', // Input focus ring color
+    input: isDarkMode ? '#2A2340' : '#ffffff', // Text input background
+    inputText: isDarkMode ? '#E5E5FF' : '#333366', // Input text color
+    inputBorder: isDarkMode ? '#5C4B8A' : '#c5c5ff', // Input border
+    border: isDarkMode ? '#5C4B8A' : '#c5c5ff', // General borders
+    focusOutline: isDarkMode ? '#7C5DFF' : '#6C5BCD', // Focus ring color
 
     // 🔘 Buttons
-    buttonPrimaryBackground: '#6C5BCD', // Primary action button background
-    buttonPrimaryText: '#ffffff', // Text on primary buttons
-    buttonSecondaryBackground: '#D93F2B', // Secondary/danger button background
-    buttonSecondaryText: '#ffffff', // Text on secondary buttons
-    buttonDisabledBackground: isDarkMode ? '#2C313A' : '#cccccc', // Disabled button background
-    buttonDisabledText: isDarkMode ? '#6B7280' : '#999', // Disabled button text
+    buttonPrimaryBackground: '#6C5BCD', // Purple primary button
+    buttonPrimaryText: '#ffffff',
+    buttonSecondaryBackground: '#4B9BE3', // Blue secondary button
+    buttonSecondaryText: '#ffffff',
+    buttonDisabledBackground: isDarkMode ? '#3A324D' : '#cccccc',
+    buttonDisabledText: isDarkMode ? '#7D7DA6' : '#999999',
 
     // radio & Checkbox
-    radioBorder: isDarkMode ? '#6B7280' : '#999999',
-    radioBackground: isDarkMode ? '#1C1F26' : '#ffffff',
+    radioBorder: isDarkMode ? '#7D7DA6' : '#9999cc',
+    radioBackground: isDarkMode ? '#2A2340' : '#ffffff',
     radioChecked: '#6C5BCD',
-    radioHover: isDarkMode ? '#3B4049' : '#e0e0e0',
-    radioDisabled: isDarkMode ? '#3F4753' : '#cccccc',
+    radioHover: isDarkMode ? '#3A2D5C' : '#e2e2ff',
+    radioDisabled: isDarkMode ? '#5C4B8A' : '#cccccc',
 
     // Status Feedback Colors
-    success: '#4CAF50', // Success indicators (checkmarks, alerts)
-    successBackground: isDarkMode ? '#234B2D' : '#d4edda', // Success alert background
-    error: '#D93F2B', // Error indicators (icons, messages)
-    errorBackground: isDarkMode ? '#4B2D2B' : '#f8d7da', // Error alert background
-    warning: '#FFB900', // Warning icon or tag
-    warningBackground: isDarkMode ? '#4F4220' : '#fff3cd', // Warning alert background
-    info: '#0078D4', // Info icon or message
-    infoBackground: isDarkMode ? '#243B52' : '#d1ecf1', // Info alert background
+    success: '#4CAF50',
+    successBackground: isDarkMode ? '#234B2D' : '#d4edda',
+    error: '#D93F2B',
+    errorBackground: isDarkMode ? '#4B2D2B' : '#f8d7da',
+    warning: '#FFB900',
+    warningBackground: isDarkMode ? '#4F4220' : '#fff3cd',
+    info: '#4B9BE3', // Blue info
+    infoBackground: isDarkMode ? '#243B52' : '#d1ecf1',
 
     // ⚙️ Actions & Interactions
-    actionBackground: isDarkMode ? '#2B313D' : '#f4f6f8', // Background for action rows/buttons
-    actionText: isDarkMode ? '#D1D7DD' : '#333333', // Text for actions like links or chips
-    disabled: isDarkMode ? '#3B4049' : '#e0e0e0', // Disabled element background
+    actionBackground: isDarkMode ? '#26203A' : '#f4f4ff',
+    actionText: isDarkMode ? '#D1D1FF' : '#333366',
+    disabled: isDarkMode ? '#3A324D' : '#e0e0e0',
 
     // 🎨 Icons & Visuals
-    icon: isDarkMode ? '#C5CBD3' : '#4a4a4a', // Default icon color
+    icon: isDarkMode ? '#C5C5FF' : '#4a4a8a',
 
     // 🔗 Links & Interactivity
-    link: isDarkMode ? '#4B9BE3' : '#0078D4', // Anchor/link color
-    linkHover: isDarkMode ? '#60AFFF' : '#005A8C', // Hover color for links
+    link: '#4B9BE3',
+    linkHover: '#3A7ACC',
 
     // 🏷️ Badges & Tags
-    badge: '#0078D4', // Badge background
-    badgeText: '#ffffff', // Badge label color
-    tagBackground: isDarkMode ? '#2E3442' : '#ebf2fa', // Tag/chip background
-    tagText: isDarkMode ? '#E0E4E9' : '#1a1d2c', // Tag/chip label
+    badge: '#6C5BCD',
+    badgeText: '#ffffff',
+    tagBackground: isDarkMode ? '#3A2D5C' : '#ebf2ff',
+    tagText: isDarkMode ? '#E0E0FF' : '#1a1a2e',
 
     // 📏 Dividers & Shadows
-    divider: isDarkMode ? '#3F4753' : '#d9e0e6', // Section separators
-    shadow: isDarkMode ? '#00000066' : '#0000001a', // General shadows
-    cardShadow: isDarkMode ? '#00000066' : '#0000001a', // Card-specific shadow
+    divider: isDarkMode ? '#5C4B8A' : '#c5c5ff',
+    shadow: isDarkMode ? '#00000066' : '#0000001a',
+    cardShadow: isDarkMode ? '#00000066' : '#0000001a',
 
     // 🪟 Modals & Popups
-    modalBackground: isDarkMode ? '#1C1F26' : '#ffffff', // Background for modals/dialogs
+    modalBackground: isDarkMode ? '#2A2340' : '#ffffff',
 
     // 🖱️ Hover/Focus Effects
-    hoverBackground: isDarkMode ? '#2A2F38' : '#f4f6f8', // Hover state background
+    hoverBackground: isDarkMode ? '#3A2D5C' : '#f4f4ff',
 
     // 🧭 Header & Footer Styling
-    headerBackground: isDarkMode ? '#20252E' : '#f1f1f3', // App headers/navbars
-    footerBackground: isDarkMode ? '#12161C' : '#ffffff', // App footers
+    headerBackground: isDarkMode ? '#26203A' : '#f9f9ff',
+    footerBackground: isDarkMode ? '#1E1B2E' : '#ffffff',
 });

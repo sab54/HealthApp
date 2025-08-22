@@ -115,25 +115,6 @@ const HomeScreen = () => {
   // Content Blocks for FlatList
   const contentBlocks = [
     {
-      key: 'header',
-      render: () => (
-        <View style={styles.headerWrapper}>
-          <Text style={styles.headerText}>
-            <Text style={{ color: '#DB4437' }}>Res</Text>
-            <Text style={{ color: '#4285F4' }}>Q</Text>
-            <Text style={{ color: '#0F9D58' }}>Zone</Text>
-          </Text>
-          <Text style={styles.subtitle}>
-            <Text style={{ color: '#DB4437' }}>Respond</Text>
-            <Text style={{ color: theme.text }}>. </Text>
-            <Text style={{ color: '#4285F4' }}>Prepare</Text>
-            <Text style={{ color: theme.text }}>. </Text>
-            <Text style={{ color: '#0F9D58' }}>StaySafe</Text>
-          </Text>
-        </View>
-      ),
-    },
-    {
       key: 'dailyWellness',
       render: () => (
         <DailyWellnessCard
