@@ -18,12 +18,14 @@ import SymptomsModal from '../modals/SymptomsModal';
 import SymptomDetailModal from '../modals/SymptomDetailModal';
 import { get, post } from '../utils/api';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
+import { BASE_URL } from '../utils/config';
+
 
 const DailySymptomTrackerScreen = () => {
   const theme = useSelector(state => state.theme.themeColors);
   const insets = useSafeAreaInsets();
 
-   const styles = createStyles(theme, insets);
+  const styles = createStyles(theme, insets);
   const { user } = useSelector(state => state.auth);
   const userId = user?.id;
   const navigation = useNavigation();
@@ -39,13 +41,15 @@ const DailySymptomTrackerScreen = () => {
 
   const fetchTodaySymptoms = async () => {
     if (!userId) return;
+    const fullUrl = `${API_URL_HEALTHLOG}/today?userId=${userId}`;
+    console.log('Fetching symptoms from:', BASE_URL + fullUrl);
     setLoading(true);
     try {
       const cached = await AsyncStorage.getItem(`recoveredSymptoms-${userId}-${today}`);
       const recoveredCache = cached ? JSON.parse(cached) : {};
       setRecoveredSymptomsCache(recoveredCache);
 
-      const response = await get(`${API_URL_HEALTHLOG}/today?userId=${userId}`);
+      const response = await get(`${API_URL_HEALTHLOG}/today`, { userId });
       const fetchedSymptoms = (response.symptoms || []).map(s => ({
         ...s,
         recovered_at: recoveredCache[s.symptom] || s.recovered_at || null,

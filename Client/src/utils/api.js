@@ -9,6 +9,7 @@ export const get = async (url, params = {}, headers = {}) => {
             .join('&')
         : '';
 
+    console.log('GET:', `${BASE_URL}${url}`, params);
     const response = await fetch(`${BASE_URL}${url}${query}`, {
         method: 'GET',
         headers: {

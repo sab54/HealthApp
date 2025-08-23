@@ -36,11 +36,11 @@ import SettingsScreen from '../screens/SettingsScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 import DailyMoodReminder from '../components/DailyMoodReminder';
 import ChatScreen from '../screens/Chat/ChatScreen';
-
 import StepsTrackerScreen from '../screens/StepsTrackerScreen';
 
 import { loadThemeFromStorage } from '../store/actions/themeActions';
 import { updateUserLocation } from '../store/actions/loginActions';
+import { fetchTodayMood } from '../store/actions/healthlogActions';
 
 import { Asset } from 'expo-asset';
 import * as MediaLibrary from 'expo-media-library';
@@ -52,7 +52,7 @@ export function AuthStackNav() {
     <Stack.Navigator
       key="auth"
       screenOptions={{ headerShown: false }}
-      initialRouteName="Onboarding" // always start at Onboarding
+      initialRouteName="Onboarding"
     >
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
@@ -62,37 +62,23 @@ export function AuthStackNav() {
   );
 }
 
-export function AppStackNav() {
-  return (
-    <Stack.Navigator key="app" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="MainTabs" component={TabNavigator} />
-      <Stack.Screen name="Chat"component={ChatScreen}/>
-      <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
-      <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
-      <Stack.Screen name="Calendar" component={CalendarScreen} />
-      <Stack.Screen name="HealthLog" component={HealthlogScreen} />
-      {/* <Stack.Screen name="PulseReader" component={PulseReader} /> */}
-      <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
-      <Stack.Screen name="HealthTracking" component={HealthTrackingScreen} />
-      <Stack.Screen name="SymptomRecoveryPlan" component={SymptomRecoveryPlanScreen} />
-    </Stack.Navigator>
-  );
-}
-
 const AppNavigator = () => {
   const dispatch = useDispatch();
   const navigationRef = useNavigationContainerRef();
   const { user } = useSelector((state) => state.auth);
+  const { moodToday, todaySymptoms } = useSelector((state) => state.healthlog);
+
+
   const [initialRoute, setInitialRoute] = useState(null);
   const [isSplashReady, setSplashReady] = useState(false);
+  const [checkingMood, setCheckingMood] = useState(true);
 
   const [fontsLoaded] = useFonts({
     Poppins: Poppins_400Regular,
     PoppinsBold: Poppins_700Bold,
   });
 
+  // Splash/onboarding init
   useEffect(() => {
     const init = async () => {
       dispatch(loadThemeFromStorage());
@@ -116,7 +102,23 @@ const AppNavigator = () => {
     }
   }, [fontsLoaded, isSplashReady]);
 
-  // location effect stays the same
+  // ✅ Check if today's mood exists
+  useEffect(() => {
+    const checkMood = async () => {
+      if (user?.id) {
+        try {
+          await dispatch(fetchTodayMood(user.id)).unwrap();
+        } catch (err) {
+          console.log('No mood logged today');
+        }
+      }
+      setCheckingMood(false);
+    };
+    if (user) checkMood();
+    else setCheckingMood(false);
+  }, [user, dispatch]);
+
+  // location effect
   useEffect(() => {
     let locationSub = null;
     const startLocation = async () => {
@@ -146,7 +148,8 @@ const AppNavigator = () => {
     };
   }, [user]);
 
-  if (!initialRoute || !fontsLoaded || !isSplashReady) {
+  // loading states
+  if (!initialRoute || !fontsLoaded || !isSplashReady || checkingMood) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#999" />
@@ -159,7 +162,33 @@ const AppNavigator = () => {
       <SafeAreaProvider>
         <NavigationContainer ref={navigationRef}>
           {user && <DailyMoodReminder />}
-          {user ? <AppStackNav /> : <AuthStackNav />}
+          {!user ? (
+            <AuthStackNav />
+          ) : (
+            <Stack.Navigator
+              key="app"
+              screenOptions={{ headerShown: false }}
+              initialRouteName={
+                (!moodToday || !Array.isArray(todaySymptoms) || todaySymptoms.length === 0)
+                  ? "HealthLog"
+                  : "MainTabs"
+              }
+            >
+              <Stack.Screen name="HealthLog" component={HealthlogScreen} />
+              <Stack.Screen name="MainTabs" component={TabNavigator} />
+
+
+              <Stack.Screen name="Chat" component={ChatScreen} />
+              <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
+              <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
+              <Stack.Screen name="Settings" component={SettingsScreen} />
+              <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
+              <Stack.Screen name="Calendar" component={CalendarScreen} />
+              <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
+              <Stack.Screen name="HealthTracking" component={HealthTrackingScreen} />
+              <Stack.Screen name="SymptomRecoveryPlan" component={SymptomRecoveryPlanScreen} />
+            </Stack.Navigator>
+          )}
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -167,4 +196,3 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
-

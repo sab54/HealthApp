@@ -9,21 +9,15 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import { useSelector } from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
 import { get } from '../utils/api';
 
 const screenWidth = Dimensions.get('window').width;
-
-// ✅ LegendItem reusable component
-const LegendItem = ({ color, label }) => (
-  <View style={styles.legendItem}>
-    <View style={[styles.legendDot, { backgroundColor: color }]} />
-    <Text style={styles.legendText}>{label}</Text>
-  </View>
-);
 
 const HealthTrackingScreen = ({ route }) => {
   const { userId } = route.params || {};
@@ -31,7 +25,19 @@ const HealthTrackingScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [days, setDays] = useState(15); // default
+
   const theme = useSelector((state) => state.theme.themeColors); // ✅ get theme
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, insets);
+
+  // ✅ LegendItem reusable component
+const LegendItem = ({ color, label, theme }) => (
+  <View style={styles.legendItem}>
+    <View style={[styles.legendDot, { backgroundColor: color }]} />
+    <Text style={[styles.legendText, { color: theme.text }]}>{label}</Text>
+  </View>
+);
+
 
   useEffect(() => {
     if (!userId) {
@@ -72,7 +78,7 @@ const HealthTrackingScreen = ({ route }) => {
   if (error) {
     return (
       <View style={styles.center}>
-        <Text style={{ color: theme.danger || 'red' }}>{error}</Text>
+        <Text style={{ color: theme.error }}>{error}</Text>
       </View>
     );
   }
@@ -86,23 +92,16 @@ const HealthTrackingScreen = ({ route }) => {
   );
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+    <ScrollView style={styles.container}>
       {/* Header + Dropdown */}
       <View style={styles.headerRow}>
-        <Text style={[styles.pageTitle, { color: theme.primary }]}>
-          My Tracking
-        </Text>
-        <View
-          style={[
-            styles.dropdownContainer,
-            { backgroundColor: theme.secondaryLight },
-          ]}
-        >
+        <Text style={styles.pageTitle}>My Tracking</Text>
+        <View style={styles.dropdownContainer}>
           <TouchableOpacity onPress={() => setDays(3)}>
             <Text
               style={[
                 styles.dropdownItem,
-                { color: days === 3 ? theme.primary : theme.textSecondary },
+                { color: days === 3 ? theme.text : theme.mutedText },
               ]}
             >
               3 Days
@@ -112,7 +111,7 @@ const HealthTrackingScreen = ({ route }) => {
             <Text
               style={[
                 styles.dropdownItem,
-                { color: days === 15 ? theme.primary : theme.textSecondary },
+                { color: days === 15 ? theme.text : theme.mutedText },
               ]}
             >
               15 Days
@@ -122,10 +121,8 @@ const HealthTrackingScreen = ({ route }) => {
       </View>
 
       {/* Mood Card */}
-      <View style={[styles.card, { backgroundColor: theme.card }]}>
-        <Text style={[styles.cardTitle, { color: theme.primary }]}>
-          Mood Trend
-        </Text>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Mood Trend</Text>
         <BarChart
           data={{
             labels,
@@ -143,9 +140,7 @@ const HealthTrackingScreen = ({ route }) => {
           chartConfig={{
             ...chartConfig,
             color: (opacity = 1, index) =>
-              moodData[index] === 1
-                ? theme.success
-                : theme.error,
+              moodData[index] === 1 ? theme.success : theme.error,
             labelColor: () => theme.text,
           }}
           style={styles.chart}
@@ -155,16 +150,14 @@ const HealthTrackingScreen = ({ route }) => {
           showValuesOnTopOfBars
         />
         <View style={styles.legendRow}>
-          <LegendItem color={theme.success} label="Feeling Great" />
-          <LegendItem color={theme.error} label="Not Good" />
+          <LegendItem color={theme.success} label="Feeling Great" theme={theme} />
+          <LegendItem color={theme.error} label="Not Good" theme={theme} />
         </View>
       </View>
 
       {/* Energy Card */}
-      <View style={[styles.card, { backgroundColor: theme.card }]}>
-        <Text style={[styles.cardTitle, { color: theme.primary }]}>
-          Energy Trend (1-10)
-        </Text>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Energy Trend (1-10)</Text>
         <LineChart
           data={{ labels, datasets: [{ data: energyData }] }}
           width={screenWidth - 40}
@@ -180,10 +173,8 @@ const HealthTrackingScreen = ({ route }) => {
       </View>
 
       {/* Sleep Card */}
-      <View style={[styles.card, { backgroundColor: theme.card }]}>
-        <Text style={[styles.cardTitle, { color: theme.primary }]}>
-          Sleep Trend (hrs)
-        </Text>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Sleep Trend (hrs)</Text>
         <LineChart
           data={{ labels, datasets: [{ data: sleepData }] }}
           width={screenWidth - 40}
@@ -213,8 +204,8 @@ const HealthTrackingScreen = ({ route }) => {
           )}
         />
         <View style={styles.legendRow}>
-          <LegendItem color={theme.success} label="7–8 hrs (Healthy)" />
-          <LegendItem color={theme.error} label="Unhealthy" />
+          <LegendItem color={theme.success} label="7–8 hrs (Healthy)" theme={theme} />
+          <LegendItem color={theme.error} label="Unhealthy" theme={theme} />
         </View>
       </View>
     </ScrollView>
@@ -229,58 +220,80 @@ const chartConfig = {
   propsForDots: { r: '4', strokeWidth: '2' },
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  pageTitle: { fontSize: 22, fontWeight: '700' },
-
-  dropdownContainer: {
-    flexDirection: 'row',
-    borderRadius: 20,
-    padding: 5,
-  },
-  dropdownItem: { marginHorizontal: 10, fontSize: 14 },
-
-  card: {
-    borderRadius: 20,
-    padding: 15,
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  cardTitle: { fontSize: 18, fontWeight: '600', marginBottom: 10 },
-
-  chart: { borderRadius: 16 },
-
-  // ✅ Legend styling
-  legendRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  legendDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 6,
-  },
-  legendText: {
-    fontSize: 13,
-  },
-});
+// ✅ Theming like HomeScreen
+const createStyles = (theme, insets) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 10,
+      paddingBottom: Platform.OS === 'ios' ? 20 : 10 + insets.bottom,
+      backgroundColor: theme.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.background,
+    },
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    pageTitle: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: theme.title,
+    },
+    dropdownContainer: {
+      flexDirection: 'row',
+      borderRadius: 20,
+      padding: 5,
+      backgroundColor: theme.surface,
+    },
+    dropdownItem: {
+      marginHorizontal: 10,
+      fontSize: 14,
+    },
+    card: {
+      borderRadius: 20,
+      padding: 15,
+      marginVertical: 10,
+      backgroundColor: theme.card,
+      shadowColor: theme.shadow,
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 3,
+    },
+    cardTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      marginBottom: 10,
+      color: theme.title
+    },
+    chart: {
+      borderRadius: 16,
+    },
+    legendRow: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 8,
+    },
+    legendItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginHorizontal: 10,
+    },
+    legendDot: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      marginRight: 6,
+    },
+    legendText: {
+      fontSize: 13,
+    },
+  });
 
 export default HealthTrackingScreen;

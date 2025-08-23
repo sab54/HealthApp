@@ -29,13 +29,28 @@ const HealthLogScreen = ({ navigation, route }) => {
 
   const [todaySymptoms, setTodaySymptoms] = useState([]);
   const [recoveredSymptomsCache, setRecoveredSymptomsCache] = useState({});
+  const [addedSymptoms, setAddedSymptoms] = useState([]);
 
-  const today = format(new Date(), 'EEE, dd MMM yyyy'); // e.g., Tue, 20 Aug 2025
+  const today = format(new Date(), 'EEE, dd MMM yyyy');
 
-  // Fetch today's symptoms including recovered info
+  useEffect(() => {
+  const fetchTodayLogs = async () => {
+    try {
+      console.log('Fetching:', `${API_URL_HEALTHLOG}/today?userId=${userId}`);
+      const result = await get('/api/healthlog/today', { userId });
+      console.log('Fetched today logs:', result);
+    } catch (error) {
+      console.error('Error fetching today logs:', error);
+    }
+  };
+
+  if (userId) fetchTodayLogs();
+}, [userId]);
+
+
+  // Fetch today's symptoms
   const fetchTodaySymptoms = async () => {
     if (!userId) return;
-
     try {
       const cached = await AsyncStorage.getItem(`recoveredSymptoms-${userId}`);
       const recoveredCache = cached ? JSON.parse(cached) : {};
@@ -52,25 +67,31 @@ const HealthLogScreen = ({ navigation, route }) => {
     }
   };
 
-  // Fetch today's mood
+  // Fetch mood + decide whether to skip HealthLog
   useEffect(() => {
-    const fetchMood = async () => {
-      if (userId) {
-        try {
-          const response = await dispatch(fetchTodayMood(userId)).unwrap();
-          if (response && response.mood) {
-            navigation.replace('MainTabs');
-          } else {
-            setFetchCompleted(true);
-          }
-        } catch (err) {
-          console.error('Failed to fetch today mood:', err);
+    const fetchMoodAndSymptoms = async () => {
+      if (!userId) return;
+      try {
+        const moodResponse = await dispatch(fetchTodayMood(userId)).unwrap();
+        const symptomResponse = await get(`${API_URL_HEALTHLOG}/today?userId=${userId}`);
+
+        const hasMood = moodResponse?.mood;
+        const hasSymptomWithDetail = (symptomResponse?.symptoms || []).some(
+          s => !s.recovered_at && s.details
+        );
+
+        if (hasMood && hasSymptomWithDetail) {
+          navigation.replace('MainTabs'); // ✅ already logged → skip
+        } else {
           setFetchCompleted(true);
         }
+      } catch (err) {
+        console.error('Failed to fetch today data:', err);
+        setFetchCompleted(true);
       }
     };
-    fetchMood();
-    fetchTodaySymptoms();
+
+    fetchMoodAndSymptoms();
   }, [dispatch, userId, navigation]);
 
   useFocusEffect(
@@ -112,28 +133,39 @@ const HealthLogScreen = ({ navigation, route }) => {
 
   const handleSymptomsClose = (symptomObject) => {
     setShowSymptoms(false);
+
     if (symptomObject) {
       setSelectedSymptom(symptomObject);
       setShowSymptomDetails(true);
     } else {
+      setAddedSymptoms([]);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'MainTabs', params: { screen: 'DailyLog' } }],
+          routes: [{ name: 'MainTabs' }],
         })
       );
+      setTimeout(() => {
+        navigation.navigate("MainTabs", { screen: "DailyLog" });
+      }, 0);
     }
   };
 
   const handleSymptomDetailsClose = () => {
     setShowSymptomDetails(false);
-    fetchTodaySymptoms(); // Refresh symptoms after detail modal closes
+    setAddedSymptoms([]);
+    fetchTodaySymptoms();
+
+    // ✅ reset and go to DailyLog
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: 'MainTabs', params: { screen: 'DailyLog' } }],
+        routes: [{ name: 'MainTabs' }],
       })
     );
+    setTimeout(() => {
+      navigation.navigate('MainTabs', { screen: 'DailyLog' });
+    }, 0);
   };
 
   if (loading && !fetchCompleted) {
@@ -179,7 +211,6 @@ const HealthLogScreen = ({ navigation, route }) => {
         <Text style={styles.skipText}>Skip</Text>
       </TouchableOpacity>
 
-      {/* Mood Details Modal */}
       {selectedMood && (
         <MoodDetailsModal
           visible={showMoodModal}
@@ -188,12 +219,13 @@ const HealthLogScreen = ({ navigation, route }) => {
         />
       )}
 
-      {/* Symptoms Modal */}
       {showSymptoms && (
         <SymptomsModal
           visible={showSymptoms}
           onClose={handleSymptomsClose}
           currentSymptoms={todaySymptoms.filter(s => !s.recovered_at).map(s => s.symptom)}
+          addedSymptoms={addedSymptoms}
+          setAddedSymptoms={setAddedSymptoms}
         />
       )}
 

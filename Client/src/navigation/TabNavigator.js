@@ -1,5 +1,5 @@
 // src/navigation/TabNavigator.js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     View, TouchableOpacity, Modal, Animated, Pressable,
     Platform, StyleSheet, Dimensions, Text, Easing, Alert,
@@ -51,6 +51,9 @@ const TabNavigator = () => {
     const [addingSymptom, setAddingSymptom] = useState(false);
     const [addedSymptoms, setAddedSymptoms] = useState([]);
 
+    const hasShownModalRef = useRef(false);
+
+
     const styles = createStyles(themeColors);
 
     // Sidebar open/close animations
@@ -74,6 +77,8 @@ const TabNavigator = () => {
         if (symptomObj) {
             console.log('Symptom selected:', symptomObj);
             handleSymptomSelect(symptomObj);
+        } else {
+            setAddedSymptoms([]); // clear if user pressed Done without selecting
         }
     };
     // Handle selecting a symptom from modal
@@ -97,17 +102,29 @@ const TabNavigator = () => {
         });
     };
 
-    const handleSymptomDetailClose = () => setShowSymptomDetailModal(false);
+    const handleSymptomDetailClose = () => {
+        setShowSymptomDetailModal(false);
+        setAddedSymptoms([]);
+    };
 
     // Clear addedSymptoms and refresh symptoms on tab focus
-    useFocusEffect(
-        React.useCallback(() => {
-            setAddedSymptoms([]);
-            if (user?.id) {
-                dispatch(fetchTodaySymptoms(user.id));
-            }
-        }, [user?.id, dispatch])
-    );
+    // track if auto-popup has already shown
+
+
+
+useFocusEffect(
+    React.useCallback(() => {
+        setAddedSymptoms([]);
+        if (user?.id) {
+            dispatch(fetchTodaySymptoms(user.id));
+        }
+        // 🚫 Don't auto-open Symptoms Modal here.
+        // Only allow adding symptoms via bottom tab button.
+    }, [user?.id, dispatch])
+);
+
+
+
 
     const CustomTabBarButton = ({ children, accessibilityState }) => {
         const focused = accessibilityState?.selected;
@@ -182,9 +199,8 @@ const TabNavigator = () => {
                 <Tab.Screen
                     name='Trends'
                     component={HealthTrackingScreen}
-                    initialParams={{ userId: user?.id }} // pass the user ID here
+                    initialParams={{ userId: user?.id }}
                 />
-
                 <Tab.Screen name='DailyLog' component={DailySymptomTrackingScreen} />
             </Tab.Navigator>
 

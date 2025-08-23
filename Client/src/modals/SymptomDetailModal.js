@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSelector } from 'react-redux';
 import { post } from '../utils/api';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
+import { useNavigation } from '@react-navigation/native';
 
 const SymptomDetailModal = ({ visible, symptom, onClose }) => {
   const [severity, setSeverity] = useState('');
@@ -14,6 +15,9 @@ const SymptomDetailModal = ({ visible, symptom, onClose }) => {
   const [notes, setNotes] = useState('');
   const { user } = useSelector(state => state.auth);
   const userId = user?.id;
+
+  const navigation = useNavigation();
+
 
   // Convert number 1-10 into severity label
   const getSeverityLabel = (val) => {
@@ -55,6 +59,7 @@ const SymptomDetailModal = ({ visible, symptom, onClose }) => {
       });
 
       onClose();
+      navigation.navigate("MainTabs", { screen: "DailyLog" });
     } catch (err) {
       console.error('Failed to save symptom or generate plan:', err);
       Alert.alert('Error', 'Failed to save symptom. Please try again.');

@@ -61,27 +61,13 @@ const OTPVerificationScreen = () => {
   // Handle redirection after verification
   useEffect(() => {
     if (isVerified && user?.id) {
-      const checkDailyMood = async () => {
-        try {
-          console.log('Checking daily mood for userId:', user.id);
-          const res = await fetch(`${BASE_URL}${API_URL_HEALTHLOG}/today?userId=${user.id}`);
-          const data = await res.json();
-          console.log('Daily mood API returned:', data);
-
-          const nextRoute = data.mood ? 'MainTabs' : 'HealthLog';
-
-          navigation.reset({
-            index: 0,
-            routes: [{ name: nextRoute }],
-          });
-        } catch (err) {
-          console.error('Error checking daily mood:', err);
-          navigation.reset({ index: 0, routes: [{ name: 'HealthLog' }] });
-        }
-      };
-      checkDailyMood();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' }],
+      });
     }
   }, [isVerified, user, navigation]);
+
 
 
   // Handle OTP input changes
