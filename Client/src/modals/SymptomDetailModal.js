@@ -1,11 +1,11 @@
-// Client/src/modals/SymptomDetailModal.js
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';  // <-- added useDispatch
 import { post } from '../utils/api';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
 import { useNavigation } from '@react-navigation/native';
+import { addSymptom } from '../store/reducers/healthlogReducers';  // <-- import action
 
 const SymptomDetailModal = ({ visible, symptom, onClose }) => {
   const [severity, setSeverity] = useState('');
@@ -17,9 +17,9 @@ const SymptomDetailModal = ({ visible, symptom, onClose }) => {
   const userId = user?.id;
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();  // <-- initialize dispatch
 
 
-  // Convert number 1-10 into severity label
   const getSeverityLabel = (val) => {
     const num = parseInt(val);
     if (num >= 1 && num <= 3) return 'Mild';
@@ -50,13 +50,15 @@ const SymptomDetailModal = ({ visible, symptom, onClose }) => {
         symptoms: [symptomEntry],
       });
 
-
       // Generate daily plan (recurring until recovery)
       await post(`${API_URL_HEALTHLOG}/generatePlan`, {
         user_id: userId,
         symptom: symptomEntry.symptom,
-        recurring: true, // ✅ new flag for recurring
+        recurring: true,
       });
+
+      // **Immediately update Redux store so UI updates instantly**
+      dispatch(addSymptom(symptomEntry));
 
       onClose();
       navigation.navigate("MainTabs", { screen: "DailyLog" });
@@ -65,7 +67,6 @@ const SymptomDetailModal = ({ visible, symptom, onClose }) => {
       Alert.alert('Error', 'Failed to save symptom. Please try again.');
     }
   };
-
 
   const onTimeChange = (event, selectedDate) => {
     setShowPicker(false);

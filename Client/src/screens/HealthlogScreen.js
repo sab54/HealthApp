@@ -81,7 +81,7 @@ const HealthLogScreen = ({ navigation, route }) => {
         );
 
         if (hasMood && hasSymptomWithDetail) {
-          navigation.replace('MainTabs'); // ✅ already logged → skip
+          navigation.replace('MainTabs');
         } else {
           setFetchCompleted(true);
         }

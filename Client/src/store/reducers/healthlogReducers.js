@@ -7,8 +7,15 @@ const initialState = {
   sleepToday: null,
   energyToday: null,
   todaySymptoms: [],
-  loading: false,
-  error: null,
+
+  // Separate loading flags
+  loadingFetchTodayMood: false,
+  loadingSubmitMood: false,
+  loadingMarkRecovered: false,
+
+  errorFetchTodayMood: null,
+  errorSubmitMood: null,
+  errorMarkRecovered: null,
 };
 
 const healthlogSlice = createSlice({
@@ -16,24 +23,39 @@ const healthlogSlice = createSlice({
   initialState,
   reducers: {
     clearError: (state) => {
-      state.error = null;
+      state.errorFetchTodayMood = null;
+      state.errorSubmitMood = null;
+      state.errorMarkRecovered = null;
     },
     resetMood: (state) => {
       state.moodToday = null;
+      state.sleepToday = null;
+      state.energyToday = null;
       state.todaySymptoms = [];
-      state.error = null;
-      state.loading = false;
+      state.errorFetchTodayMood = null;
+      state.errorSubmitMood = null;
+      state.errorMarkRecovered = null;
+      state.loadingFetchTodayMood = false;
+      state.loadingSubmitMood = false;
+      state.loadingMarkRecovered = false;
+    },
+    addSymptom: (state, action) => {
+      const exists = state.todaySymptoms.find(s => s.symptom === action.payload.symptom);
+      if (!exists) {
+        state.todaySymptoms.unshift(action.payload);
+      }
     },
   },
   extraReducers: (builder) => {
     builder
       // fetchTodayMood
       .addCase(fetchTodayMood.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loadingFetchTodayMood = true;
+        state.errorFetchTodayMood = null;
       })
       .addCase(fetchTodayMood.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingFetchTodayMood = false;
+        state.errorFetchTodayMood = null;
         state.moodToday = action.payload.mood;
         state.sleepToday = action.payload.sleep;
         state.energyToday = action.payload.energy;
@@ -43,17 +65,18 @@ const healthlogSlice = createSlice({
         }));
       })
       .addCase(fetchTodayMood.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.loadingFetchTodayMood = false;
+        state.errorFetchTodayMood = action.payload || 'Failed to fetch today\'s mood';
       })
 
       // submitMood
       .addCase(submitMood.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loadingSubmitMood = true;
+        state.errorSubmitMood = null;
       })
       .addCase(submitMood.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingSubmitMood = false;
+        state.errorSubmitMood = null;
         state.moodToday = action.payload.mood;
         state.sleepToday = action.payload.sleep;
         state.energyToday = action.payload.energy;
@@ -63,28 +86,29 @@ const healthlogSlice = createSlice({
         }));
       })
       .addCase(submitMood.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.loadingSubmitMood = false;
+        state.errorSubmitMood = action.payload || 'Failed to submit mood';
       })
 
       // markSymptomRecovered
       .addCase(markSymptomRecovered.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loadingMarkRecovered = true;
+        state.errorMarkRecovered = null;
       })
       .addCase(markSymptomRecovered.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingMarkRecovered = false;
+        state.errorMarkRecovered = null;
         const { symptom, recovered_at } = action.payload;
         state.todaySymptoms = state.todaySymptoms.map(s =>
           s.symptom === symptom ? { ...s, recovered_at } : s
         );
       })
       .addCase(markSymptomRecovered.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.loadingMarkRecovered = false;
+        state.errorMarkRecovered = action.payload || 'Failed to mark symptom recovered';
       });
   },
 });
 
-export const { clearError, resetMood } = healthlogSlice.actions;
+export const { clearError, resetMood, addSymptom } = healthlogSlice.actions;
 export default healthlogSlice.reducer;

@@ -1,4 +1,4 @@
-//Client/src/screens/Chat/ChatRoomScreen.js
+// Client/src/screens/Chat/ChatRoomScreen.js
 import React, {
     useEffect,
     useRef,
@@ -39,6 +39,7 @@ import ThreadModal from '../../modals/ThreadModal';
 import GroupInfoModal from '../../modals/GroupInfoModal';
 import ActionModal from '../../modals/ActionModal';
 import QuizPromptModal from '../../modals/QuizPromptModal';
+import AppointmentPromptModal from '../../modals/AppointmentPromptModal';
 
 import { generateQuizAI } from '../../store/actions/quizActions';
 import {
@@ -86,7 +87,9 @@ const ChatRoomScreen = () => {
     const [isTyping, setIsTyping] = useState(false);
     const [actionModalVisible, setActionModalVisible] = useState(false);
     const [quizPromptVisible, setQuizPromptVisible] = useState(false);
+    const [appointmentPromptVisible, setAppointmentPromptVisible] = useState(false);
     const [pendingQuizModal, setPendingQuizModal] = useState(false);
+    const [pendingAppointmentModal, setPendingAppointmentModal] = useState(false);
     const [location, setLocation] = useState(null);
 
     const chat = useSelector((state) =>
@@ -108,15 +111,14 @@ const ChatRoomScreen = () => {
         [themeColors, insets]
     );
 
-    const { subtitle, avatarUri, initials } = useMemo(() => {
+    const { subtitle, avatarUri, initials, phone } = useMemo(() => {
         if (!chat) return {};
 
         if (chat.is_group) {
             const members = chat.members || [];
             return {
-                subtitle: `${members.length} member${
-                    members.length !== 1 ? 's' : ''
-                }`,
+                subtitle: `${members.length} member${members.length !== 1 ? 's' : ''
+                    }`,
             };
         } else {
             const otherUser = chat.members?.find((u) => u.id !== senderId);
@@ -265,7 +267,12 @@ const ChatRoomScreen = () => {
         if (!senderId || !chatId) return;
 
         if (messageType === 'quiz') {
-            setPendingQuizModal(true); // defer modal
+            setPendingQuizModal(true);
+            return;
+        }
+
+        if (messageType === 'appointment') {
+            setPendingAppointmentModal(true);
             return;
         }
 
@@ -311,6 +318,26 @@ const ChatRoomScreen = () => {
             Alert.alert('Error', 'Failed to generate quiz.');
         }
     };
+
+    const handleCreateAppointment = async (form) => {
+        setAppointmentPromptVisible(false);
+        if (!chatId || !senderId || !form.patientName) return;
+
+        try {
+            const appointmentMessage = {
+                chatId,
+                senderId,
+                message: `📅 Appointment with "${form.patientName}" scheduled for ${form.appointmentDate} at ${form.appointmentTime}`,
+                message_type: 'appointment',
+                metadata: { ...form },
+            };
+
+            dispatch(sendMessage(appointmentMessage));
+        } catch (err) {
+            Alert.alert('Error', 'Failed to create appointment.');
+        }
+    };
+
 
     const handleScroll = (event) => {
         const atBottom = event.nativeEvent.contentOffset.y <= 10;
@@ -486,9 +513,7 @@ const ChatRoomScreen = () => {
                                     styles.sendButton,
                                     { opacity: inputMessage.trim() ? 1 : 0.5 },
                                 ]}
-                                onPress={
-                                    inputMessage.trim() ? handleSend : null
-                                }
+                                onPress={inputMessage.trim() ? handleSend : null}
                                 onLongPress={() => setActionModalVisible(true)}
                             >
                                 <Feather name='send' size={20} color='#fff' />
@@ -519,27 +544,22 @@ const ChatRoomScreen = () => {
                                     setPendingQuizModal(false);
                                     setQuizPromptVisible(true);
                                 }
+                                if (pendingAppointmentModal) {
+                                    setPendingAppointmentModal(false);
+                                    setAppointmentPromptVisible(true);
+                                }
                             }}
                             onSelect={handlePreparedMessage}
                             theme={themeColors}
                             options={[
-                                // {
-                                //     emoji: '🗓️',
-                                //     label: 'Event',
-                                //     action: {
-                                //         messageText: '🗓️ Event issued.',
-                                //         messageType: 'event',
-                                //     },
-                                // },
-                                // {
-                                //     emoji: '🧠',
-                                //     label: 'Create a Quiz',
-                                //     action: {
-                                //         messageText:
-                                //             '🧠 I would like to create a quiz.',
-                                //         messageType: 'quiz',
-                                //     },
-                                // },
+                                {
+                                    emoji: '📅',
+                                    label: 'Appointment',
+                                    action: {
+                                        messageText: '📅 Schedule an appointment.',
+                                        messageType: 'appointment',
+                                    },
+                                },
                                 {
                                     emoji: '📍',
                                     label: 'Location',
@@ -548,15 +568,6 @@ const ChatRoomScreen = () => {
                                         messageType: 'location',
                                     },
                                 },
-                                // {
-                                //     emoji: '📊',
-                                //     label: 'Poll',
-                                //     action: {
-                                //         messageText:
-                                //             '📊 Please participate in this poll.',
-                                //         messageType: 'poll',
-                                //     },
-                                // },
                             ]}
                         />
                         <QuizPromptModal
@@ -565,6 +576,15 @@ const ChatRoomScreen = () => {
                             onCreate={handleCreateQuiz}
                             theme={themeColors}
                         />
+
+                        <AppointmentPromptModal
+                            visible={appointmentPromptVisible}
+                            onClose={() => setAppointmentPromptVisible(false)}
+                            onSubmit={handleCreateAppointment}
+                            theme={themeColors}
+                            patientName={chat?.is_group ? '' : chat.members?.find(u => u.id !== senderId)?.name}
+                        />
+
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>

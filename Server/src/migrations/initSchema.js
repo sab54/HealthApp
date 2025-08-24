@@ -167,7 +167,7 @@ function initSchema() {
     sender_id INTEGER DEFAULT NULL,
     message TEXT NOT NULL,
     message_type TEXT CHECK(message_type IN (
-      'text', 'image', 'file', 'location', 'poll', 'quiz', 'task', 'info', 'event'
+      'text', 'image', 'file', 'location', 'appointment'
     )) DEFAULT 'text',
     created_at TEXT DEFAULT (datetime('now')),
     edited_at TEXT DEFAULT NULL,
@@ -216,6 +216,25 @@ function initSchema() {
     FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE
   )
 `);
+
+    db.run(`
+  CREATE TABLE IF NOT EXISTS appointment (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    doctor_id INTEGER,
+    date TEXT NOT NULL,
+    time TEXT NOT NULL,
+    reason TEXT,
+    mode TEXT DEFAULT 'Phone Call',
+    status TEXT DEFAULT 'scheduled',
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(doctor_id) REFERENCES users(id)
+  )
+`);
+
+
 
     db.run(`
   CREATE TABLE IF NOT EXISTS user_daily_mood (

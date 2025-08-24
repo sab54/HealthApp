@@ -214,11 +214,25 @@ const DailySymptomTrackerScreen = () => {
       )}
 
       {showDetailModal && selectedSymptom && (
+        // ... inside DailySymptomTrackerScreen.js component
+
         <SymptomDetailModal
           visible={showDetailModal}
           symptom={selectedSymptom}
           onClose={() => setShowDetailModal(false)}
+          onSaveSymptom={(newSymptom) => {
+            setSymptoms(prev => [
+              ...prev,
+              newSymptom,
+            ].sort((a, b) => {
+              // Sort by recovered status first, then date ascending
+              if (!a.recovered_at && b.recovered_at) return -1;
+              if (a.recovered_at && !b.recovered_at) return 1;
+              return new Date(a.date) - new Date(b.date);
+            }));
+          }}
         />
+
       )}
 
       <TouchableOpacity

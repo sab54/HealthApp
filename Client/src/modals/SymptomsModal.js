@@ -1,5 +1,4 @@
-// client/src/modals/SymptomsModal.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -12,29 +11,33 @@ import {
 } from 'react-native';
 import symptomsData from '../data/symptomHealth';
 
-const SymptomsModal = ({
-  visible,
-  onClose,
-  currentSymptoms = [],
-  addedSymptoms = [],   // from parent
-  setAddedSymptoms = () => {} // from parent
-}) => {
-  const [searchTerm, setSearchTerm] = useState('');
+import { useSelector, useDispatch } from 'react-redux';
+import { addSymptom } from '../store/reducers/healthlogReducers';
+
+const SymptomsModal = ({ visible, onClose }) => {
+  const dispatch = useDispatch();
+
+  // Fetch symptoms already added today from Redux
+  const todaySymptoms = useSelector(state => state.healthlog.todaySymptoms.map(s => s.symptom));
   const MAX_SYMPTOMS = 3;
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (visible) {
+      setSearchTerm('');  // reset search when modal opens
+    }
+  }, [visible]);
+
   const handleSymptomSelect = (symptomObj) => {
-    const totalSelected = currentSymptoms.length + addedSymptoms.length;
+    if (todaySymptoms.includes(symptomObj.symptom) || todaySymptoms.length >= MAX_SYMPTOMS) {
+      return;
+    }
 
-    if (
-      currentSymptoms.includes(symptomObj.symptom) ||
-      addedSymptoms.includes(symptomObj.symptom) ||
-      totalSelected >= MAX_SYMPTOMS
-    ) return;
+    // Update Redux directly
+    dispatch(addSymptom(symptomObj));
 
-    // Update local state instantly for UI feedback
-    setAddedSymptoms(prev => [...prev, symptomObj.symptom]);
-
-    // Pass selected symptom to parent to trigger detail page
+    // Close modal and pass selected symptom back (for detail screen navigation)
     onClose(symptomObj);
   };
 
@@ -49,9 +52,9 @@ const SymptomsModal = ({
         <Text style={styles.infoText}>
           Add your symptoms (max {MAX_SYMPTOMS} per day).
         </Text>
-        {currentSymptoms.length + addedSymptoms.length > 0 && (
+        {todaySymptoms.length > 0 && (
           <Text style={styles.selectedCountText}>
-            You have already selected {currentSymptoms.length + addedSymptoms.length} today.
+            You have already selected {todaySymptoms.length} today.
           </Text>
         )}
 
@@ -70,9 +73,7 @@ const SymptomsModal = ({
           columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
           renderItem={({ item }) => {
             const isDisabled =
-              currentSymptoms.includes(item.symptom) ||
-              addedSymptoms.includes(item.symptom) ||
-              currentSymptoms.length + addedSymptoms.length >= MAX_SYMPTOMS;
+              todaySymptoms.includes(item.symptom) || todaySymptoms.length >= MAX_SYMPTOMS;
 
             return (
               <TouchableOpacity
@@ -123,7 +124,6 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     backgroundColor: '#fff',
   },
-  sectionHeader: { fontSize: 18, fontWeight: '600', marginBottom: 10, color: '#1F2937' },
   symptomItem: {
     flex: 1,
     backgroundColor: '#fff',

@@ -112,16 +112,16 @@ const TabNavigator = () => {
 
 
 
-useFocusEffect(
-    React.useCallback(() => {
-        setAddedSymptoms([]);
-        if (user?.id) {
-            dispatch(fetchTodaySymptoms(user.id));
-        }
-        // 🚫 Don't auto-open Symptoms Modal here.
-        // Only allow adding symptoms via bottom tab button.
-    }, [user?.id, dispatch])
-);
+    useFocusEffect(
+        React.useCallback(() => {
+            setAddedSymptoms([]);
+            if (user?.id) {
+                dispatch(fetchTodaySymptoms(user.id));
+            }
+            // 🚫 Don't auto-open Symptoms Modal here.
+            // Only allow adding symptoms via bottom tab button.
+        }, [user?.id, dispatch])
+    );
 
 
 
@@ -174,13 +174,24 @@ useFocusEffect(
                     headerStyle: { backgroundColor: themeColors.headerBackground, shadowColor: 'transparent' },
                     tabBarStyle: { backgroundColor: themeColors.card, height: Platform.OS === 'ios' ? 80 : 100, paddingBottom: Platform.OS === 'ios' ? 20 : 10 + insets.bottom, paddingTop: 5 },
                     headerRight: () => (
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Chat')}
-                            style={{ marginRight: 15 }}
-                        >
-                            <Ionicons name="chatbubble-ellipses" size={26} color={themeColors.link} />
-                        </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', marginRight: 15 }}>
+                            {/* Chat Icon */}
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Chat')}
+                                style={{ marginRight: 15 }}
+                            >
+                                <Ionicons name="chatbubble-ellipses" size={26} color={themeColors.link} />
+                            </TouchableOpacity>
+
+                            {/* Notification Bell */}
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Notifications')}
+                            >
+                                <Ionicons name="notifications-outline" size={26} color={themeColors.link} />
+                            </TouchableOpacity>
+                        </View>
                     ),
+
 
                     headerLeft: () => (
                         <TouchableOpacity onPress={openModal} style={{ marginLeft: 15 }}>
@@ -228,8 +239,6 @@ useFocusEffect(
                     </Animated.View>
                 </Pressable>
             </Modal>
-
-
 
             <SymptomsModal
                 visible={showSymptomsModal}

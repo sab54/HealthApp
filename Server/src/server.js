@@ -7,7 +7,11 @@ const authRoute = require('./routes/auth');
 const licenseRoute = require('./routes/license');
 const chatRoute = require('./routes/chat');
 const healthlogRoute = require('./routes/healthlog');
+const appointmentRoute = require('./routes/appointment');
 const path = require('path');
+
+
+
 
 // NEW: Add these for socket support
 const http = require('http');
@@ -55,6 +59,7 @@ app.use('/api/auth', authRoute(db));
 app.use('/api/license', licenseRoute(db));
 app.use('/api/chat', chatRoute(db,io));
 app.use('/api/healthlog', healthlogRoute(db));
+app.use('/api/appointment', appointmentRoute(db));
 
 // Root route
 app.get('/', (req, res) => {

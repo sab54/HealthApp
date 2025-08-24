@@ -205,4 +205,28 @@ const symptomHealth = [
   }
 ];
 
+
+// {
+//   symptom: "Headache",
+//   severity: {
+//     mild: {
+//       description: "Mild headache is a dull, tolerable pain often linked to dehydration, stress, or posture strain.",
+//       possible_causes: ["Dehydration", "Stress", "Poor posture", "Eye strain"],
+//       precautions: ["Stay hydrated", "Avoid bright screens", "Maintain good posture"],
+//       what_to_eat: ["Magnesium-rich foods (nuts, seeds, spinach)", "Light snacks to avoid low blood sugar"],
+//       medicines: ["OTC paracetamol (e.g., Crocin, Tylenol)"],
+//       what_not_to_take: ["Excess caffeine", "Alcohol"],
+//       exercises: ["Neck stretches (3 sets × 10 reps)", "Deep breathing (5 minutes)", "Short walk (10 minutes)"],
+//       treatment: "Rest in a quiet space, apply a cold or warm compress, and take OTC paracetamol if needed.",
+//       timings: {
+//         precautions: ["08:00 AM", "12:00 PM", "04:00 PM", "08:00 PM"],
+//         what_to_eat: ["09:00 AM (snack)", "01:00 PM (meal)", "07:00 PM (light dinner)"],
+//         medicines: ["10:00 AM (if needed)", "09:00 PM (if needed)"],
+//         exercises: ["10:30 AM (neck stretches)", "03:00 PM (deep breathing)", "06:30 PM (short walk)"],
+//         treatment: ["At onset of headache", "09:30 PM (before bed)"]
+//       }
+//     }
+//   }
+// };
 export default symptomHealth;
+
