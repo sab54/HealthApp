@@ -217,21 +217,31 @@ const DailySymptomTrackerScreen = () => {
         // ... inside DailySymptomTrackerScreen.js component
 
         <SymptomDetailModal
-          visible={showDetailModal}
-          symptom={selectedSymptom}
-          onClose={() => setShowDetailModal(false)}
-          onSaveSymptom={(newSymptom) => {
-            setSymptoms(prev => [
-              ...prev,
-              newSymptom,
-            ].sort((a, b) => {
-              // Sort by recovered status first, then date ascending
-              if (!a.recovered_at && b.recovered_at) return -1;
-              if (a.recovered_at && !b.recovered_at) return 1;
-              return new Date(a.date) - new Date(b.date);
-            }));
-          }}
-        />
+  visible={showDetailModal}
+  symptom={selectedSymptom}
+  onClose={(updatedSymptom) => {
+    setShowDetailModal(false);
+
+    if (!updatedSymptom) return;
+
+    setSymptoms(prev =>
+      prev.map(s => {
+        if (
+          s.symptom === updatedSymptom.symptom &&
+          !s.recovered_at &&
+          s.date === updatedSymptom.date
+        ) {
+          return { ...s, ...updatedSymptom, severity: updatedSymptom.severity_level };
+        }
+        return s;
+      }).sort((a, b) => {
+        if (!a.recovered_at && b.recovered_at) return -1;
+        if (a.recovered_at && !b.recovered_at) return 1;
+        return new Date(a.date) - new Date(b.date);
+      })
+    );
+  }}
+/>
 
       )}
 

@@ -60,15 +60,13 @@ const SymptomRecoveryPlanScreen = () => {
       try {
          const response = await get(
             `${API_URL_HEALTHLOG}/plan?userId=${userId}` +
-            `&symptom=${encodeURIComponent(symptomParam?.symptom || '')}` +
-            `&severity=${encodeURIComponent(symptomParam?.severity_level || '')}`
+            `&symptom=${encodeURIComponent(symptomParam?.symptom || '')}`
          );
 
 
          console.log('Client Request Params:', {
             userId,
             symptom: symptomParam?.symptom,
-            severity: symptomParam?.severity_level
          });
 
          console.log('API Response:', response);
@@ -118,6 +116,7 @@ const SymptomRecoveryPlanScreen = () => {
                categories.precautions.push({ ...task, task: taskName });
                break;
             case 'medicine':
+            case 'medicines':
                categories.medicine.push({ ...task, task: taskName });
                break;
             case 'diet':
@@ -125,6 +124,7 @@ const SymptomRecoveryPlanScreen = () => {
                categories.eat.push({ ...task, task: taskName });
                break;
             case 'exercises':
+            case 'exercise':
                categories.exercises.push({ ...task, task: taskName });
                break;
             case 'avoid':

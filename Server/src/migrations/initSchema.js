@@ -250,16 +250,6 @@ function initSchema() {
       )
     `);
 
-    db.run(`
-      INSERT OR IGNORE INTO user_daily_mood (user_id, date, mood, sleep, energy)
-      VALUES (1, '2025-08-18', 'Feeling great!', 8, 9)
-    `);
-
-    db.run(`
-      INSERT OR IGNORE INTO user_daily_mood (user_id, date, mood, sleep, energy)
-      VALUES (1, '2025-08-19', 'Not feeling good!', 4.5, 3)
-    `);
-
     // user_symptoms table
     db.run(`
       CREATE TABLE IF NOT EXISTS user_symptoms (
@@ -280,19 +270,6 @@ function initSchema() {
 
     `);
 
-    // Mark Sore Throat as recovered
-    db.run(`
-      INSERT OR IGNORE INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time, recovered_at)
-      VALUES
-        (1, 'Sore Throat', 'moderate', '11:00', '5h', 'Pain when swallowing', '2025-08-19', '11:00', '2025-08-19 17:00:00');
-    `);
-
-    db.run(`
-      INSERT OR IGNORE INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time)
-      VALUES
-      (1, 'Headache', 'moderate', '08:00', '2h', 'Throbbing pain', '2025-08-19', '08:00')
-    `);
-
     //  Recovery Tasks
     db.run(`
       CREATE TABLE IF NOT EXISTS user_daily_plan (
@@ -310,25 +287,6 @@ function initSchema() {
       )
     `);
 
-    db.run(`
-      INSERT OR IGNORE INTO user_daily_plan (user_id, symptom, category, task, date)
-      VALUES
-      (1, 'Sore Throat', 'Care', 'Gargle with warm salt water 2–3 times daily', '2025-08-19'),
-      (1, 'Sore Throat', 'Care', 'Sip warm herbal tea throughout the day', '2025-08-19'),
-      (1, 'Sore Throat', 'Care', 'Take throat lozenges as needed', '2025-08-19'),
-      (1, 'Sore Throat', 'Diet', 'Avoid spicy or acidic foods', '2025-08-19'),
-      (1, 'Sore Throat', 'Exercise', 'Rest your voice and avoid shouting', '2025-08-19');
-    `);
-
-    db.run(`
-      INSERT OR IGNORE INTO user_daily_plan (user_id, symptom, category, task, date)
-      VALUES
-      (1, 'Headache', 'Care', 'Drink water every 1–2 hours', '2025-08-19'),
-      (1, 'Headache', 'Care', 'Avoid bright screens for long periods', '2025-08-19'),
-      (1, 'Headache', 'Medicine', 'Take OTC paracetamol or ibuprofen if needed', '2025-08-19'),
-      (1, 'Headache', 'Care', 'Apply a cold or warm compress to forehead or neck', '2025-08-19'),
-      (1, 'Headache', 'Exercise', 'Perform neck stretches and deep breathing exercises', '2025-08-19');
-    `);
     console.log('Tables created or already exist.');
   });
 }

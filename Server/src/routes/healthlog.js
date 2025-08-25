@@ -59,132 +59,143 @@ module.exports = (db) => {
   });
 
   // Submit mood & symptoms
-  router.post('/submit', async (req, res) => {
-    console.log('Incoming payload:', req.body);
+router.post('/submit', async (req, res) => {
+  console.log('Incoming payload:', req.body);
 
-    const { user_id, mood, symptoms, sleep, energy } = req.body;
+  const { user_id, mood, symptoms, sleep, energy } = req.body;
 
-    if (!user_id || !mood) {
-      return res.status(400).json({ success: false, message: 'Missing fields' });
-    }
+  if (!user_id || !mood) {
+    return res.status(400).json({ success: false, message: 'Missing fields' });
+  }
 
-    if (!['Feeling great!', 'Not feeling good!'].includes(mood)) {
-      return res.status(400).json({ success: false, message: 'Invalid mood value' });
-    }
+  if (!['Feeling great!', 'Not feeling good!'].includes(mood)) {
+    return res.status(400).json({ success: false, message: 'Invalid mood value' });
+  }
 
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentTime = now.toISOString().split('T')[1];
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  const currentTime = now.toISOString().split('T')[1];
 
-    // Fetch existing row first
-    db.get(
-      `SELECT sleep, energy FROM user_daily_mood WHERE user_id = ? AND date = ?`,
-      [user_id, today],
-      async (err, existingRow) => {
-        if (err) {
-          console.error('DB error fetching existing mood:', err);
-          return res.status(500).json({ success: false, message: 'DB error' });
-        }
-
-        const finalSleep = sleep != null ? sleep : existingRow?.sleep ?? 8;
-        const finalEnergy = energy != null ? energy : existingRow?.energy ?? 5;
-
-        db.run(
-          `INSERT OR REPLACE INTO user_daily_mood (user_id, date, mood, sleep, energy)
-           VALUES (?, ?, ?, ?, ?)`,
-          [user_id, today, mood, finalSleep, finalEnergy],
-          async function (err2) {
-            if (err2) {
-              console.error('DB error saving mood:', err2);
-              return res.status(500).json({ success: false, message: 'DB error saving mood' });
-            }
-
-            if (!Array.isArray(symptoms) || symptoms.length === 0) {
-              return res.json({ success: true, message: 'Mood saved without symptoms' });
-            }
-
-            try {
-              // Loop through symptoms and insert only if not already present
-              const insertPromises = symptoms.map((s) => {
-                return new Promise((resolve, reject) => {
-                  db.get(
-                    `SELECT id FROM user_symptoms
-                     WHERE user_id = ? AND symptom = ? AND recovered_at IS NULL AND date = ?`,
-                    [user_id, s.symptom, today],
-                    (err, existingSymptom) => {
-                      if (err) {
-                        console.error('DB error checking existing symptom:', err);
-                        return reject(err);
-                      }
-
-                      if (!existingSymptom) {
-                        // Only insert if symptom is not present and unresolved
-                        let severityLabel = 'mild';
-                        const severityNum = parseInt(s.severity);
-                        if (!isNaN(severityNum)) {
-                          if (severityNum >= 1 && severityNum <= 3) severityLabel = 'mild';
-                          else if (severityNum >= 4 && severityNum <= 6) severityLabel = 'moderate';
-                          else if (severityNum >= 7 && severityNum <= 10) severityLabel = 'severe';
-                        } else if (typeof s.severity === 'string') {
-                          severityLabel = ['mild', 'moderate', 'severe'].includes(s.severity) ? s.severity : 'mild';
-                        }
-
-                        db.run(
-                          `INSERT INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                          [
-                            user_id,
-                            s.symptom || null,
-                            severityLabel,
-                            s.onsetTime || null,
-                            s.duration || null,
-                            s.notes || null,
-                            today,
-                            currentTime
-                          ],
-                          (err) => {
-                            if (err) reject(err);
-                            else resolve();
-                          }
-                        );
-                      } else {
-                        resolve(); // skip existing symptom
-                      }
-                    }
-                  );
-                });
-              });
-
-              await Promise.all(insertPromises);
-              return res.json({ success: true, message: 'Mood and symptoms saved' });
-            } catch (error) {
-              console.error('Error saving symptoms:', error);
-              return res.status(500).json({ success: false, message: 'DB error saving symptoms' });
-            }
-          }
-        );
+  // Fetch existing row first
+  db.get(
+    `SELECT sleep, energy FROM user_daily_mood WHERE user_id = ? AND date = ?`,
+    [user_id, today],
+    async (err, existingRow) => {
+      if (err) {
+        console.error('DB error fetching existing mood:', err);
+        return res.status(500).json({ success: false, message: 'DB error' });
       }
-    );
-  });
+
+      const finalSleep = sleep != null ? sleep : existingRow?.sleep ?? 8;
+      const finalEnergy = energy != null ? energy : existingRow?.energy ?? 5;
+
+      // Save or update today's mood
+      db.run(
+        `INSERT OR REPLACE INTO user_daily_mood (user_id, date, mood, sleep, energy)
+         VALUES (?, ?, ?, ?, ?)`,
+        [user_id, today, mood, finalSleep, finalEnergy],
+        async function (err2) {
+          if (err2) {
+            console.error('DB error saving mood:', err2);
+            return res.status(500).json({ success: false, message: 'DB error saving mood' });
+          }
+
+          // If no symptoms provided
+          if (!Array.isArray(symptoms) || symptoms.length === 0) {
+            return res.json({ success: true, message: 'Mood saved without symptoms' });
+          }
+
+          try {
+            // Loop through symptoms
+            const insertPromises = symptoms.map((s) => {
+              return new Promise((resolve, reject) => {
+                db.get(
+                  `SELECT id FROM user_symptoms
+                   WHERE user_id = ? AND symptom = ? AND recovered_at IS NULL AND date = ?`,
+                  [user_id, s.symptom, today],
+                  (err, existingSymptom) => {
+                    if (err) {
+                      console.error('DB error checking existing symptom:', err);
+                      return reject(err);
+                    }
+
+                    if (!existingSymptom) {
+                      // Normalize severity (must be mild | moderate | severe)
+                      let severityLabel = 'mild';
+                      if (typeof s.severity === 'string' &&
+                          ['mild', 'moderate', 'severe'].includes(s.severity.toLowerCase())) {
+                        severityLabel = s.severity.toLowerCase();
+                      }
+
+                      db.run(
+                        `INSERT INTO user_symptoms (user_id, symptom, severity, onset_time, duration, notes, date, time)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [
+                          user_id,
+                          s.symptom || null,
+                          severityLabel,
+                          s.onsetTime || null,
+                          s.duration || null,
+                          s.notes || null,
+                          today,
+                          currentTime
+                        ],
+                        (err) => {
+                          if (err) reject(err);
+                          else resolve();
+                        }
+                      );
+                    } else {
+                      resolve(); // Skip duplicate unresolved symptom
+                    }
+                  }
+                );
+              });
+            });
+
+            await Promise.all(insertPromises);
+            return res.json({ success: true, message: 'Mood and symptoms saved' });
+          } catch (error) {
+            console.error('Error saving symptoms:', error);
+            return res.status(500).json({ success: false, message: 'DB error saving symptoms' });
+          }
+        }
+      );
+    }
+  );
+});
+
 
   // Generate Daily Plan Endpoint
-  // Server/src/routes/healthlog.js
 
-// Generate Daily Plan Endpoint
 router.post("/generatePlan", (req, res) => {
-  const { user_id, symptom, severity = 'moderate', recurring } = req.body;
+  const { user_id, symptom, severity, recurring } = req.body;
   if (!user_id || !symptom) {
-    return res.status(400).json({ success: false, message: "Missing user_id or symptom" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing user_id or symptom" });
   }
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Fetch the plan from symptomHealth
-  const plan = symptomHealth.find((s) => s.symptom === symptom);
+  // Fetch the plan for this symptom
+  const symptomObj = symptomHealth.find((s) => s.symptom === symptom);
 
-  if (!plan) {
-    return res.status(404).json({ success: false, message: "No plan found for this symptom" });
+  if (!symptomObj) {
+    return res
+      .status(404)
+      .json({ success: false, message: "No plan found for this symptom" });
   }
+
+  // Get severity-specific plan
+  const severityPlan = symptomObj.severity_levels[severity];
+  console.log("🔹 Severity Plan:", severityPlan);
+  if (!severityPlan) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid severity level" });
+  }
+
 
   // Map symptomHealth keys to DB categories
   const CATEGORY_MAP = {
@@ -204,8 +215,11 @@ router.post("/generatePlan", (req, res) => {
       (err, row) => {
         if (err) return console.error(err);
 
+
         if (row && row.recovered_at) {
-          console.log(`Symptom "${symptom}" already recovered. Skipping plan generation.`);
+          console.log(
+            `Symptom "${symptom}" already recovered. Skipping plan generation.`
+          );
           return; // skip if recovered
         }
 
@@ -213,18 +227,40 @@ router.post("/generatePlan", (req, res) => {
           "INSERT OR IGNORE INTO user_daily_plan (user_id, date, symptom, severity, category, task, done) VALUES (?, ?, ?, ?, ?, ?, ?)"
         );
 
-        Object.entries(plan).forEach(([key, items]) => {
+        Object.entries(severityPlan).forEach(([key, items]) => {
           const dbCategory = CATEGORY_MAP[key];
           if (!dbCategory) return;
 
           if (Array.isArray(items)) {
             items.forEach((item) => {
-              console.log('Inserting task:', { user_id, date, symptom, severity, dbCategory, task: item });
+              console.log("Inserting task:", {
+                user_id,
+                date,
+                symptom,
+                severity,
+                dbCategory,
+                task: item,
+              });
               stmt.run([user_id, date, symptom, severity, dbCategory, item, 0]);
             });
           } else if (typeof items === "string") {
-            console.log('Inserting task:', { user_id, date, symptom, severity, dbCategory, task: items });
-            stmt.run([user_id, date, symptom, severity, dbCategory, items, 0]);
+            console.log("Inserting task:", {
+              user_id,
+              date,
+              symptom,
+              severity,
+              dbCategory,
+              task: items,
+            });
+            stmt.run([
+              user_id,
+              date,
+              symptom,
+              severity,
+              dbCategory,
+              items,
+              0,
+            ]);
           }
         });
 
@@ -233,18 +269,21 @@ router.post("/generatePlan", (req, res) => {
     );
   };
 
-  if (recurring) {
-    for (let i = 0; i < 30; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      insertPlan(date.toISOString().split("T")[0]);
-    }
-  } else {
-    insertPlan(today);
-  }
+  // if (recurring) {
+  //   for (let i = 0; i < 30; i++) {
+  //     const date = new Date();
+  //     date.setDate(date.getDate() + i);
+  //     insertPlan(date.toISOString().split("T")[0]);
+  //   }
+  // } else {
+  //   insertPlan(today);
+  // }
 
-  return res.json({ success: true, plan });
+  insertPlan(today); // Always insert only for today
+
+  return res.json({ success: true, plan: severityPlan });
 });
+
 
 
   router.get("/plan", (req, res) => {
