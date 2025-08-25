@@ -10,10 +10,6 @@ const healthlogRoute = require('./routes/healthlog');
 const appointmentRoute = require('./routes/appointment');
 const path = require('path');
 
-
-
-
-// NEW: Add these for socket support
 const http = require('http');
 const { Server } = require('socket.io');
 const socketHandler = require('./sockets'); // Assumes you already have Server/src/sockets/index.js
@@ -21,10 +17,9 @@ const socketHandler = require('./sockets'); // Assumes you already have Server/s
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// NEW: Create HTTP server manually (needed for socket.io)
 const server = http.createServer(app);
 
-// NEW: Create WebSocket server instance
+// Create WebSocket server instance
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -33,7 +28,7 @@ const io = new Server(server, {
   },
 });
 
-// NEW: Initialize socket event handlers
+// Initialize socket event handlers
 socketHandler(io);
 
 initSchema();
@@ -66,7 +61,7 @@ app.get('/', (req, res) => {
   res.send('Server running');
 });
 
-// 🔁 Replace app.listen with server.listen to include WebSockets
+// Replace app.listen with server.listen to include WebSockets
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

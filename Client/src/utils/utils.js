@@ -38,7 +38,7 @@ export default function formatTime(date) {
     let hours = d.getHours();
     const minutes = d.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12; // convert 0 to 12 for 12-hour format
+    hours = hours % 12 || 12;
     const mins = minutes < 10 ? `0${minutes}` : minutes;
     return `${hours}:${mins} ${ampm}`;
 }

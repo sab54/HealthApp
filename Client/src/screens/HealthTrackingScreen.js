@@ -24,13 +24,12 @@ const HealthTrackingScreen = ({ route }) => {
   const [trends, setTrends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [days, setDays] = useState(15); // default
+  const [days, setDays] = useState(15);
 
-  const theme = useSelector((state) => state.theme.themeColors); // ✅ get theme
+  const theme = useSelector((state) => state.theme.themeColors);
   const insets = useSafeAreaInsets();
   const styles = createStyles(theme, insets);
 
-  // ✅ LegendItem reusable component
 const LegendItem = ({ color, label, theme }) => (
   <View style={styles.legendItem}>
     <View style={[styles.legendDot, { backgroundColor: color }]} />
@@ -220,7 +219,6 @@ const chartConfig = {
   propsForDots: { r: '4', strokeWidth: '2' },
 };
 
-// ✅ Theming like HomeScreen
 const createStyles = (theme, insets) =>
   StyleSheet.create({
     container: {

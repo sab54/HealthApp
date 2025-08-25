@@ -12,7 +12,7 @@ import { useFonts } from 'expo-font';
 
 import EmergencyShortcuts from '../module/EmergencyShortcuts';
 import Footer from '../components/Footer';
-import WeatherCard from '../module/WeatherCard'; // Added WeatherCard import
+import WeatherCard from '../module/WeatherCard';
 
 const ResourcesScreen = () => {
     const theme = useSelector((state) => state.theme.themeColors);
@@ -26,7 +26,6 @@ const ResourcesScreen = () => {
     const onRefresh = useCallback(() => {
         setRefreshing(true);
 
-        // Simulate data re-fetching
         setTimeout(() => {
             setRefreshing(false);
         }, 1000);
@@ -34,7 +33,7 @@ const ResourcesScreen = () => {
 
     const styles = createStyles(theme);
 
-    const primaryColor = theme.primary || theme.info || '#0078D4'; // Fallback for missing primary
+    const primaryColor = theme.primary || theme.info || '#0078D4';
 
     const weatherData = useSelector(state => state.weather.current);
     const forecastData = useSelector(state => state.weather.forecast);
@@ -93,7 +92,7 @@ const createStyles = (theme) =>
             fontSize: 24,
             fontFamily: 'PoppinsBold',
             marginBottom: 20,
-            color: theme.primary || theme.info || '#0078D4', // fallback for title color
+            color: theme.primary || theme.info || '#0078D4',
         },
         centered: {
             flex: 1,

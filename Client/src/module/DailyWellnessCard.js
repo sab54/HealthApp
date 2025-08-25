@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const DailyWellnessCard = ({ moodToday, sleepToday, energyToday, todaySymptoms, navigation, theme }) => {
 
-    // Convert numeric sleep (e.g., 7.5) to "7h 30m"
     const formatSleep = (sleep) => {
         if (sleep == null) return 'No sleep logged';
         const hours = Math.floor(sleep);

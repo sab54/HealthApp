@@ -26,21 +26,21 @@ export const initSocket = ({ userId, token, query = {} } = {}) => {
 
     socket.on('connect', () => {
         isConnected = true;
-        console.log('🟢 Socket connected:', socket.id);
+        console.log('Socket connected:', socket.id);
 
         if (currentUserId) {
             socket.emit('join_user_room', currentUserId);
-            console.log(`👤 Joined user room: user_${currentUserId}`);
+            console.log(`Joined user room: user_${currentUserId}`);
         }
     });
 
     socket.on('disconnect', (reason) => {
         isConnected = false;
-        console.log('🔴 Socket disconnected:', reason);
+        console.log('Socket disconnected:', reason);
     });
 
     socket.on('connect_error', (err) => {
-        console.error('❌ Connection error:', err.message);
+        console.error('Connection error:', err.message);
     });
 
     return socket;
@@ -60,7 +60,7 @@ export const disconnectSocket = () => {
         socket = null;
         isConnected = false;
         currentUserId = null;
-        console.log('🛑 Socket disconnected');
+        console.log('Socket disconnected');
     }
 };
 
@@ -97,7 +97,7 @@ export const offEvent = (event) => {
 export const joinChat = (chatId) => {
     if (socket && chatId) {
         socket.emit('join_chat', chatId);
-        console.log(`📥 Joined chat_${chatId}`);
+        console.log(`Joined chat_${chatId}`);
     }
 };
 
@@ -107,11 +107,11 @@ export const joinChat = (chatId) => {
 export const leaveChat = (chatId) => {
     if (socket && chatId) {
         socket.emit('leave_chat', chatId);
-        console.log(`📤 Left chat_${chatId}`);
+        console.log(`Left chat_${chatId}`);
     }
 };
 
-// 🟡 NEW: Typing Indicator Emitters
+// NEW: Typing Indicator Emitters
 export const sendTypingStart = (chatId, userId) => {
     if (socket && isConnected && chatId && userId) {
         socket.emit('chat:typing_start', { chatId, userId });

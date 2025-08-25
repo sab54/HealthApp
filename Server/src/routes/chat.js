@@ -32,9 +32,7 @@ module.exports = (db, io) => {
             });
         });
 
-    // 📌 SQLite3-compatible routes start here
-
-    // Example route: GET /chat/list/:user_id
+    // GET /chat/list/:user_id
     router.get('/list/:user_id', async (req, res) => {
         const userId = parseInt(req.params.user_id);
         if (isNaN(userId)) {
@@ -161,7 +159,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 POST /chat/create
+    //  POST /chat/create
     router.post('/create', async (req, res) => {
         const {
             user_id,
@@ -241,7 +239,7 @@ module.exports = (db, io) => {
         }
     });
 
-        // 📌 POST /chat/:chat_id/add-members
+        //  POST /chat/:chat_id/add-members
     router.post('/:chat_id/add-members', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         const { user_id, user_ids } = req.body;
@@ -285,7 +283,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 DELETE /chat/:chat_id/remove-member
+    //  DELETE /chat/:chat_id/remove-member
     router.delete('/:chat_id/remove-member', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         const { user_id, requested_by } = req.query;
@@ -358,7 +356,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 POST /chat/local-groups/join
+    //  POST /chat/local-groups/join
     const RADIUS_KM = 0.2;
     router.post('/local-groups/join', async (req, res) => {
         const { userId, latitude, longitude } = req.body;
@@ -442,7 +440,7 @@ module.exports = (db, io) => {
                 chat_id: chatId,
             });
         } catch (error) {
-            console.error('❌ /local-groups/join failed:', error);
+            console.error('/local-groups/join failed:', error);
             return res.status(500).json({
                 success: false,
                 error: 'Failed to join local group',
@@ -450,7 +448,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 DELETE /chat/:chat_id
+    //  DELETE /chat/:chat_id
     router.delete('/:chat_id', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         if (isNaN(chatId)) {
@@ -472,7 +470,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 GET /chat/:chat_id/members
+    //  GET /chat/:chat_id/members
     router.get('/:chat_id/members', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         if (isNaN(chatId)) {
@@ -503,7 +501,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 GET /chat/:chat_id/messages
+    //  GET /chat/:chat_id/messages
     router.get('/:chat_id/messages', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         const limit = parseInt(req.query.limit) || 50;
@@ -544,7 +542,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 POST /chat/:chat_id/messages
+    //  POST /chat/:chat_id/messages
     router.post('/:chat_id/messages', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         const { sender_id, message, message_type = 'text' } = req.body;
@@ -610,7 +608,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 POST /chat/read
+    //  POST /chat/read
     router.post('/read', async (req, res) => {
         const { chat_id, user_id, message_id } = req.body;
         const chatId = parseInt(chat_id);
@@ -647,7 +645,7 @@ module.exports = (db, io) => {
         }
     });
 
-    // 📌 GET /chat/:chat_id/read-receipts
+    //  GET /chat/:chat_id/read-receipts
     router.get('/:chat_id/read-receipts', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         if (isNaN(chatId)) {
@@ -678,8 +676,6 @@ module.exports = (db, io) => {
             res.status(500).json({ success: false, error: 'Failed to fetch read receipts' });
         }
     });
-
-    // ✅ All routes have been successfully converted to SQLite3
 
     return router;
 };

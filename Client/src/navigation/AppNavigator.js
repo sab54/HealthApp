@@ -102,7 +102,7 @@ const AppNavigator = () => {
     }
   }, [fontsLoaded, isSplashReady]);
 
-  // ✅ Check if today's mood exists
+  // Check if today's mood exists
   useEffect(() => {
     const checkMood = async () => {
       if (user?.id) {

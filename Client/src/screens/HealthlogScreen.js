@@ -156,7 +156,7 @@ const HealthLogScreen = ({ navigation, route }) => {
     setAddedSymptoms([]);
     fetchTodaySymptoms();
 
-    // ✅ reset and go to DailyLog
+    // reset and go to DailyLog
     navigation.dispatch(
       CommonActions.reset({
         index: 0,

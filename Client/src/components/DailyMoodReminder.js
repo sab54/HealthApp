@@ -9,7 +9,6 @@ import { fetchTodayMood } from '../store/actions/healthlogActions';
 const REMINDER_INTERVAL = 1 * 60 * 1000;
 
 const DailyMoodReminder = () => {
-  // Hooks at the top — never inside conditionals
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -54,7 +53,7 @@ const DailyMoodReminder = () => {
       clearInterval(timerRef.current);
       subscription.remove();
     };
-  }, [userId, moodToday]); // safe — hooks still same count
+  }, [userId, moodToday]);
 
   const handleOpenMoodPrompt = async () => {
     setShowModal(false);
@@ -67,7 +66,7 @@ const DailyMoodReminder = () => {
     setShowModal(false);
   };
 
-  // ✅ Always render component, modal is conditional
+  // Always render component, modal is conditional
   return (
     <>
       {showModal && (

@@ -203,7 +203,7 @@ const RegistrationScreen = () => {
                             value="user"
                             selected={form.role}
                             onPress={(value) => handleInputChange('role', value)}
-                            themeColors={themeColors} // Passing themeColors for styling
+                            themeColors={themeColors}
                         />
                         <RadioButton
                             label="Doctor"

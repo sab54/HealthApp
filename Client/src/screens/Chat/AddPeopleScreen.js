@@ -33,7 +33,7 @@ import {
     clearDraftGroupUsers,
     createGroupChat,
     startDirectMessage,
-    addUserToExistingGroup, // ✅ You must implement this
+    addUserToExistingGroup,
 } from '../../store/actions/chatActions';
 
 let searchDebounceTimeout;
@@ -109,9 +109,6 @@ const AddPeopleScreen = () => {
         if (currentUser?.role === 'user') {
             return user.role !== 'user'; // patient sees only doctors
         }
-
-
-        // Doctor can see anyone
         return true;
     });
 

@@ -119,8 +119,8 @@ const HomeScreen = () => {
       render: () => (
         <DailyWellnessCard
           moodToday={moodToday}
-          sleepToday={sleepToday}        // ✅ pass sleep
-          energyToday={energyToday}      // ✅ pass energy
+          sleepToday={sleepToday}
+          energyToday={energyToday}
           todaySymptoms={todaySymptoms}
           navigation={navigation}
           theme={theme}

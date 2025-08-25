@@ -9,7 +9,7 @@ import {
 } from '../reducers/chatReducer';
 
 /**
- * 📌 Fetch all chats for current user
+ *  Fetch all chats for current user
  */
 export const fetchActiveChats = createAsyncThunk(
     'chat/fetchActiveChats',
@@ -54,7 +54,7 @@ export const fetchUserSuggestions = createAsyncThunk(
 );
 
 /**
- * 📌 Start or reuse a direct chat
+ *  Start or reuse a direct chat
  */
 export const startDirectMessage = createAsyncThunk(
     'chat/startDirectMessage',
@@ -90,7 +90,7 @@ export const startDirectMessage = createAsyncThunk(
 );
 
 /**
- * 📌 Create a group chat
+ *  Create a group chat
  */
 export const createGroupChat = createAsyncThunk(
     'chat/createGroupChat',
@@ -125,7 +125,7 @@ export const createGroupChat = createAsyncThunk(
 );
 
 /**
- * 📌 Add users to an existing group chat
+ *  Add users to an existing group chat
  */
 export const addUserToExistingGroup = createAsyncThunk(
     'chat/addUserToExistingGroup',
@@ -156,7 +156,7 @@ export const addUserToExistingGroup = createAsyncThunk(
 );
 
 /**
- * 📌 Remove user from group chat
+ *  Remove user from group chat
  */
 export const removeUserFromGroup = createAsyncThunk(
     'chat/removeUserFromGroup',
@@ -167,13 +167,13 @@ export const removeUserFromGroup = createAsyncThunk(
                 throw new Error('chatId, userId, and requestedBy are required');
             }
 
-            // ✅ These are sent as encrypted query params
+            // These are sent as encrypted query params
             const params = {
                 user_id: userId,
                 requested_by: requestedBy,
             };
 
-            // ✅ Your del() will encrypt and append these to the URL
+            // Your del() will encrypt and append these to the URL
             await del(`${API_URL_CHAT}/${chatId}/remove-member`, params);
 
             return { chatId: Number(chatId), userId: Number(userId) };
@@ -184,7 +184,7 @@ export const removeUserFromGroup = createAsyncThunk(
 );
 
 /**
- * 📌 Join or create a local group chat
+ *  Join or create a local group chat
  */
 export const joinLocalGroup = createAsyncThunk(
     'chat/joinLocalGroup',
@@ -225,7 +225,7 @@ export const joinLocalGroup = createAsyncThunk(
 );
 
 /**
- * 📌 Delete a chat
+ *  Delete a chat
  */
 export const deleteChat = createAsyncThunk(
     'chat/deleteChat',
@@ -240,7 +240,7 @@ export const deleteChat = createAsyncThunk(
 );
 
 /**
- * 📌 Fetch single chat by ID (e.g., after adding/removing members)
+ *  Fetch single chat by ID (e.g., after adding/removing members)
  */
 export const fetchChatById = createAsyncThunk(
     'chat/fetchChatById',
@@ -258,7 +258,7 @@ export const fetchChatById = createAsyncThunk(
 );
 
 /**
- * 📌 Fetch chat messages
+ *  Fetch chat messages
  */
 export const fetchMessages = createAsyncThunk(
     'chat/fetchMessages',
@@ -273,7 +273,7 @@ export const fetchMessages = createAsyncThunk(
 );
 
 /**
- * 📌 Send a message
+ *  Send a message
  */
 export const sendMessage = createAsyncThunk(
     'chat/sendMessage',
@@ -308,7 +308,7 @@ export const sendMessage = createAsyncThunk(
 );
 
 /**
- * 📌 Retry queued messages (on reconnect)
+ *  Retry queued messages (on reconnect)
  */
 export const flushQueuedMessages = createAsyncThunk(
     'chat/flushQueuedMessages',
@@ -329,7 +329,7 @@ export const flushQueuedMessages = createAsyncThunk(
                     payload
                 );
 
-                console.log("📦 Sending with chatId:", chatId);
+                console.log("Sending with chatId:", chatId);
 
                 dispatch(
                     appendMessage({
@@ -354,7 +354,7 @@ export const flushQueuedMessages = createAsyncThunk(
 );
 
 /**
- * 📌 Mark chat as read
+ *  Mark chat as read
  */
 export const markChatAsReadThunk = createAsyncThunk(
     'chat/markChatAsRead',
@@ -376,7 +376,7 @@ export const markChatAsReadThunk = createAsyncThunk(
 );
 
 /**
- * 📌 Local Draft Management
+ *  Local Draft Management
  */
 export const addUserToDraftGroup = createAsyncThunk(
     'chat/addUserToDraftGroup',
@@ -387,7 +387,7 @@ export const addUserToDraftGroup = createAsyncThunk(
 );
 
 /**
- * 📌 Local-only: remove user from draft group
+ *  Local-only: remove user from draft group
  */
 export const removeUserFromDraftGroup = createAsyncThunk(
     'chat/removeUserFromDraftGroup',
@@ -398,7 +398,7 @@ export const removeUserFromDraftGroup = createAsyncThunk(
 );
 
 /**
- * 📌 Local-only: clear all users from draft group
+ *  Local-only: clear all users from draft group
  */
 export const clearDraftGroupUsers = createAsyncThunk(
     'chat/clearDraftGroupUsers',

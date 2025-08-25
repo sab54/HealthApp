@@ -78,7 +78,7 @@ const TabNavigator = () => {
             console.log('Symptom selected:', symptomObj);
             handleSymptomSelect(symptomObj);
         } else {
-            setAddedSymptoms([]); // clear if user pressed Done without selecting
+            setAddedSymptoms([]);
         }
     };
     // Handle selecting a symptom from modal
@@ -89,7 +89,7 @@ const TabNavigator = () => {
         const alreadyAdded = todaySymptoms.some(s => s.symptom === symptomName && !s.recovered_at);
         if (alreadyAdded) return;
 
-        setAddedSymptoms(prev => [...prev, symptomName]); // Instant UI add
+        setAddedSymptoms(prev => [...prev, symptomName]);
 
         setShowSymptomsModal(false);
 
@@ -110,15 +110,13 @@ const TabNavigator = () => {
     // Clear addedSymptoms and refresh symptoms on tab focus
     // track if auto-popup has already shown
 
-
-
     useFocusEffect(
         React.useCallback(() => {
             setAddedSymptoms([]);
             if (user?.id) {
                 dispatch(fetchTodaySymptoms(user.id));
             }
-            // 🚫 Don't auto-open Symptoms Modal here.
+            // Don't auto-open Symptoms Modal here.
             // Only allow adding symptoms via bottom tab button.
         }, [user?.id, dispatch])
     );
@@ -131,7 +129,6 @@ const TabNavigator = () => {
         const todayUnrecovered = todaySymptoms.filter(s => !s.recovered_at).length;
         const totalSymptomsCount = todayUnrecovered + addedSymptoms.length;
 
-        // Debug logs - remove if you want
         console.log('todayUnrecovered:', todayUnrecovered, 'addedSymptoms:', addedSymptoms);
 
         const disabled = todayUnrecovered + addedSymptoms.length >= MAX_SYMPTOMS || addingSymptom;

@@ -43,7 +43,7 @@ module.exports = (req, res, next) => {
         }
 
         // Decrypt query payload for all methods that might send encrypted query
-        const methodAllowsQueryPayload = ['GET', 'DELETE', 'HEAD']; // Add others if needed
+        const methodAllowsQueryPayload = ['GET', 'DELETE', 'HEAD'];
         if (
             methodAllowsQueryPayload.includes(req.method) &&
             req.query?.payload

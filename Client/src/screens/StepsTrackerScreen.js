@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import * as SensorTracker from '../utils/sensorTracker'; // named imports
+import * as SensorTracker from '../utils/sensorTracker';
 
 const StepsTrackerScreen = () => {
   const [data, setData] = useState({ steps: 0, distance: 0, activity: 'Idle' });
@@ -20,7 +20,7 @@ const StepsTrackerScreen = () => {
     setData({ steps: 0, distance: 0, activity: 'Idle' });
   };
 
-  const calories = Math.round(data.steps * 0.04); // rough estimate
+  const calories = Math.round(data.steps * 0.04);
 
   return (
     <View style={styles.container}>

@@ -88,7 +88,7 @@ const SymptomRecoveryPlanScreen = () => {
          const selectedSeverityDetails = allSeverities[symptomParam.severity_level] || null;
          setSeverityDetails(selectedSeverityDetails);
 
-         // ✅ Dispatch Redux action to fetch plan
+         // Dispatch Redux action to fetch plan
          dispatch(fetchPlan({
             user_id: userId,
             symptom: symptomParam.symptom,

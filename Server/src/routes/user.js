@@ -277,7 +277,7 @@ module.exports = (db) => {
     });
 
     // =============================
-    // 📌 POST /update-profile - Update user's first and last name
+    //  POST /update-profile - Update user's first and last name
     // =============================
     router.post('/update-profile', (req, res) => {
         const { user_id, first_name, last_name } = req.body;

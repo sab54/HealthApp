@@ -189,7 +189,7 @@ router.post("/generatePlan", (req, res) => {
 
   // Get severity-specific plan
   const severityPlan = symptomObj.severity_levels[severity];
-  console.log("🔹 Severity Plan:", severityPlan);
+  console.log("Severity Plan:", severityPlan);
   if (!severityPlan) {
     return res
       .status(400)
@@ -313,14 +313,14 @@ router.post("/generatePlan", (req, res) => {
 
   query += " ORDER BY category ASC, done ASC";
 
-  console.log("🔹 /plan DB query:", query, "Params:", params);
+  console.log("/plan DB query:", query, "Params:", params);
 
   db.all(query, params, (err, rows) => {
     if (err) {
       console.error("DB error fetching daily plan:", err);
       return res.status(500).json({ success: false, message: "DB error fetching plan" });
     }
-    console.log("🔹 Rows fetched from DB:", rows);
+    console.log("Rows fetched from DB:", rows);
     return res.json({ success: true, plan: rows });
   });
 });
@@ -338,7 +338,7 @@ router.post("/generatePlan", (req, res) => {
           console.error(err);
           return res.status(500).json({ error: 'Failed to update plan task' });
         }
-        console.log(`✅ Updated task in DB: user ${user_id}, task "${task}", category "${category}", date ${date}, done=${done}`);
+        console.log(`Updated task in DB: user ${user_id}, task "${task}", category "${category}", date ${date}, done=${done}`);
         console.log(`Affected rows: ${this.changes}`);
         res.json({ success: true });
       }

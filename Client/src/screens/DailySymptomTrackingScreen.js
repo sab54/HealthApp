@@ -214,7 +214,6 @@ const DailySymptomTrackerScreen = () => {
       )}
 
       {showDetailModal && selectedSymptom && (
-        // ... inside DailySymptomTrackerScreen.js component
 
         <SymptomDetailModal
   visible={showDetailModal}

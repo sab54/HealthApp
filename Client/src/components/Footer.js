@@ -11,7 +11,7 @@ const Footer = ({ theme }) => {
             ]}
         >
             <Text style={[styles.text, { color: theme.text }]}>
-                Designed with ❤️ by Su
+                Designed by Sunidhi
             </Text>
         </View>
     );

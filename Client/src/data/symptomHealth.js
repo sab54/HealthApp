@@ -1025,6 +1025,5 @@ function getAllSeverities(symptomName) {
   return symptom.severity_levels;
 }
 
-// Export the function if used elsewhere
 export { symptomHealth,getAllSeverities};
 

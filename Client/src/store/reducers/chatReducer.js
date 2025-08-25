@@ -13,7 +13,7 @@ import {
     clearDraftGroupUsers,
     markChatAsReadThunk,
     removeUserFromGroup,
-    fetchChatById, // ✅ ADDED
+    fetchChatById,
 } from '../actions/chatActions';
 
 const initialState = {
@@ -257,7 +257,6 @@ const chatSlice = createSlice({
                 }
             })
 
-            // ✅ ADD THIS: handle chat refresh after adding members
             .addCase(fetchChatById.fulfilled, (state, action) => {
                 const updatedChat = action.payload;
                 if (!updatedChat?.id) return;

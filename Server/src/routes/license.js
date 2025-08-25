@@ -30,7 +30,7 @@ module.exports = (db) => {
     try {
       const result = await Tesseract.recognize(imagePath, 'eng');
       const text = result?.data?.text || '';
-      console.log('🧠 OCR Extracted Text:\n', text);
+      console.log('OCR Extracted Text:\n', text);
 
       const normalizedText = text.toLowerCase().replace(/\s+/g, ' ');
       const isDoctor = /dr[\s\.:\-]|doctor/i.test(text) || /DOC-\d{4}-[A-Z]{3}/.test(text);
@@ -71,7 +71,7 @@ module.exports = (db) => {
         });
       }
     } catch (err) {
-      console.error('❌ OCR processing error:', err);
+      console.error('OCR processing error:', err);
       if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
       return res.status(500).json({ success: false, message: 'OCR processing failed' });
     }

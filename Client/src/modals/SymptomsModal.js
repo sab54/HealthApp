@@ -100,7 +100,7 @@ const filteredSymptoms = symptomHealth.filter(item =>
 
         <TouchableOpacity
           style={styles.closeButton}
-          onPress={() => onClose(null)} // Done without selecting
+          onPress={() => onClose(null)}
         >
           <Text style={styles.closeButtonText}>Done</Text>
         </TouchableOpacity>

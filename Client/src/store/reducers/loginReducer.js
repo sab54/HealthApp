@@ -49,7 +49,7 @@ const loginSlice = createSlice({
             })
             .addCase(logout.fulfilled, () => initialState)
 
-            // 🔹 Add this to handle instant profile updates
+            // Add this to handle instant profile updates
             .addCase('AUTH_UPDATE_USER', (state, action) => {
                 state.user = action.payload;
             });

@@ -24,7 +24,7 @@ module.exports = (db) => {
       });
     });
 
-  // 📌 POST /appointment/ai-book
+  //  POST /appointment/ai-book
   router.post('/ai-book', async (req, res) => {
     const { date, time, reason, createdBy } = req.body;
     if (!date || !time || !createdBy) {
@@ -43,7 +43,7 @@ module.exports = (db) => {
     }
   });
 
-  // 📌 GET /appointment/:userId
+  //  GET /appointment/:userId
   router.get('/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId);
     if (isNaN(userId)) {
@@ -61,7 +61,7 @@ module.exports = (db) => {
     }
   });
 
-  // 📌 PATCH /appointment/:id
+  //  PATCH /appointment/:id
   router.patch('/:id', async (req, res) => {
     const appointmentId = parseInt(req.params.id);
     if (isNaN(appointmentId)) {

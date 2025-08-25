@@ -18,7 +18,7 @@ export const submitMood = createAsyncThunk(
     try {
       const payload = { user_id: fallbackId, mood };
 
-      // ✅ Add sleep and energy directly from payload
+      // Add sleep and energy directly from payload
       if (sleep !== undefined) payload.sleep = sleep;
       if (energy !== undefined) payload.energy = energy;
 
@@ -49,7 +49,7 @@ export const fetchTodayMood = createAsyncThunk(
     try {
       const response = await get(`${API_URL_HEALTHLOG}/today?userId=${user_id}`);
 
-      // ✅ Return full response object
+      // Return full response object
       return {
         mood: response.mood || null,
         sleep: response.sleep || null,
@@ -134,7 +134,7 @@ export const updatePlanTask = createAsyncThunk(
         done
       });
 
-      console.log('updatePlanTask response from backend:', response); // ✅ log response
+      console.log('updatePlanTask response from backend:', response);
       return { category, task, done };
     } catch (err) {
       console.error('updatePlanTask error:', err);

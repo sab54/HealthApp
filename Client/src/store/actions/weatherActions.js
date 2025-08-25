@@ -17,7 +17,7 @@ const isOneHourPassed = (lastFetch) => {
     const lastTime = new Date(lastFetch);
     const now = new Date();
     const diffInMs = now - lastTime;
-    return diffInMs > 3600000; // 1 hour = 3600000 ms
+    return diffInMs > 3600000;
 };
 
 export const fetchWeatherData = () => async (dispatch, getState) => {

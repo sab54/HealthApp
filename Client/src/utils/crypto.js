@@ -8,7 +8,7 @@ import { ENCRYPTION_KEY, IV_LENGTH } from './config'; // Ensure ENCRYPTION_KEY i
  */
 const getRandomBytes = (length) => {
     const array = new Uint8Array(length);
-    crypto.getRandomValues(array); // ✅ secure random
+    crypto.getRandomValues(array);
     return CryptoJS.lib.WordArray.create(array);
 };
 

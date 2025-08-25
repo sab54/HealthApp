@@ -66,7 +66,6 @@ const SearchBar = ({
 
     const handleVoiceInput = () => {
         console.log('Voice input placeholder logic');
-        // Integrate with Speech API here
     };
 
     return (

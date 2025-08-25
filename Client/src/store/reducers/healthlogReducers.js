@@ -6,19 +6,19 @@ const initialState = {
   sleepToday: null,
   energyToday: null,
   todaySymptoms: [],
-  planToday: [],   // ✅ daily plan checklist
+  planToday: [],
 
   // Loading flags
   loadingFetchTodayMood: false,
   loadingSubmitMood: false,
   loadingMarkRecovered: false,
-  loadingPlan: false,   // ✅
+  loadingPlan: false,
 
   // Error flags
   errorFetchTodayMood: null,
   errorSubmitMood: null,
   errorMarkRecovered: null,
-  errorPlan: null,   // ✅
+  errorPlan: null,
 };
 
 const healthlogSlice = createSlice({
@@ -36,7 +36,7 @@ const healthlogSlice = createSlice({
       state.sleepToday = null;
       state.energyToday = null;
       state.todaySymptoms = [];
-      state.planToday = [];   // ✅ clear plan too
+      state.planToday = [];
       state.errorFetchTodayMood = null;
       state.errorSubmitMood = null;
       state.errorMarkRecovered = null;
@@ -125,7 +125,7 @@ const healthlogSlice = createSlice({
         state.errorPlan = null;
         state.planToday = (action.payload.plan || []).map(task => ({
           ...task,
-          severity_level: task.severity  // ✅ map severity to severity_level
+          severity_level: task.severity
         }));
       })
 
