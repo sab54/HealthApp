@@ -122,9 +122,9 @@ router.post('/submit', async (req, res) => {
                     if (!existingSymptom) {
                       // Normalize severity (must be mild | moderate | severe)
                       let severityLabel = 'mild';
-                      if (typeof s.severity === 'string' &&
-                          ['mild', 'moderate', 'severe'].includes(s.severity.toLowerCase())) {
-                        severityLabel = s.severity.toLowerCase();
+                      if (typeof s.severity_level === 'string' &&
+                          ['mild', 'moderate', 'severe'].includes(s.severity_level.toLowerCase())) {
+                        severityLabel = s.severity_level.toLowerCase();
                       }
 
                       db.run(
