@@ -77,7 +77,7 @@ const HealthLogScreen = ({ navigation, route }) => {
 
         const hasMood = moodResponse?.mood;
         const hasSymptomWithDetail = (symptomResponse?.symptoms || []).some(
-          s => !s.recovered_at && s.details
+          s => !s.recovered_at
         );
 
         if (hasMood && hasSymptomWithDetail) {

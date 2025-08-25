@@ -19,7 +19,10 @@ const SymptomsModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
 
   // Fetch symptoms already added today from Redux
-  const todaySymptoms = useSelector(state => state.healthlog.todaySymptoms.map(s => s.symptom));
+  //const todaySymptoms = useSelector(state => state.healthlog.todaySymptoms.map(s => s.symptom));
+const todaySymptomsRaw = useSelector(state => state.healthlog.todaySymptoms);
+const todaySymptoms = todaySymptomsRaw.map(s => s.symptom);
+
   const MAX_SYMPTOMS = 3;
 
   const [searchTerm, setSearchTerm] = useState('');
