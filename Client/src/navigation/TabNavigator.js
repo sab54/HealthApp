@@ -261,6 +261,7 @@ const TabNavigator = () => {
                     onClose={handleSymptomDetailClose}
                 />
             )}
+
         </>
     );
 };

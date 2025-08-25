@@ -1,21 +1,24 @@
-// Client/src/store/reducers/healthlogReducers.js
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchTodayMood, submitMood, markSymptomRecovered } from '../actions/healthlogActions';
+import { fetchTodayMood, submitMood, markSymptomRecovered, fetchPlan, updatePlanTask } from '../actions/healthlogActions';
 
 const initialState = {
   moodToday: null,
   sleepToday: null,
   energyToday: null,
   todaySymptoms: [],
+  planToday: [],   // ✅ daily plan checklist
 
-  // Separate loading flags
+  // Loading flags
   loadingFetchTodayMood: false,
   loadingSubmitMood: false,
   loadingMarkRecovered: false,
+  loadingPlan: false,   // ✅
 
+  // Error flags
   errorFetchTodayMood: null,
   errorSubmitMood: null,
   errorMarkRecovered: null,
+  errorPlan: null,   // ✅
 };
 
 const healthlogSlice = createSlice({
@@ -26,18 +29,22 @@ const healthlogSlice = createSlice({
       state.errorFetchTodayMood = null;
       state.errorSubmitMood = null;
       state.errorMarkRecovered = null;
+      state.errorPlan = null;
     },
     resetMood: (state) => {
       state.moodToday = null;
       state.sleepToday = null;
       state.energyToday = null;
       state.todaySymptoms = [];
+      state.planToday = [];   // ✅ clear plan too
       state.errorFetchTodayMood = null;
       state.errorSubmitMood = null;
       state.errorMarkRecovered = null;
+      state.errorPlan = null;
       state.loadingFetchTodayMood = false;
       state.loadingSubmitMood = false;
       state.loadingMarkRecovered = false;
+      state.loadingPlan = false;
     },
     addSymptom: (state, action) => {
       const exists = state.todaySymptoms.find(s => s.symptom === action.payload.symptom);
@@ -106,6 +113,35 @@ const healthlogSlice = createSlice({
       .addCase(markSymptomRecovered.rejected, (state, action) => {
         state.loadingMarkRecovered = false;
         state.errorMarkRecovered = action.payload || 'Failed to mark symptom recovered';
+      })
+
+      // fetchPlan
+      .addCase(fetchPlan.pending, (state) => {
+        state.loadingPlan = true;
+        state.errorPlan = null;
+      })
+      .addCase(fetchPlan.fulfilled, (state, action) => {
+        state.loadingPlan = false;
+        state.errorPlan = null;
+        state.planToday = (action.payload.plan || []).map(task => ({
+          ...task,
+          severity_level: task.severity  // ✅ map severity to severity_level
+        }));
+      })
+
+      .addCase(fetchPlan.rejected, (state, action) => {
+        state.loadingPlan = false;
+        state.errorPlan = action.payload || 'Failed to fetch plan';
+      })
+
+      // updatePlanTask
+      .addCase(updatePlanTask.fulfilled, (state, action) => {
+        const { category, task, done } = action.payload;
+        state.planToday = state.planToday.map((item) =>
+          item.category === category && item.task === task
+            ? { ...item, done }
+            : item
+        );
       });
   },
 });

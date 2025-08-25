@@ -98,7 +98,47 @@ export const markSymptomRecovered = createAsyncThunk(
       // Return updated symptom for Redux
       return { ...symptom, recovered_at: today };
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue(err.message || 'Error marking symptom recovered');
+    }
+  }
+);
+
+// Fetch daily plan (checklist)
+export const fetchPlan = createAsyncThunk(
+  'healthlog/fetchPlan',
+  async ({ user_id, symptom, severity }, { rejectWithValue }) => {
+    try {
+      if (!user_id) return rejectWithValue('Missing user_id');
+
+      // Build query params correctly
+      const params = `?userId=${user_id}` +
+        (symptom ? `&symptom=${encodeURIComponent(symptom)}` : '') +
+        (severity ? `&severity=${encodeURIComponent(severity)}` : '');
+
+      const response = await get(`${API_URL_HEALTHLOG}/plan${params}`);
+      return { plan: response.plan || [] };
+    } catch (err) {
+      return rejectWithValue(err.message || 'Failed to fetch plan');
+    }
+  }
+);
+export const updatePlanTask = createAsyncThunk(
+  'healthlog/updatePlanTask',
+  async ({ user_id, date, category, task, done }, { rejectWithValue }) => {
+    try {
+      const response = await post(`${API_URL_HEALTHLOG}/updatePlanTask`, {
+        user_id,
+        date,
+        category,
+        task,
+        done
+      });
+
+      console.log('updatePlanTask response from backend:', response); // ✅ log response
+      return { category, task, done };
+    } catch (err) {
+      console.error('updatePlanTask error:', err);
+      return rejectWithValue(err.message || 'Failed to update plan task');
     }
   }
 );

@@ -168,14 +168,23 @@ module.exports = (db) => {
   });
 
   // Generate Daily Plan Endpoint
-  // Generate Daily Plan Endpoint
+  // Server/src/routes/healthlog.js
+
+// Generate Daily Plan Endpoint
 router.post("/generatePlan", (req, res) => {
-  const { user_id, symptom, recurring } = req.body;
+  const { user_id, symptom, severity = 'moderate', recurring } = req.body;
+  if (!user_id || !symptom) {
+    return res.status(400).json({ success: false, message: "Missing user_id or symptom" });
+  }
+
   const today = new Date().toISOString().split("T")[0];
 
   // Fetch the plan from symptomHealth
   const plan = symptomHealth.find((s) => s.symptom === symptom);
-  if (!plan) return res.status(404).json({ success: false, message: "No plan found for this symptom" });
+
+  if (!plan) {
+    return res.status(404).json({ success: false, message: "No plan found for this symptom" });
+  }
 
   // Map symptomHealth keys to DB categories
   const CATEGORY_MAP = {
@@ -189,24 +198,41 @@ router.post("/generatePlan", (req, res) => {
 
   // Function to insert tasks for a given date
   const insertPlan = (date) => {
-    const stmt = db.prepare(
-      "INSERT INTO user_daily_plan (user_id, date, symptom, category, task, done) VALUES (?, ?, ?, ?, ?, ?)"
-    );
+    db.get(
+      `SELECT recovered_at FROM user_symptoms WHERE user_id = ? AND symptom = ? ORDER BY date DESC LIMIT 1`,
+      [user_id, symptom],
+      (err, row) => {
+        if (err) return console.error(err);
 
-    Object.entries(plan).forEach(([key, items]) => {
-      const dbCategory = CATEGORY_MAP[key];
-      if (!dbCategory) return; // skip unmapped keys
-      if (Array.isArray(items)) {
-        items.forEach((item) => stmt.run([user_id, date, symptom, dbCategory, item, 0]));
-      } else if (typeof items === "string") {
-        stmt.run([user_id, date, symptom, dbCategory, items, 0]);
+        if (row && row.recovered_at) {
+          console.log(`Symptom "${symptom}" already recovered. Skipping plan generation.`);
+          return; // skip if recovered
+        }
+
+        const stmt = db.prepare(
+          "INSERT OR IGNORE INTO user_daily_plan (user_id, date, symptom, severity, category, task, done) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        Object.entries(plan).forEach(([key, items]) => {
+          const dbCategory = CATEGORY_MAP[key];
+          if (!dbCategory) return;
+
+          if (Array.isArray(items)) {
+            items.forEach((item) => {
+              console.log('Inserting task:', { user_id, date, symptom, severity, dbCategory, task: item });
+              stmt.run([user_id, date, symptom, severity, dbCategory, item, 0]);
+            });
+          } else if (typeof items === "string") {
+            console.log('Inserting task:', { user_id, date, symptom, severity, dbCategory, task: items });
+            stmt.run([user_id, date, symptom, severity, dbCategory, items, 0]);
+          }
+        });
+
+        stmt.finalize();
       }
-    });
-
-    stmt.finalize();
+    );
   };
 
-  // Insert plan either for today or recurring for next 30 days
   if (recurring) {
     for (let i = 0; i < 30; i++) {
       const date = new Date();
@@ -221,47 +247,63 @@ router.post("/generatePlan", (req, res) => {
 });
 
 
-  // Fetch today's daily plan
   router.get("/plan", (req, res) => {
-    const userId = parseInt(req.query.userId);
-    const symptom = req.query.symptom;
+  const userId = parseInt(req.query.userId);
+  const symptom = req.query.symptom;
+  const severity = req.query.severity; // <-- add this
 
-    if (isNaN(userId)) {
-      return res.status(400).json({ success: false, message: "Invalid user ID" });
+  if (isNaN(userId))
+    return res.status(400).json({ success: false, message: "Invalid user ID" });
+
+  const today = new Date().toISOString().split("T")[0];
+
+  let query = `SELECT category, task, severity, done, symptom
+               FROM user_daily_plan
+               WHERE user_id = ? AND date = ?`;
+  const params = [userId, today];
+
+  if (symptom) {
+    query += " AND symptom = ?";
+    params.push(symptom);
+  }
+
+  if (severity) {
+    query += " AND severity = ?"; // <-- add severity filter
+    params.push(severity);
+  }
+
+  query += " ORDER BY category ASC, done ASC";
+
+  console.log("🔹 /plan DB query:", query, "Params:", params);
+
+  db.all(query, params, (err, rows) => {
+    if (err) {
+      console.error("DB error fetching daily plan:", err);
+      return res.status(500).json({ success: false, message: "DB error fetching plan" });
     }
-
-    const today = new Date().toISOString().split("T")[0];
-
-    let query = `SELECT category, task, done, symptom FROM user_daily_plan WHERE user_id = ? AND date = ?`;
-    const params = [userId, today];
-
-    if (symptom) {
-      query += " AND symptom = ?";
-      params.push(symptom);
-    }
-
-    db.all(query, params, (err, rows) => {
-      if (err) {
-        console.error("DB error fetching daily plan:", err);
-        return res.status(500).json({ success: false, message: "DB error fetching plan" });
-      }
-      return res.json({ success: true, plan: rows });
-    });
+    console.log("🔹 Rows fetched from DB:", rows);
+    return res.json({ success: true, plan: rows });
   });
+});
+
 
   // Update a plan task
-  router.post('/updatePlanTask', async (req, res) => {
+  router.post('/updatePlanTask', (req, res) => {
     const { user_id, date, category, task, done } = req.body;
-    try {
-      await db.run(
-        'UPDATE user_daily_plan SET done = ? WHERE user_id = ? AND date = ? AND category = ? AND task = ?',
-        [done, user_id, date, category, task]
-      );
-      res.json({ success: true });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to update plan task' });
-    }
+
+    db.run(
+      'UPDATE user_daily_plan SET done = ? WHERE user_id = ? AND date = ? AND category = ? AND task = ?',
+      [done, user_id, date, category, task],
+      function (err) {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Failed to update plan task' });
+        }
+        console.log(`✅ Updated task in DB: user ${user_id}, task "${task}", category "${category}", date ${date}, done=${done}`);
+        console.log(`Affected rows: ${this.changes}`);
+        res.json({ success: true });
+      }
+    );
   });
 
   // Fetch trends
@@ -293,9 +335,7 @@ router.post("/generatePlan", (req, res) => {
   // Recover a symptom
   router.post('/recoverSymptom', (req, res) => {
     const { user_id, symptom, date } = req.body;
-    if (!user_id || !symptom || !date) {
-      return res.status(400).json({ success: false, message: 'Missing fields' });
-    }
+    if (!user_id || !symptom || !date) return res.status(400).json({ success: false, message: 'Missing fields' });
 
     const recoveredAt = new Date().toISOString();
     db.run(
@@ -312,6 +352,7 @@ router.post("/generatePlan", (req, res) => {
       }
     );
   });
+
 
   return router;
 };

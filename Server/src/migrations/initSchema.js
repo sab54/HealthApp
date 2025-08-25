@@ -299,12 +299,14 @@ function initSchema() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         symptom TEXT NOT NULL,
+        severity TEXT NOT NULL CHECK(severity IN ('mild','moderate','severe')),
         category TEXT NOT NULL,
         task TEXT NOT NULL,
         done INTEGER DEFAULT 0,
         date TEXT NOT NULL,
         created_at TEXT DEFAULT (datetime('now')),
-        FOREIGN KEY(user_id) REFERENCES users(id)
+        FOREIGN KEY(user_id) REFERENCES users(id),
+         UNIQUE(user_id, symptom, category, task, date)
       )
     `);
 

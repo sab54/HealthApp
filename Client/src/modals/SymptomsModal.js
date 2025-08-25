@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import symptomsData from '../data/symptomHealth';
+import { symptomHealth } from '../data/symptomHealth';
+
 
 import { useSelector, useDispatch } from 'react-redux';
 import { addSymptom } from '../store/reducers/healthlogReducers';
@@ -41,9 +42,10 @@ const SymptomsModal = ({ visible, onClose }) => {
     onClose(symptomObj);
   };
 
-  const filteredSymptoms = symptomsData.filter(item =>
-    item.symptom.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const filteredSymptoms = symptomHealth.filter(item =>
+  item.symptom.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
 
   return (
     <Modal visible={visible} animationType="slide">

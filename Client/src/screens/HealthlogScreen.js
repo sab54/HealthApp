@@ -34,18 +34,18 @@ const HealthLogScreen = ({ navigation, route }) => {
   const today = format(new Date(), 'EEE, dd MMM yyyy');
 
   useEffect(() => {
-  const fetchTodayLogs = async () => {
-    try {
-      console.log('Fetching:', `${API_URL_HEALTHLOG}/today?userId=${userId}`);
-      const result = await get('/api/healthlog/today', { userId });
-      console.log('Fetched today logs:', result);
-    } catch (error) {
-      console.error('Error fetching today logs:', error);
-    }
-  };
+    const fetchTodayLogs = async () => {
+      try {
+        console.log('Fetching:', `${API_URL_HEALTHLOG}/today?userId=${userId}`);
+        const result = await get('/api/healthlog/today', { userId });
+        console.log('Fetched today logs:', result);
+      } catch (error) {
+        console.error('Error fetching today logs:', error);
+      }
+    };
 
-  if (userId) fetchTodayLogs();
-}, [userId]);
+    if (userId) fetchTodayLogs();
+  }, [userId]);
 
 
   // Fetch today's symptoms
@@ -236,6 +236,7 @@ const HealthLogScreen = ({ navigation, route }) => {
           onClose={handleSymptomDetailsClose}
         />
       )}
+
     </View>
   );
 };
