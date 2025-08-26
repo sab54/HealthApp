@@ -52,6 +52,9 @@ const healthlogSlice = createSlice({
         state.todaySymptoms.unshift(action.payload);
       }
     },
+    setTodaySymptoms: (state, action) => {
+      state.todaySymptoms = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -146,5 +149,5 @@ const healthlogSlice = createSlice({
   },
 });
 
-export const { clearError, resetMood, addSymptom } = healthlogSlice.actions;
+export const { clearError, resetMood, addSymptom, setTodaySymptoms } = healthlogSlice.actions;
 export default healthlogSlice.reducer;

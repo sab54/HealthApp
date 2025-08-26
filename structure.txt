@@ -1,173 +1,173 @@
 C:.
-¦   .gitignore
-¦   README.md
-¦   
+ï¿½   .gitignore
+ï¿½   README.md
+ï¿½
 +---.vscode
-¦       
+ï¿½
 +---Client
-¦   ¦   App.js
-¦   ¦   app.json
-¦   ¦   babel.config.js
-¦   ¦   index.js
-¦   ¦   jest.config.js
-¦   ¦   package-lock.json
-¦   ¦   package.json
-¦   ¦   
-¦   +---.expo
-¦   ¦       
-¦   +---node_modules
-¦   ¦           
-¦   +---src
-¦   ¦   +---assets
-¦   ¦   ¦   ¦   adaptive-icon.png
-¦   ¦   ¦   ¦   doctor.jpg
-¦   ¦   ¦   ¦   favicon.png
-¦   ¦   ¦   ¦   icon.png
-¦   ¦   ¦   ¦   illustration onboardingscreeen2.png
-¦   ¦   ¦   ¦   illustration onboardingscreeen3.png
-¦   ¦   ¦   ¦   illustration onboardingscreeen2.png
-¦   ¦   ¦   ¦   login_image.png
-¦   ¦   ¦   ¦   map.png
-¦   ¦   ¦   ¦   no-chats2.png
-¦   ¦   ¦   ¦   splash-icon.png
-¦   ¦   ¦   ¦   
-¦   ¦   ¦   +---fonts/
-¦   ¦   ¦   +---symptoms/
-¦   ¦   ¦           
-¦   ¦   +---components
-¦   ¦   ¦   ¦   ConfirmationModal.js
-¦   ¦   ¦   ¦   CurvedBackground.js
-¦   ¦   ¦   ¦   DailyMoodReminder.js
-¦   ¦   ¦   ¦   Footer.js
-¦   ¦   ¦   ¦   RadioButton.js
-¦   ¦   ¦   ¦   SearchBar.js
-¦   ¦   ¦   ¦   SidebarMenu.js
-¦   ¦   ¦   ¦   SwipeableList.js
-¦   ¦   ¦   ¦   Tabs.js
-¦   ¦   ¦   ¦   
-¦   ¦   ¦   +---Chat
-¦   ¦   ¦           MessageBubble.js
-¦   ¦   ¦           ReactionPicker.js
-¦   ¦   ¦           TypingIndicator.js
-¦   ¦   ¦           
-¦   ¦   +---context
-¦   ¦   ¦       ChatContext.js
-¦   ¦   ¦       
-¦   ¦   +---data
-¦   ¦   ¦       mockData.js
-¦   ¦   ¦       weatherHealth.json
+ï¿½   ï¿½   App.js
+ï¿½   ï¿½   app.json
+ï¿½   ï¿½   babel.config.js
+ï¿½   ï¿½   index.js
+ï¿½   ï¿½   jest.config.js
+ï¿½   ï¿½   package-lock.json
+ï¿½   ï¿½   package.json
+ï¿½   ï¿½
+ï¿½   +---.expo
+ï¿½   ï¿½
+ï¿½   +---node_modules
+ï¿½   ï¿½
+ï¿½   +---src
+ï¿½   ï¿½   +---assets
+ï¿½   ï¿½   ï¿½   ï¿½   adaptive-icon.png
+ï¿½   ï¿½   ï¿½   ï¿½   doctor.jpg
+ï¿½   ï¿½   ï¿½   ï¿½   favicon.png
+ï¿½   ï¿½   ï¿½   ï¿½   icon.png
+ï¿½   ï¿½   ï¿½   ï¿½   illustration onboardingscreeen2.png
+ï¿½   ï¿½   ï¿½   ï¿½   illustration onboardingscreeen3.png
+ï¿½   ï¿½   ï¿½   ï¿½   illustration onboardingscreeen2.png
+ï¿½   ï¿½   ï¿½   ï¿½   login_image.png
+ï¿½   ï¿½   ï¿½   ï¿½   map.png
+ï¿½   ï¿½   ï¿½   ï¿½   no-chats2.png
+ï¿½   ï¿½   ï¿½   ï¿½   splash-icon.png
+ï¿½   ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   ï¿½   +---fonts/
+ï¿½   ï¿½   ï¿½   +---symptoms/
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---components
+ï¿½   ï¿½   ï¿½   ï¿½   ConfirmationModal.js
+ï¿½   ï¿½   ï¿½   ï¿½   CurvedBackground.js
+ï¿½   ï¿½   ï¿½   ï¿½   DailyMoodReminder.js
+ï¿½   ï¿½   ï¿½   ï¿½   Footer.js
+ï¿½   ï¿½   ï¿½   ï¿½   RadioButton.js
+ï¿½   ï¿½   ï¿½   ï¿½   SearchBar.js
+ï¿½   ï¿½   ï¿½   ï¿½   SidebarMenu.js
+ï¿½   ï¿½   ï¿½   ï¿½   SwipeableList.js
+ï¿½   ï¿½   ï¿½   ï¿½   Tabs.js
+ï¿½   ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   ï¿½   +---Chat
+ï¿½   ï¿½   ï¿½           MessageBubble.js
+ï¿½   ï¿½   ï¿½           ReactionPicker.js
+ï¿½   ï¿½   ï¿½           TypingIndicator.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---context
+ï¿½   ï¿½   ï¿½       ChatContext.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---data
+ï¿½   ï¿½   ï¿½       mockData.js
+ï¿½   ï¿½   ï¿½       weatherHealth.json
 |   |   |       symptomHealth.json
-¦   ¦   ¦       
-¦   ¦   +---modals
-¦   ¦   ¦       ActionModal.js
-¦   ¦   ¦       AddContactModal.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---modals
+ï¿½   ï¿½   ï¿½       ActionModal.js
+ï¿½   ï¿½   ï¿½       AddContactModal.js
 |   |   |       EditUserInfo.js
-¦   ¦   ¦       GroupInfoModal.js
-¦   ¦   ¦       QuizPromptModal.js
-¦   ¦   ¦       SymptomsDetailModal.js
-¦   ¦   ¦       SymptomsModal.js
-¦   ¦   ¦       ThreadModal.js
-¦   ¦   ¦       
-¦   ¦   +---module
-¦   ¦   ¦       ChatList.js
-¦   ¦   ¦       DailyWellnessCard.js
-¦   ¦   ¦       EmergencyShortcuts.js
-¦   ¦   ¦       WeatherCard.js
-¦   ¦   ¦       
-¦   ¦   +---navigation
-¦   ¦   ¦       AppNavigator.js
-¦   ¦   ¦       TabNavigator.js
-¦   ¦   ¦       
-¦   ¦   +---screens
-¦   ¦   ¦   ¦   CalendarScreen.js
-¦   ¦   ¦   ¦   DailySymptomTrackingScreen.js
-¦   ¦   ¦   ¦   DoctorLicenseUpload.js
-¦   ¦   ¦   ¦   HealthlogScreen.js
-¦   ¦   ¦   ¦   HealthTrackingScreen.js
-¦   ¦   ¦   ¦   HomeScreen.js
-¦   ¦   ¦   ¦   LoginScreen.js
-¦   ¦   ¦   ¦   onboardingScreen.js
-¦   ¦   ¦   ¦   OTPVerificationScreen.js
-¦   ¦   ¦   ¦   RegistrationScreen.js
-¦   ¦   ¦   ¦   ResourcesScreen.js
-¦   ¦   ¦   ¦   SettingsScreen.js
-¦   ¦   ¦   ¦   StepsTrackerScreen.js
-¦   ¦   ¦   ¦   SymptomRecoveryPlanScreen.js
-¦   ¦   ¦   ¦   
-¦   ¦   ¦   +---Chat
-¦   ¦   ¦           AddPeopleScreen.js
-¦   ¦   ¦           ChatRoomScreen.js
-¦   ¦   ¦           ChatScreen.js
-¦   ¦   ¦           
-¦   ¦   +---store
-¦   ¦   ¦   ¦   index.js
-¦   ¦   ¦   ¦   
-¦   ¦   ¦   +---actions
-¦   ¦   ¦   ¦       chatActions.js
-¦   ¦   ¦   ¦       emergencyActions.js
-¦   ¦   ¦   ¦       healthlogActions.js
-¦   ¦   ¦   ¦       loginActions.js
-¦   ¦   ¦   ¦       quizActions.js
-¦   ¦   ¦   ¦       registrationActions.js
-¦   ¦   ¦   ¦       settingActions.js
-¦   ¦   ¦   ¦       themeActions.js
-¦   ¦   ¦   ¦       weatherActions.js
-¦   ¦   ¦   ¦       
-¦   ¦   ¦   +---reducers
-¦   ¦   ¦   ¦       chatReducer.js
-¦   ¦   ¦   ¦       emergencyReducer.js
-¦   ¦   ¦   ¦       healthlogReducers.js
-¦   ¦   ¦   ¦       loginReducer.js
-¦   ¦   ¦   ¦       registrationReducer.js
-¦   ¦   ¦   ¦       settingsReducer.js
-¦   ¦   ¦   ¦       themeReducer.js
-¦   ¦   ¦   ¦       weatherReducer.js
-¦   ¦   ¦   ¦       
-¦   ¦   ¦   +---selectors
-¦   ¦   ¦           chatSelectors.js
-¦   ¦   ¦           
-¦   ¦   +---theme
-¦   ¦   ¦       themeTokens.js
-¦   ¦   ¦       
-¦   ¦   +---utils
-¦   ¦           api.js
-¦   ¦           apiPaths.js
-¦   ¦           config.js
-¦   ¦           socket.js
-¦   ¦           tokenHelper.js
-¦   ¦           utils.js
-¦   ¦                          
+ï¿½   ï¿½   ï¿½       GroupInfoModal.js
+ï¿½   ï¿½   ï¿½       QuizPromptModal.js
+ï¿½   ï¿½   ï¿½       SymptomsDetailModal.js
+ï¿½   ï¿½   ï¿½       SymptomsModal.js
+ï¿½   ï¿½   ï¿½       ThreadModal.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---module
+ï¿½   ï¿½   ï¿½       ChatList.js
+ï¿½   ï¿½   ï¿½       DailyWellnessCard.js
+ï¿½   ï¿½   ï¿½       EmergencyShortcuts.js
+ï¿½   ï¿½   ï¿½       WeatherCard.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---navigation
+ï¿½   ï¿½   ï¿½       AppNavigator.js
+ï¿½   ï¿½   ï¿½       TabNavigator.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---screens
+ï¿½   ï¿½   ï¿½   ï¿½   CalendarScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   DailySymptomTrackingScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   DoctorLicenseUpload.js
+ï¿½   ï¿½   ï¿½   ï¿½   HealthlogScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   HealthTrackingScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   HomeScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   LoginScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   onboardingScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   OTPVerificationScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   RegistrationScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   ResourcesScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   SettingsScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   StepsTrackerScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½   SymptomRecoveryPlanScreen.js
+ï¿½   ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   ï¿½   +---Chat
+ï¿½   ï¿½   ï¿½           AddPeopleScreen.js
+ï¿½   ï¿½   ï¿½           ChatRoomScreen.js
+ï¿½   ï¿½   ï¿½           ChatScreen.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---store
+ï¿½   ï¿½   ï¿½   ï¿½   index.js
+ï¿½   ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   ï¿½   +---actions
+ï¿½   ï¿½   ï¿½   ï¿½       chatActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       emergencyActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       healthlogActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       loginActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       quizActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       registrationActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       settingActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       themeActions.js
+ï¿½   ï¿½   ï¿½   ï¿½       weatherActions.js
+ï¿½   ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   ï¿½   +---reducers
+ï¿½   ï¿½   ï¿½   ï¿½       chatReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½       emergencyReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½       healthlogReducers.js
+ï¿½   ï¿½   ï¿½   ï¿½       loginReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½       registrationReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½       settingsReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½       themeReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½       weatherReducer.js
+ï¿½   ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   ï¿½   +---selectors
+ï¿½   ï¿½   ï¿½           chatSelectors.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---theme
+ï¿½   ï¿½   ï¿½       themeTokens.js
+ï¿½   ï¿½   ï¿½
+ï¿½   ï¿½   +---utils
+ï¿½   ï¿½           api.js
+ï¿½   ï¿½           apiPaths.js
+ï¿½   ï¿½           config.js
+ï¿½   ï¿½           socket.js
+ï¿½   ï¿½           tokenHelper.js
+ï¿½   ï¿½           utils.js
+ï¿½   ï¿½
 +---Server
-    ¦   .env
-    ¦   eng.traineddata
-    ¦   package-lock.json
-    ¦   package.json
-    ¦   users.db
-    ¦   
+    ï¿½   .env
+    ï¿½   eng.traineddata
+    ï¿½   package-lock.json
+    ï¿½   package.json
+    ï¿½   trustcura.db
+    ï¿½
     +---src
-    ¦   ¦   server.js
-    ¦   ¦   
-    ¦   +---config
-    ¦   ¦       db.js
-    ¦   +---data
-    ¦   ¦       symptomHealth.js
-    ¦   ¦       
-    ¦   +---middleware
-    ¦   ¦       authMiddleware.js
-    ¦   ¦       decryptMiddleware.js
-    ¦   ¦       encryptMiddleware.js
-    ¦   ¦       
-    ¦   +---migrations
-    ¦   ¦       initSchema.js
-    ¦   ¦       
-    ¦   +---routes
-    ¦   ¦       auth.js
-    ¦   ¦       chat.js
-    ¦   ¦       license.js
-    ¦   ¦       healthlog.js
-    ¦   ¦       user.js
-    ¦   ¦       
-    ¦   +---sockets
-    ¦           index.js
-    ¦           
+    ï¿½   ï¿½   server.js
+    ï¿½   ï¿½
+    ï¿½   +---config
+    ï¿½   ï¿½       db.js
+    ï¿½   +---data
+    ï¿½   ï¿½       symptomHealth.js
+    ï¿½   ï¿½
+    ï¿½   +---middleware
+    ï¿½   ï¿½       authMiddleware.js
+    ï¿½   ï¿½       decryptMiddleware.js
+    ï¿½   ï¿½       encryptMiddleware.js
+    ï¿½   ï¿½
+    ï¿½   +---migrations
+    ï¿½   ï¿½       initSchema.js
+    ï¿½   ï¿½
+    ï¿½   +---routes
+    ï¿½   ï¿½       auth.js
+    ï¿½   ï¿½       chat.js
+    ï¿½   ï¿½       license.js
+    ï¿½   ï¿½       healthlog.js
+    ï¿½   ï¿½       user.js
+    ï¿½   ï¿½
+    ï¿½   +---sockets
+    ï¿½           index.js
+    ï¿½
     +---uploads

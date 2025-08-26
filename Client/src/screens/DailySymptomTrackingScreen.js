@@ -10,7 +10,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ import SymptomDetailModal from '../modals/SymptomDetailModal';
 import { get, post } from '../utils/api';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
 import { BASE_URL } from '../utils/config';
+import { setTodaySymptoms } from '../store/reducers/healthlogReducers';
 
 
 const DailySymptomTrackerScreen = () => {
@@ -30,7 +31,10 @@ const DailySymptomTrackerScreen = () => {
   const userId = user?.id;
   const navigation = useNavigation();
 
-  const [symptoms, setSymptoms] = useState([]);
+  const dispatch = useDispatch();
+
+  const { todaySymptoms } = useSelector(state => state.healthlog);
+  const symptoms = todaySymptoms || [];
   const [loading, setLoading] = useState(true);
   const [showSymptomsModal, setShowSymptomsModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -65,7 +69,7 @@ const DailySymptomTrackerScreen = () => {
         return 0;
       });
 
-      setSymptoms(fetchedSymptoms);
+      dispatch(setTodaySymptoms(fetchedSymptoms));
     } catch (err) {
       console.error('Error fetching symptoms:', err);
       Alert.alert('Error', 'Failed to fetch symptoms from server.');
@@ -108,13 +112,9 @@ const DailySymptomTrackerScreen = () => {
     }
 
     const newSymptom = { ...symptom, date: today, onsetTime: new Date().toISOString() };
-    setSymptoms(prev =>
-      [...prev, newSymptom].sort((a, b) => {
-        if (!a.recovered_at && b.recovered_at) return -1;
-        if (a.recovered_at && !b.recovered_at) return 1;
-        return new Date(a.date) - new Date(b.date);
-      })
-    );
+    dispatch(setTodaySymptoms([...symptoms, newSymptom]));
+
+
 
     setSelectedSymptom(newSymptom);
     setShowDetailModal(true);
@@ -128,7 +128,7 @@ const DailySymptomTrackerScreen = () => {
       const updatedSymptoms = symptoms.map(s =>
         s.symptom === symptom.symptom ? { ...s, recovered_at: recoveredAt } : s
       );
-      setSymptoms(updatedSymptoms);
+      dispatch(setTodaySymptoms(updatedSymptoms));
 
       const updatedCache = { ...recoveredSymptomsCache, [symptom.symptom]: recoveredAt };
       setRecoveredSymptomsCache(updatedCache);
@@ -139,6 +139,7 @@ const DailySymptomTrackerScreen = () => {
         symptom: symptom.symptom,
         date: symptom.date,
       });
+      await fetchTodaySymptoms();
     } catch (err) {
       console.error('Error marking recovered:', err);
       Alert.alert('Error', 'Failed to mark symptom as recovered.');
@@ -216,31 +217,24 @@ const DailySymptomTrackerScreen = () => {
       {showDetailModal && selectedSymptom && (
 
         <SymptomDetailModal
-  visible={showDetailModal}
-  symptom={selectedSymptom}
-  onClose={(updatedSymptom) => {
-    setShowDetailModal(false);
+          visible={showDetailModal}
+          symptom={selectedSymptom}
+          onClose={async (updatedSymptom) => {
+            setShowDetailModal(false);
+            if (!updatedSymptom) return;
 
-    if (!updatedSymptom) return;
+            // update the list with the edited symptom
+            const updated = symptoms.map(s =>
+              s.symptom === updatedSymptom.symptom ? updatedSymptom : s
+            );
+            dispatch(setTodaySymptoms(updated));
 
-    setSymptoms(prev =>
-      prev.map(s => {
-        if (
-          s.symptom === updatedSymptom.symptom &&
-          !s.recovered_at &&
-          s.date === updatedSymptom.date
-        ) {
-          return { ...s, ...updatedSymptom, severity: updatedSymptom.severity_level };
-        }
-        return s;
-      }).sort((a, b) => {
-        if (!a.recovered_at && b.recovered_at) return -1;
-        if (a.recovered_at && !b.recovered_at) return 1;
-        return new Date(a.date) - new Date(b.date);
-      })
-    );
-  }}
-/>
+            // 🔄 Then force backend refresh so the list is correct
+            await fetchTodaySymptoms();
+          }}
+
+        />
+
 
       )}
 
