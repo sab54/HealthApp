@@ -14,14 +14,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 
-// Weather + News Actions
-import { fetchWeatherData, fetchForecastData } from '../store/actions/weatherActions';
+// // Weather + News Actions
+// import { fetchWeatherData, fetchForecastData } from '../store/actions/weatherActions';
 
 // HealthLog Actions
 import { fetchTodayMood } from '../store/actions/healthlogActions';
 
 // Modules
-import WeatherCard from '../module/WeatherCard';
+// import WeatherCard from '../module/WeatherCard';
 import DailyWellnessCard from '../module/DailyWellnessCard';
 
 // Components
@@ -33,17 +33,17 @@ const HomeScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  const {
-    current: weatherData,
-    forecast: forecastData,
-    loading: loadingWeather,
-    error,
-  } = useSelector((state) => state.weather);
+  // const {
+  //   current: weatherData,
+  //   forecast: forecastData,
+  //   loading: loadingWeather,
+  //   error,
+  // } = useSelector((state) => state.weather);
 
   const { moodToday, sleepToday, energyToday, todaySymptoms } = useSelector(state => state.healthlog);
 
 
-  const [refreshing, setRefreshing] = useState(false);
+  // const [refreshing, setRefreshing] = useState(false);
   const [fontsLoaded] = useFonts({
     Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
   });
@@ -82,21 +82,21 @@ const HomeScreen = () => {
   }, [dispatch]);
 
 
-  // Weather Data Fetch
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    Promise.all([
-      dispatch(fetchWeatherData()),
-      dispatch(fetchForecastData()),
-    ]).finally(() => {
-      setTimeout(() => setRefreshing(false), 1000);
-    });
-  }, [dispatch]);
+  // // Weather Data Fetch
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   Promise.all([
+  //     dispatch(fetchWeatherData()),
+  //     dispatch(fetchForecastData()),
+  //   ]).finally(() => {
+  //     setTimeout(() => setRefreshing(false), 1000);
+  //   });
+  // }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchWeatherData());
-    dispatch(fetchForecastData());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchWeatherData());
+  //   dispatch(fetchForecastData());
+  // }, [dispatch]);
 
 
   const styles = createStyles(theme, insets);
@@ -127,31 +127,31 @@ const HomeScreen = () => {
         />
       ),
     },
-    {
-      key: 'weather',
-      render: () => (
-        <View style={styles.blockSpacing}>
-          <WeatherCard
-            weatherData={weatherData}
-            forecastData={forecastData}
-            loadingWeather={loadingWeather}
-            theme={theme}
-          />
-        </View>
-      ),
-    },
-    ...(error
-      ? [
-        {
-          key: 'error',
-          render: () => (
-            <Text style={[styles.errorText, { color: theme.danger || 'red' }]}>
-              ⚠️ Weather fetch failed: {error}
-            </Text>
-          ),
-        },
-      ]
-      : []),
+    // {
+    //   key: 'weather',
+    //   render: () => (
+    //     <View style={styles.blockSpacing}>
+    //       <WeatherCard
+    //         weatherData={weatherData}
+    //         forecastData={forecastData}
+    //         loadingWeather={loadingWeather}
+    //         theme={theme}
+    //       />
+    //     </View>
+    //   ),
+    // },
+    // ...(error
+    //   ? [
+    //     {
+    //       key: 'error',
+    //       render: () => (
+    //         <Text style={[styles.errorText, { color: theme.danger || 'red' }]}>
+    //           ⚠️ Weather fetch failed: {error}
+    //         </Text>
+    //       ),
+    //     },
+    //   ]
+    //   : []),
     {
       key: 'footer',
       render: () => (
@@ -169,8 +169,8 @@ const HomeScreen = () => {
       renderItem={({ item }) => item.render()}
       contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}
       showsVerticalScrollIndicator={false}
-      refreshing={refreshing}
-      onRefresh={onRefresh}
+      // refreshing={refreshing}
+      // onRefresh={onRefresh}
     />
   );
 };

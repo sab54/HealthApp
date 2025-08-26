@@ -247,6 +247,7 @@ const TabNavigator = () => {
 
                 addedSymptoms={addedSymptoms}
                 setAddedSymptoms={setAddedSymptoms}
+                showCloseButton={true}
             />
 
 

@@ -146,7 +146,7 @@ router.post('/submit', async (req, res) => {
                         }
                       );
                     } else {
-                      resolve(); // Skip duplicate unresolved symptom
+                      resolve();
                     }
                   }
                 );

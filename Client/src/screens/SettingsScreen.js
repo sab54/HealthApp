@@ -1,17 +1,28 @@
+// Client/src/screens/SettingsScreen.js
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Button } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Button, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserProfile } from '../store/actions/settingActions';
-import { Feather } from '@expo/vector-icons';
-import EditUserInfoModal from '../modals/EditUserInfo';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import { Ionicons, Feather } from '@expo/vector-icons';
+
+
+import { updateUserProfile } from '../store/actions/settingActions';
+import EditUserInfoModal from '../modals/EditUserInfo';
 
 const SettingsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const theme = useSelector(state => state.theme.themeColors);
+    const insets = useSafeAreaInsets();
     const user = useSelector(state => state.auth.user);
     const settings = useSelector(state => state.settings);
+
+    const [fontsLoaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    });
 
     const [firstName, setFirstName] = useState(user?.first_name || '');
     const [lastName, setLastName] = useState(user?.last_name || '');
@@ -58,47 +69,60 @@ const SettingsScreen = () => {
         }
     }, [settings.success]);
 
+    const styles = createStyles(theme, insets);
+
+    if (!fontsLoaded) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={theme.primary} />
+                <Text style={[styles.loadingText, { color: theme.text }]}>Loading fonts...</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             {/* Back Button */}
             <TouchableOpacity
                 style={styles.backButton}
-                onPress={() => navigation.navigate('MainTabs')}
+                onPress={() => navigation.goBack()}
             >
-                <Text style={styles.backButtonText}>← Back</Text>
+                <Ionicons name="arrow-back" size={24} color={theme.text} />
             </TouchableOpacity>
 
+
             {/* Centered Title */}
-            <Text style={styles.title}>Settings</Text>
+            <Text style={[styles.title, { color: theme.text }]}>Settings</Text>
 
             {/* User Info with Right Arrow */}
             <TouchableOpacity
-                style={styles.userInfoContainer}
+                style={[styles.userInfoContainer, { borderColor: theme.border }]}
                 onPress={() => setEditModalVisible(true)}
             >
                 <View>
-                    <Text style={styles.userName}>{firstName} {lastName}</Text>
-                    <Text style={styles.userEmail}>{user?.email}</Text>
+                    <Text style={[styles.userName, { color: theme.text }]}>{firstName} {lastName}</Text>
+                    <Text style={[styles.userEmail, { color: theme.mutedText }]}>{user?.email}</Text>
                 </View>
-                <Feather name="chevron-right" size={24} color="#000" />
+                <Feather name="chevron-right" size={24} color={theme.text} />
             </TouchableOpacity>
 
             {/* Doctor Verification Section */}
             {userRole === 'doctor' && (
                 <View style={styles.verificationContainer}>
-                    <Text style={styles.label}>Doctor Verification</Text>
-                    <Text style={styles.status}>Status: {status}</Text>
-                    <Text style={styles.role}>Role: {userRole}</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Doctor Verification</Text>
+                    <Text style={[styles.status, { color: theme.text }]}>{`Status: ${status}`}</Text>
+                    <Text style={[styles.role, { color: theme.text }]}>{`Role: ${userRole}`}</Text>
                     <Button
                         title="Upload License"
+                        color={theme.primary}
                         onPress={() => navigation.navigate('DoctorLicenseUpload')}
                     />
                     {!isApproved ? (
-                        <Text style={styles.warning}>
+                        <Text style={[styles.warning, { color: theme.warning }]}>
                             Your license is pending admin approval. Limited access only.
                         </Text>
                     ) : (
-                        <Text style={styles.approvedNote}>
+                        <Text style={[styles.approvedNote, { color: theme.success }]}>
                             Your license has been approved. Full access granted.
                         </Text>
                     )}
@@ -110,26 +134,38 @@ const SettingsScreen = () => {
                 onClose={() => setEditModalVisible(false)}
                 firstName={firstName}
                 lastName={lastName}
+                isDarkMode={theme.mode === 'dark'}
                 onSave={(newFirst, newLast) => {
                     setFirstName(newFirst);
                     setLastName(newLast);
-
-                    // Update immediately to Redux/backend
                     dispatch(updateUserProfile(user.id, newFirst, newLast));
-
                     setEditModalVisible(false);
                 }}
             />
-
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-    backButton: { marginBottom: 10 },
-    backButtonText: { fontSize: 16, color: '#007bff' },
-    title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 30 },
+const createStyles = (theme, insets) => StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: Platform.OS === 'ios' ? 20 : 10 + insets.top,
+        paddingHorizontal: 16,
+        paddingBottom: Platform.OS === 'ios' ? 20 : 10 + insets.bottom,
+        backgroundColor: theme.background,
+    },
+    loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background },
+    loadingText: { marginTop: 10, fontFamily: 'Poppins' },
+    backButton: {
+        width: 36,
+        height: 36,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        backgroundColor: theme.surface,
+        alignSelf: 'flex-start',
+    },
+    title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 30, fontFamily: 'Poppins' },
     userInfoContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -140,22 +176,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 30,
     },
-    userName: { fontSize: 18, fontWeight: '600' },
-    userEmail: { fontSize: 14, color: '#666' },
+    userName: { fontSize: 18, fontWeight: '600', fontFamily: 'Poppins' },
+    userEmail: { fontSize: 14, fontFamily: 'Poppins' },
     verificationContainer: { marginBottom: 20 },
-    label: { fontSize: 18, fontWeight: '500', marginBottom: 5 },
-    status: { fontSize: 16, marginBottom: 2 },
-    role: { fontSize: 16, marginBottom: 10 },
-    button: {
-        backgroundColor: '#007bff',
-        padding: 15,
-        borderRadius: 8,
-        marginTop: 20
-    },
-    buttonText: { color: '#fff', textAlign: 'center', fontSize: 16, fontWeight: '600' },
-    error: { color: 'red', marginTop: 10 },
-    warning: { fontSize: 16, color: 'orange', textAlign: 'center', fontWeight: '500', marginTop: 10 },
-    approvedNote: { fontSize: 16, color: 'green', textAlign: 'center', fontWeight: '500', marginTop: 10 },
+    label: { fontSize: 18, fontWeight: '500', marginBottom: 5, fontFamily: 'Poppins' },
+    status: { fontSize: 16, marginBottom: 2, fontFamily: 'Poppins' },
+    role: { fontSize: 16, marginBottom: 10, fontFamily: 'Poppins' },
+    warning: { fontSize: 16, fontWeight: '500', textAlign: 'center', marginTop: 10, fontFamily: 'Poppins' },
+    approvedNote: { fontSize: 16, fontWeight: '500', textAlign: 'center', marginTop: 10, fontFamily: 'Poppins' },
 });
 
 export default SettingsScreen;

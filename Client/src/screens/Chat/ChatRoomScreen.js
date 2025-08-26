@@ -38,10 +38,10 @@ import TypingIndicator from '../../components/Chat/TypingIndicator';
 import ThreadModal from '../../modals/ThreadModal';
 import GroupInfoModal from '../../modals/GroupInfoModal';
 import ActionModal from '../../modals/ActionModal';
-import QuizPromptModal from '../../modals/QuizPromptModal';
+// import QuizPromptModal from '../../modals/QuizPromptModal';
 import AppointmentPromptModal from '../../modals/AppointmentPromptModal';
 
-import { generateQuizAI } from '../../store/actions/quizActions';
+// import { generateQuizAI } from '../../store/actions/quizActions';
 import {
     sendMessage,
     fetchMessages,
@@ -86,7 +86,7 @@ const ChatRoomScreen = () => {
     const [isAtBottom, setIsAtBottom] = useState(true);
     const [isTyping, setIsTyping] = useState(false);
     const [actionModalVisible, setActionModalVisible] = useState(false);
-    const [quizPromptVisible, setQuizPromptVisible] = useState(false);
+    // const [quizPromptVisible, setQuizPromptVisible] = useState(false);
     const [appointmentPromptVisible, setAppointmentPromptVisible] = useState(false);
     const [pendingQuizModal, setPendingQuizModal] = useState(false);
     const [pendingAppointmentModal, setPendingAppointmentModal] = useState(false);
@@ -291,33 +291,33 @@ const ChatRoomScreen = () => {
         scrollToBottom();
     };
 
-    const handleCreateQuiz = async ({ topic, difficulty }) => {
-        setQuizPromptVisible(false);
-        if (!topic || !chatId || !senderId) return;
+    // const handleCreateQuiz = async ({ topic, difficulty }) => {
+    //     setQuizPromptVisible(false);
+    //     if (!topic || !chatId || !senderId) return;
 
-        try {
-            const quiz = await dispatch(
-                generateQuizAI({
-                    topic,
-                    difficulty,
-                    createdBy: senderId,
-                    chatId,
-                })
-            ).unwrap();
+    //     try {
+    //         const quiz = await dispatch(
+    //             generateQuizAI({
+    //                 topic,
+    //                 difficulty,
+    //                 createdBy: senderId,
+    //                 chatId,
+    //             })
+    //         ).unwrap();
 
-            const quizMessage = {
-                chatId,
-                senderId,
-                message: `🧠 A new quiz on "${topic}" is ready! [quizId:${quiz.id}]`,
-                message_type: 'quiz',
-                metadata: { quizId: quiz.id },
-            };
+    //         const quizMessage = {
+    //             chatId,
+    //             senderId,
+    //             message: `🧠 A new quiz on "${topic}" is ready! [quizId:${quiz.id}]`,
+    //             message_type: 'quiz',
+    //             metadata: { quizId: quiz.id },
+    //         };
 
-            dispatch(sendMessage(quizMessage));
-        } catch (err) {
-            Alert.alert('Error', 'Failed to generate quiz.');
-        }
-    };
+    //         dispatch(sendMessage(quizMessage));
+    //     } catch (err) {
+    //         Alert.alert('Error', 'Failed to generate quiz.');
+    //     }
+    // };
 
     const handleCreateAppointment = async (form) => {
         setAppointmentPromptVisible(false);
@@ -530,10 +530,10 @@ const ChatRoomScreen = () => {
                             visible={actionModalVisible}
                             onClose={() => setActionModalVisible(false)}
                             onModalHide={() => {
-                                if (pendingQuizModal) {
-                                    setPendingQuizModal(false);
-                                    setQuizPromptVisible(true);
-                                }
+                                // if (pendingQuizModal) {
+                                //     setPendingQuizModal(false);
+                                //     setQuizPromptVisible(true);
+                                // }
                                 if (pendingAppointmentModal) {
                                     setPendingAppointmentModal(false);
                                     setAppointmentPromptVisible(true);
@@ -560,12 +560,12 @@ const ChatRoomScreen = () => {
                                 },
                             ]}
                         />
-                        <QuizPromptModal
+                        {/* <QuizPromptModal
                             visible={quizPromptVisible}
                             onClose={() => setQuizPromptVisible(false)}
                             onCreate={handleCreateQuiz}
                             theme={themeColors}
-                        />
+                        /> */}
 
                         <AppointmentPromptModal
                             visible={appointmentPromptVisible}
