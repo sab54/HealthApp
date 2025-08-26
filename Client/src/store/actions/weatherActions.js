@@ -7,7 +7,7 @@ import {
     setLastWeatherFetch,
     setLastForecastFetch,
 } from '../reducers/weatherReducer';
-import { mockWeatherData, mockForecastData } from '../../data/mockData';
+// import { mockWeatherData, mockForecastData } from '../../data/mockData';
 import { getUserLocation } from '../../utils/utils';
 
 // Helper to check if an hour has passed since the last fetch

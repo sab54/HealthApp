@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Pressable,
     TouchableOpacity,
+    Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -178,13 +179,24 @@ const ChatList = forwardRef(
 
         return (
             <View style={styles.container}>
-                <SearchBar
-                    query={searchQuery}
-                    onChange={setSearchQuery}
-                    theme={theme}
-                    placeholder='Search chats...'
-                    debounceTime={300}
-                />
+                <View style={styles.headerRow}>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Ionicons name="arrow-back" size={24} color={theme.text} />
+                    </TouchableOpacity>
+
+                    <View style={{ flex: 1, marginLeft: 8 }}>
+                        <SearchBar
+                            query={searchQuery}
+                            onChange={setSearchQuery}
+                            theme={theme}
+                            placeholder='Search chats...'
+                            debounceTime={300}
+                        />
+                    </View>
+                </View>
 
                 <Tabs
                     tabs={tabs}
@@ -272,7 +284,7 @@ const ChatList = forwardRef(
                                         >
                                             {truncate(
                                                 chat.lastMessage ||
-                                                    'Start chatting!',
+                                                'Start chatting!',
                                                 50
                                             )}
                                         </Text>
@@ -290,7 +302,7 @@ const ChatList = forwardRef(
                                         >
                                             {formatTimeAgo(
                                                 chat.updated_at ||
-                                                    chat.created_at
+                                                chat.created_at
                                             )}
                                         </Text>
                                         {hasUnread && (
@@ -317,8 +329,23 @@ const ChatList = forwardRef(
 
 const createStyles = (theme) =>
     StyleSheet.create({
-        container: { flex: 1, backgroundColor: theme.background },
+        container: { flex: 1, flexDirection: 'column', marginTop: Platform.OS === 'ios' ? 50 : 20, backgroundColor: theme.background },
         row: { flexDirection: 'row', alignItems: 'center' },
+        headerRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+            paddingHorizontal: 0,
+        },
+        backButton: {
+            width: 36,
+            height: 36,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 20,
+            backgroundColor: theme.surface,
+            alignSelf: 'flex-start',
+        },
         chatItem: {
             flexDirection: 'row',
             alignItems: 'center',

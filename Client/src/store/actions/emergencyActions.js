@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setEmergencySettings } from '../reducers/emergencyReducer';
 import { DEV_MODE } from '../../utils/config';
-import { mockEmergencySettings } from '../../data/mockData';
+// import { mockEmergencySettings } from '../../data/mockData';
 
 export const loadEmergencySettings = () => async (dispatch) => {
     if (DEV_MODE) {

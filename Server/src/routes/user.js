@@ -220,14 +220,15 @@ module.exports = (db) => {
         const searchRaw = req.query.q || '';
         const search = searchRaw.trim().toLowerCase();
 
-        if (!search) {
-            return res.status(400).json({ success: false, message: 'Missing search query' });
-        }
+        // if (!search) {
+        //     return res.status(400).json({ success: false, message: 'Missing search query' });
+        // }
 
         const like = `%${search}%`;
         const params = [like, like, like, like, like, like, like, like, like];
 
-        const sql = `
+        const sql = search
+            ? `
         SELECT * FROM users
         WHERE is_active = 1 AND (
             LOWER(first_name) LIKE ? OR
@@ -242,15 +243,21 @@ module.exports = (db) => {
         )
         ORDER BY created_at DESC
         LIMIT 5
+    `
+            : `
+    SELECT * FROM users
+    WHERE is_active = 1
+    ORDER BY created_at DESC
+    LIMIT 5
     `;
 
-        db.all(sql, params, (err, rows) => {
+        db.all(sql, search ? params : [], (err, rows) => {
             if (err) {
                 console.error('GET /user/suggestions error:', err);
                 return res.status(500).json({ success: false, error: 'Query failed' });
             }
 
-            const users = rows.map((user) => ({
+            let users = rows.map((user) => ({
                 id: user.id,
                 name: `${user.first_name} ${user.last_name || ''}`.trim(),
                 email: user.email,
@@ -272,8 +279,13 @@ module.exports = (db) => {
                 updated_at: user.updated_at,
             }));
 
+            if (req.user?.role === 'user') {
+                users = users.filter(u => u.role === 'doctor');
+            }
+
             res.json({ success: true, data: users });
         });
+
     });
 
     // =============================
@@ -333,8 +345,6 @@ module.exports = (db) => {
             });
         });
     });
-
-
 
     return router;
 };

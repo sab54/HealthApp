@@ -186,43 +186,43 @@ export const removeUserFromGroup = createAsyncThunk(
 /**
  *  Join or create a local group chat
  */
-export const joinLocalGroup = createAsyncThunk(
-    'chat/joinLocalGroup',
-    async (
-        { latitude, longitude, address, hasAddress },
-        { getState, dispatch, rejectWithValue }
-    ) => {
-        try {
-            const userId = getState().auth?.user?.id;
-            if (!userId) throw new Error('User not authenticated');
+// export const joinLocalGroup = createAsyncThunk(
+//     'chat/joinLocalGroup',
+//     async (
+//         { latitude, longitude, address, hasAddress },
+//         { getState, dispatch, rejectWithValue }
+//     ) => {
+//         try {
+//             const userId = getState().auth?.user?.id;
+//             if (!userId) throw new Error('User not authenticated');
 
-            const payload = {
-                userId,
-                latitude,
-                longitude,
-                address,
-                hasAddress,
-            };
-            const response = await post(
-                `${API_URL_CHAT}/local-groups/join`,
-                payload
-            );
+//             const payload = {
+//                 userId,
+//                 latitude,
+//                 longitude,
+//                 address,
+//                 hasAddress,
+//             };
+//             const response = await post(
+//                 `${API_URL_CHAT}/local-groups/join`,
+//                 payload
+//             );
 
-            if (!response?.chat_id) {
-                throw new Error('No chat ID returned from server');
-            }
+//             if (!response?.chat_id) {
+//                 throw new Error('No chat ID returned from server');
+//             }
 
-            // Re-fetch active chats after joining
-            await dispatch(fetchActiveChats());
+//             // Re-fetch active chats after joining
+//             await dispatch(fetchActiveChats());
 
-            return response;
-        } catch (error) {
-            return rejectWithValue(
-                error.message || 'Failed to join local group'
-            );
-        }
-    }
-);
+//             return response;
+//         } catch (error) {
+//             return rejectWithValue(
+//                 error.message || 'Failed to join local group'
+//             );
+//         }
+//     }
+// );
 
 /**
  *  Delete a chat

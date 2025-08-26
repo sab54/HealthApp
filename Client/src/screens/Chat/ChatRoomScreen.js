@@ -394,24 +394,14 @@ const ChatRoomScreen = () => {
                     <View style={{ flex: 1 }}>
                         {/* Header */}
                         <View style={styles.header}>
-                            <TouchableOpacity
-                                onPress={() =>
-                                    navigation.reset({
-                                        index: 0,
-                                        routes: [
-                                            {
-                                                name: 'MainTabs',
-                                                params: { screen: 'Chat' },
-                                            },
-                                        ],
-                                    })
-                                }
-                            >
-                                <Ionicons
-                                    name='arrow-back-outline'
-                                    size={24}
-                                    color={themeColors.link}
-                                />
+
+                                <TouchableOpacity onPress={() => navigation.goBack()}>
+    <Ionicons
+        name='arrow-back-outline'
+        size={24}
+        color={themeColors.link}
+    />
+
                             </TouchableOpacity>
 
                             {avatarUri || initials ? (
@@ -676,7 +666,7 @@ const createStyles = (theme, insets) =>
         },
         noMessageText: {
             textAlign: 'center',
-            marginTop: -90,
+            marginTop: -60,
             fontSize: 16,
             fontFamily: 'Poppins',
             color: theme.text,

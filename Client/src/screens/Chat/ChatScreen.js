@@ -122,8 +122,8 @@ const ChatScreen = () => {
         const a =
             Math.sin(dLat / 2) ** 2 +
             Math.cos((lat1 * Math.PI) / 180) *
-                Math.cos((lat2 * Math.PI) / 180) *
-                Math.sin(dLon / 2) ** 2;
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) ** 2;
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     };
 
@@ -194,7 +194,7 @@ const ChatScreen = () => {
                             address = data[0];
                             hasAddress = true;
                         }
-                    } catch (_) {}
+                    } catch (_) { }
 
                     const result = await dispatch(
                         joinLocalGroup({
@@ -368,14 +368,14 @@ const createStyles = (theme, insets) =>
         },
         emptyText: {
             textAlign: 'center',
-            marginTop: -90,
+            marginTop: -60,
             fontSize: 16,
             fontFamily: 'Poppins',
             color: theme.text,
         },
         fab: {
             position: 'absolute',
-            bottom: 20,
+            bottom: 50,
             right: 20,
             backgroundColor: theme.link,
             width: 60,

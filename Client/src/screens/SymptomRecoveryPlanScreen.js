@@ -13,13 +13,15 @@ import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/nativ
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from '../utils/api';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
-import Icon from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { updatePlanTask } from '../store/actions/healthlogActions';
 import { getAllSeverities } from '../data/symptomHealth';
 
 const SymptomRecoveryPlanScreen = () => {
    const { user } = useSelector(state => state.auth);
    const theme = useSelector(state => state.theme.themeColors);
+   const styles = createStyles(theme);
    const userId = user?.id;
 
    const route = useRoute();
@@ -172,7 +174,7 @@ const SymptomRecoveryPlanScreen = () => {
                         onPress={() => toggleTask(t)}
                      >
                         {checked ? (
-                           <Icon name="check" size={16} color={theme.checkboxTick} />
+                           <FeatherIcon name="check" size={16} color={theme.checkboxTick} />
                         ) : (
                            <View />
                         )}
@@ -196,11 +198,12 @@ const SymptomRecoveryPlanScreen = () => {
          contentContainerStyle={{ paddingBottom: 20 }}
       >
          <TouchableOpacity
+            style={styles.backButton}
             onPress={() => navigation.goBack()}
-            style={[styles.backButton, { backgroundColor: theme.card }]}
          >
-            <Text style={{ color: theme.primary, fontWeight: '600' }}>← Back</Text>
+            <Ionicons name="arrow-back" size={24} color={theme.text} />
          </TouchableOpacity>
+
 
          <Text style={[styles.title, { color: theme.title }]}>Recovery Plan for:</Text>
          <Text style={[styles.symptomTitle, { color: theme.text }]}>{String(symptomParam?.symptom || 'N/A')}</Text>
@@ -247,8 +250,9 @@ const SymptomRecoveryPlanScreen = () => {
    );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
    container: { flex: 1, padding: 20 },
+   backButton: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', borderRadius: 20, backgroundColor: theme.surface, alignSelf: 'flex-start'},
    center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
    title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 8, letterSpacing: 0.5 },
    symptomTitle: { fontSize: 20, fontWeight: '600', textAlign: 'center', marginBottom: 20, opacity: 0.9 },
@@ -258,7 +262,6 @@ const styles = StyleSheet.create({
    progressBar: { height: '100%', borderRadius: 4 },
    card: { borderRadius: 16, padding: 18, marginBottom: 16, shadowOpacity: 0.08, shadowOffset: { width: 0, height: 4 }, shadowRadius: 8, elevation: 3 },
    cardTitle: { fontSize: 18, fontWeight: '700', marginBottom: 8, letterSpacing: 0.3 },
-   backButton: { alignSelf: 'flex-start', paddingVertical: 10, paddingHorizontal: 18, borderRadius: 12, marginBottom: 18, elevation: 3 },
    taskCard: { flexDirection: 'row', alignItems: 'center', borderRadius: 12, padding: 12, marginBottom: 10, elevation: 1 },
    checkbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 2, marginRight: 12, justifyContent: 'center', alignItems: 'center' },
    taskText: { flex: 1, fontSize: 16 },
