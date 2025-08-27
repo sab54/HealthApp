@@ -14,6 +14,7 @@ import {
     markChatAsReadThunk,
     removeUserFromGroup,
     fetchChatById,
+    createOrFetchChat,
 } from '../actions/chatActions';
 
 const initialState = {
@@ -153,16 +154,29 @@ const chatSlice = createSlice({
             })
             .addCase(startDirectMessage.fulfilled, (state, action) => {
                 state.loading = false;
-                const newChat = action.payload;
+                let newChat = action.payload;
+
+                newChat = {
+                    ...newChat,
+                    id: newChat.id || newChat.chat_id,
+                    chat_id: newChat.chat_id || newChat.id,
+                    members: Array.isArray(newChat.members) ? newChat.members : [],
+                    chat_name:
+                        newChat.chat_name ||
+                        (newChat.members && newChat.members.length === 2
+                            ? newChat.members.find((m) => m.id !== action.meta.arg)?.name
+                            : 'Direct Chat'),
+                };
+
                 const exists = state.activeChats.some(
-                    (chat) =>
-                        chat.chat_id === newChat.chat_id ||
-                        chat.id === newChat.chat_id
+                    (chat) => chat.chat_id === newChat.chat_id || chat.id === newChat.id
                 );
+
                 if (!exists) {
                     state.activeChats.unshift(newChat);
                 }
             })
+
             .addCase(startDirectMessage.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
@@ -172,19 +186,33 @@ const chatSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
+
             .addCase(createGroupChat.fulfilled, (state, action) => {
-                state.loading = false;
-                const newChat = action.payload;
-                const exists = state.activeChats.some(
-                    (chat) =>
-                        chat.chat_id === newChat.chat_id ||
-                        chat.id === newChat.chat_id
-                );
-                if (!exists) {
-                    state.activeChats.unshift(newChat);
-                }
-                state.draftGroupUsers = [];
-            })
+    state.loading = false;
+    let newChat = action.payload;
+
+    if (!newChat.members) newChat.members = []; // ✅ fix here
+
+    newChat = {
+        ...newChat,
+        id: newChat.id || newChat.chat_id,
+        chat_id: newChat.chat_id || newChat.id,
+        members: Array.isArray(newChat.members) ? newChat.members : [],
+        chat_name: newChat.chat_name || 'New Group',
+    };
+
+    const exists = state.activeChats.some(
+        (chat) => chat.chat_id === newChat.chat_id || chat.id === newChat.id
+    );
+
+    if (!exists) {
+        state.activeChats.unshift(newChat);
+    }
+
+    state.draftGroupUsers = [];
+})
+
+
             .addCase(createGroupChat.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
@@ -232,6 +260,25 @@ const chatSlice = createSlice({
                 state.lastReadByChatId[chatId] = messageId;
             })
 
+            .addCase(createOrFetchChat.fulfilled, (state, action) => {
+    const chat = action.payload;
+    if (!chat.members) chat.members = []; // <-- ensure members array exists
+
+    const existingIndex = state.activeChats.findIndex(
+        (c) => c.id === chat.id || c.chat_id === chat.id
+    );
+
+    if (existingIndex >= 0) {
+        state.activeChats[existingIndex] = { ...state.activeChats[existingIndex], ...chat };
+    } else {
+        state.activeChats.push(chat);
+    }
+})
+
+
+
+
+
             .addCase(addUserToDraftGroup.fulfilled, (state, action) => {
                 const user = action.payload;
                 if (!state.draftGroupUsers.find((u) => u.id === user.id)) {
@@ -272,8 +319,14 @@ const chatSlice = createSlice({
                     state.activeChats.unshift(updatedChat);
                 }
             });
+
+
     },
+
 });
+
+
+
 
 export const {
     updateActiveChatsFromSocket,

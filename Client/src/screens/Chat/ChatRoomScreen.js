@@ -123,7 +123,7 @@ const ChatRoomScreen = () => {
             };
         } else {
             const otherUser = chat.members?.find((u) => u.id !== senderId);
-            const name = otherUser?.name || otherUser?.email || 'Direct Chat';
+            const name = otherUser?.name || otherUser?.email || chat.chat_name || 'Chat';
             const initials = name
                 .split(' ')
                 .map((n) => n[0])

@@ -183,6 +183,23 @@ export const removeUserFromGroup = createAsyncThunk(
     }
 );
 
+export const createOrFetchChat = createAsyncThunk(
+    'chat/createOrFetchChat',
+    async ({ userIds, chatName }, { rejectWithValue }) => {
+        try {
+            const res = await fetch(`${API_URL_CHAT}/createOrFetch`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userIds, chatName }),
+            });
+            if (!res.ok) throw new Error('Failed to create or fetch chat');
+            return await res.json();
+        } catch (err) {
+            return rejectWithValue(err.message);
+        }
+    }
+);
+
 /**
  *  Join or create a local group chat
  */

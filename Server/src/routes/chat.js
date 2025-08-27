@@ -134,10 +134,10 @@ module.exports = (db, io) => {
                     lastMessageAt: chat.last_message_at,
                     lastSender: lastSender
                         ? {
-                              id: lastSender.id,
-                              name: lastSender.name,
-                              avatar: lastSender.avatar,
-                          }
+                            id: lastSender.id,
+                            name: lastSender.name,
+                            avatar: lastSender.avatar,
+                        }
                         : null,
                     latitude: chat.latitude,
                     longitude: chat.longitude,
@@ -225,10 +225,48 @@ module.exports = (db, io) => {
                 );
             }
 
+            // fetch the new chat row
+            const newChat = await dbGet(
+                `SELECT * FROM chats WHERE id = ? LIMIT 1`,
+                [chatId]
+            );
+
+            // fetch members of that chat
+            const members = await dbAll(
+                `SELECT u.id, u.first_name, u.last_name, u.email, u.profile_picture_url, cm.role
+   FROM chat_members cm
+   JOIN users u ON u.id = cm.user_id
+   WHERE cm.chat_id = ?`,
+                [chatId]
+            );
+
+            const memberList = members.map((m) => ({
+                id: m.id,
+                name: `${m.first_name} ${m.last_name || ''}`.trim(),
+                avatar: m.profile_picture_url,
+                email: m.email,
+                role: m.role,
+            }));
+
+            let chatName;
+            if (is_group) {
+                chatName = group_name || 'Unnamed Group';
+            } else {
+                const otherUser = memberList.find(m => m.id !== parseInt(user_id));
+                chatName = otherUser ? otherUser.name : 'Direct Chat';
+            }
+
             res.status(201).json({
                 success: true,
                 message: 'Chat created successfully',
                 chat_id: chatId,
+                chat: {
+                    id: chatId,
+                    is_group,
+                    name: chatName,
+                    created_by: user_id,
+                    members: memberList
+                }
             });
         } catch (error) {
             console.error('POST /chat/create failed:', error);
@@ -239,7 +277,7 @@ module.exports = (db, io) => {
         }
     });
 
-        //  POST /chat/:chat_id/add-members
+    //  POST /chat/:chat_id/add-members
     router.post('/:chat_id/add-members', async (req, res) => {
         const chatId = parseInt(req.params.chat_id);
         const { user_id, user_ids } = req.body;

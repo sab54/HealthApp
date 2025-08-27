@@ -42,17 +42,6 @@ router.post('/ai-book', async (req, res) => {
     const result = await runQuery(stmt, [createdBy, date, time, reason]);
     const appointmentId = result.lastID;
 
-    // Step 2: Log appointment in chat_messages
-    const chatStmt = `
-      INSERT INTO chat_messages (chat_id, sender_id, message, message_type, created_at)
-      VALUES (?, ?, ?, 'appointment', datetime('now'))
-    `;
-    await runQuery(chatStmt, [
-      chatId,
-      createdBy,
-      `📅 Appointment booked for ${date} at ${time} — ${reason || 'No reason provided'}`
-    ]);
-
     res.json({ success: true, appointmentId });
   } catch (err) {
     console.error(err);
