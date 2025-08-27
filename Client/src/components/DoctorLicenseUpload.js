@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { verifyDoctorLicense } from '../utils/api';
 import { Ionicons } from '@expo/vector-icons';
 
-const DoctorLicenseUpload = ({ theme ,userId  }) => {
+const DoctorLicenseUpload = ({ theme, userId, onVerified }) => {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
@@ -37,9 +37,13 @@ const DoctorLicenseUpload = ({ theme ,userId  }) => {
     try {
       console.log('Uploading license for user ID:', userId);
       const data = await verifyDoctorLicense(image.uri, userId);
+
       if (data.success) {
         setResult('success');
         await AsyncStorage.setItem('isApproved', '1');
+
+        // ✅ Trigger callback to update SettingsScreen immediately
+        if (onVerified) onVerified();
       } else {
         setResult('failure');
       }
@@ -50,6 +54,7 @@ const DoctorLicenseUpload = ({ theme ,userId  }) => {
       setUploading(false);
     }
   };
+
 
   return (
     <View style={[styles.card, { borderColor: theme.border, backgroundColor: theme.surface }]}>

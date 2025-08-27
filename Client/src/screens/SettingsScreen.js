@@ -108,23 +108,54 @@ const SettingsScreen = () => {
             </TouchableOpacity>
 
             {/* Doctor Verification Section */}
+            {/* Doctor Verification Section */}
             {userRole === 'doctor' && (
-                <View style={styles.verificationContainer}>
+                <View style={[styles.verificationContainer, { borderWidth: 1, borderColor: theme.border, borderRadius: 10, padding: 15 }]}>
                     <Text style={[styles.label, { color: theme.text }]}>Doctor Verification</Text>
-                    <Text style={[styles.status, { color: theme.text }]}>{`Status: ${status}`}</Text>
-                    <Text style={[styles.role, { color: theme.text }]}>{`Role: ${userRole}`}</Text>
-                    <DoctorLicenseUpload theme={theme} userId={user?.id} />
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                        <Text style={[styles.status, { color: theme.text }]}>{`Status: ${status}`}</Text>
+
+                        {isApproved ? (
+                            <Ionicons
+                                name="shield-checkmark"
+                                size={20}
+                                color={theme.badge}
+                                style={{ marginLeft: 5, transform: [{ translateY: -2 }] }}
+                            />
+                        ) : (
+                            <Ionicons
+                                name="time-outline"
+                                size={20}
+                                color={theme.badge}
+                                style={{ marginLeft: 5, transform: [{ translateY: -2 }] }}
+                            />
+                        )}
+                    </View>
+
+                    <Text style={[styles.role, { color: theme.text, marginTop: -5 }]}>{`Role: ${userRole}`}</Text>
+
+                    {/* Upload & Verify Button with callback */}
+                    <DoctorLicenseUpload
+                        theme={theme}
+                        userId={user?.id}
+                        onVerified={() => setIsApproved(true)}
+                    />
+
                     {!isApproved ? (
-                        <Text style={[styles.warning, { color: theme.warning }]}>
+                        <Text style={[styles.warning, { color: theme.warning, marginTop: 10 }]}>
                             Your license is pending admin approval. Limited access only.
                         </Text>
                     ) : (
-                        <Text style={[styles.approvedNote, { color: theme.success }]}>
+                        <Text style={[styles.approvedNote, { color: theme.success, marginTop: 10 }]}>
                             Your license has been approved. Full access granted.
                         </Text>
                     )}
                 </View>
             )}
+
+
+
             {/* Edit User Info Modal */}
             <EditUserInfoModal
                 visible={isEditModalVisible}
