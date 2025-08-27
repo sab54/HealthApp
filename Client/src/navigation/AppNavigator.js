@@ -28,7 +28,7 @@ import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import HealthTrackingScreen from '../screens/HealthTrackingScreen';
 import HealthlogScreen from '../screens/HealthlogScreen';
 import SymptomRecoveryPlanScreen from '../screens/SymptomRecoveryPlanScreen';
-import DoctorLicenseUpload from '../screens/DoctorLicenseUpload';
+// import DoctorLicenseUpload from '../screens/DoctorLicenseUpload';
 import TabNavigator from './TabNavigator';
 import ChatRoomScreen from '../screens/Chat/ChatRoomScreen';
 import AddPeopleScreen from '../screens/Chat/AddPeopleScreen';
@@ -182,7 +182,7 @@ const AppNavigator = () => {
               <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
               <Stack.Screen name="AddPeopleScreen" component={AddPeopleScreen} />
               <Stack.Screen name="Settings" component={SettingsScreen} />
-              <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} />
+              {/* <Stack.Screen name="DoctorLicenseUpload" component={DoctorLicenseUpload} /> */}
               <Stack.Screen name="Calendar" component={CalendarScreen} />
               <Stack.Screen name="StepsTracker" component={StepsTrackerScreen} />
               <Stack.Screen name="HealthTracking" component={HealthTrackingScreen} />

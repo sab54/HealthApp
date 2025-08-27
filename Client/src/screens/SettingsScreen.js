@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { Ionicons, Feather } from '@expo/vector-icons';
+import DoctorLicenseUpload from '../components/DoctorLicenseUpload';
 
 
 import { updateUserProfile } from '../store/actions/settingActions';
@@ -112,11 +113,7 @@ const SettingsScreen = () => {
                     <Text style={[styles.label, { color: theme.text }]}>Doctor Verification</Text>
                     <Text style={[styles.status, { color: theme.text }]}>{`Status: ${status}`}</Text>
                     <Text style={[styles.role, { color: theme.text }]}>{`Role: ${userRole}`}</Text>
-                    <Button
-                        title="Upload License"
-                        color={theme.primary}
-                        onPress={() => navigation.navigate('DoctorLicenseUpload')}
-                    />
+                    <DoctorLicenseUpload theme={theme} userId={user?.id} />
                     {!isApproved ? (
                         <Text style={[styles.warning, { color: theme.warning }]}>
                             Your license is pending admin approval. Limited access only.
