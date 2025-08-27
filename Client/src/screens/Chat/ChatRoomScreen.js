@@ -64,6 +64,7 @@ import {
     emitEvent,
 } from '../../utils/socket';
 import { getUserLocation } from '../../utils/utils';
+import { bookAppointment } from '../../store/actions/appointmentActions';
 
 const ChatRoomScreen = () => {
     const insets = useSafeAreaInsets();
@@ -324,12 +325,24 @@ const ChatRoomScreen = () => {
         if (!chatId || !senderId || !form.patientName) return;
 
         try {
+            // Call backend to actually book
+            const appointment = await dispatch(
+                bookAppointment({
+                    date: form.appointmentDate,
+                    time: form.appointmentTime,
+                    reason: form.purpose,
+                    createdBy: senderId,
+                    chatId,
+                })
+            ).unwrap();
+
+            // Then send a chat message so everyone sees it
             const appointmentMessage = {
                 chatId,
                 senderId,
                 message: `📅 Appointment with "${form.patientName}" scheduled for ${form.appointmentDate} at ${form.appointmentTime}`,
                 message_type: 'appointment',
-                metadata: { ...form },
+                metadata: { ...form, appointmentId: appointment.id },
             };
 
             dispatch(sendMessage(appointmentMessage));
@@ -395,12 +408,12 @@ const ChatRoomScreen = () => {
                         {/* Header */}
                         <View style={styles.header}>
 
-                                <TouchableOpacity onPress={() => navigation.goBack()}>
-    <Ionicons
-        name='arrow-back-outline'
-        size={24}
-        color={themeColors.link}
-    />
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <Ionicons
+                                    name='arrow-back-outline'
+                                    size={24}
+                                    color={themeColors.link}
+                                />
 
                             </TouchableOpacity>
 

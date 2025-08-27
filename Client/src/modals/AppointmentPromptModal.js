@@ -73,7 +73,7 @@ const AppointmentPromptModal = ({
           <Feather name="x" size={20} color={theme.text} />
         </TouchableOpacity>
 
-        <Text style={styles.title}>📋 Book Doctor Appointment</Text>
+        <Text style={styles.title}>Book Doctor Appointment</Text>
 
         <TextInput
           style={styles.input}

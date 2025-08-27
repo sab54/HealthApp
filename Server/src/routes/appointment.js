@@ -25,23 +25,41 @@ module.exports = (db) => {
     });
 
   //  POST /appointment/ai-book
-  router.post('/ai-book', async (req, res) => {
-    const { date, time, reason, createdBy } = req.body;
-    if (!date || !time || !createdBy) {
-      return res.status(400).json({ success: false, message: 'Missing required fields' });
-    }
-    try {
-      const stmt = `
-        INSERT INTO appointment (user_id, date, time, reason, created_at)
-        VALUES (?, ?, ?, ?, datetime('now'))
-      `;
-      const result = await runQuery(stmt, [createdBy, date, time, reason]);
-      res.json({ success: true, appointmentId: result.lastID });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ success: false, error: err.message || 'Failed to book appointment' });
-    }
-  });
+  //  POST /appointment/ai-book
+router.post('/ai-book', async (req, res) => {
+  const { date, time, reason, createdBy, chatId } = req.body;
+
+  if (!date || !time || !createdBy || !chatId) {
+    return res.status(400).json({ success: false, message: 'Missing required fields' });
+  }
+
+  try {
+    // Step 1: Save appointment
+    const stmt = `
+      INSERT INTO appointment (user_id, date, time, reason, created_at)
+      VALUES (?, ?, ?, ?, datetime('now'))
+    `;
+    const result = await runQuery(stmt, [createdBy, date, time, reason]);
+    const appointmentId = result.lastID;
+
+    // Step 2: Log appointment in chat_messages
+    const chatStmt = `
+      INSERT INTO chat_messages (chat_id, sender_id, message, message_type, created_at)
+      VALUES (?, ?, ?, 'appointment', datetime('now'))
+    `;
+    await runQuery(chatStmt, [
+      chatId,
+      createdBy,
+      `📅 Appointment booked for ${date} at ${time} — ${reason || 'No reason provided'}`
+    ]);
+
+    res.json({ success: true, appointmentId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message || 'Failed to book appointment' });
+  }
+});
+
 
   //  GET /appointment/:userId
   router.get('/:userId', async (req, res) => {

@@ -42,7 +42,6 @@ const DoctorLicenseUpload = ({ theme, userId, onVerified }) => {
         setResult('success');
         await AsyncStorage.setItem('isApproved', '1');
 
-        // ✅ Trigger callback to update SettingsScreen immediately
         if (onVerified) onVerified();
       } else {
         setResult('failure');

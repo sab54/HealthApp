@@ -1,6 +1,6 @@
-// Client/src/redux/appointmentReducer.js
+// Client/src/reducers/appointmentReducer.js
 import { createSlice } from '@reduxjs/toolkit';
-import { bookAppointmentAI } from './appointmentActions';
+import { bookAppointment } from '../actions/appointmentActions';
 
 const initialState = {
   appointments: [],
@@ -22,15 +22,15 @@ const appointmentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(bookAppointmentAI.pending, (state) => {
+      .addCase(bookAppointment.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(bookAppointmentAI.fulfilled, (state, action) => {
+      .addCase(bookAppointment.fulfilled, (state, action) => {
         state.loading = false;
         state.appointments.push(action.payload);
       })
-      .addCase(bookAppointmentAI.rejected, (state, action) => {
+      .addCase(bookAppointment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to book appointment';
       });
