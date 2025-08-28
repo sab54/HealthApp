@@ -8,6 +8,25 @@ module.exports = (db, io) => {
     router.use(bodyParser.json());
     router.use(bodyParser.urlencoded({ extended: false }));
 
+    function normalizeTimestamp(dbTimestamp) {
+        if (!dbTimestamp) return null;
+
+        let clean = dbTimestamp.trim();
+
+        // If it’s "YYYY-MM-DD HH:MM:SS", convert to ISO
+        if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(clean)) {
+            clean = clean.replace(" ", "T") + "Z";
+        }
+
+        const date = new Date(clean);
+        if (isNaN(date.getTime())) {
+            console.warn("Invalid timestamp in normalizeTimestamp:", dbTimestamp);
+            return null;
+        }
+        return date.toISOString();
+    }
+
+
     const dbAll = (sql, params = []) =>
         new Promise((resolve, reject) => {
             db.all(sql, params, (err, rows) => {
@@ -131,7 +150,7 @@ module.exports = (db, io) => {
                     is_group: isGroup,
                     created_by: chat.created_by,
                     lastMessage: chat.last_message || '',
-                    lastMessageAt: chat.last_message_at,
+                    lastMessageAt: normalizeTimestamp(chat.last_message_at),
                     lastSender: lastSender
                         ? {
                             id: lastSender.id,
@@ -144,7 +163,8 @@ module.exports = (db, io) => {
                     radius_km: chat.radius_km,
                     members: chatMembers,
                     is_nearby: isNearby,
-                    updated_at: chat.updated_at,
+                    updated_at: normalizeTimestamp(chat.updated_at),
+                    timestamp: normalizeTimestamp(chat.updated_at),
                 };
             });
 
@@ -570,7 +590,7 @@ module.exports = (db, io) => {
                 },
                 content: msg.content,
                 message_type: msg.message_type,
-                timestamp: msg.created_at,
+                timestamp: normalizeTimestamp(msg.created_at),
             }));
 
             res.json({ success: true, data: messages });
@@ -606,30 +626,37 @@ module.exports = (db, io) => {
                 }
             }
 
+            // Insert once
             const result = await dbRun(
                 `INSERT INTO chat_messages (chat_id, sender_id, message, message_type)
-                 VALUES (?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?)`,
                 [chatId, sender_id, messageContent, message_type]
             );
 
-            const senderRow = await dbGet(
-                `SELECT first_name, last_name FROM users WHERE id = ?`,
-                [sender_id]
+            // Get saved row (with DB timestamp)
+            const savedMsg = await dbGet(
+                `SELECT m.id, m.chat_id, m.sender_id, u.first_name, u.last_name,
+                    m.message, m.message_type, m.created_at
+             FROM chat_messages m
+             LEFT JOIN users u ON m.sender_id = u.id
+             WHERE m.id = ? LIMIT 1`,
+                [result.lastID]
             );
 
-            const senderName = senderRow
-                ? `${senderRow.first_name} ${senderRow.last_name || ''}`.trim()
-                : 'Unknown';
-
             const newMessage = {
-                id: result.lastID,
-                chat_id: chatId,
-                sender: { id: sender_id, name: senderName },
-                content: messageContent,
-                message_type,
-                timestamp: new Date().toISOString(),
+                id: savedMsg.id,
+                chat_id: savedMsg.chat_id,
+                sender: {
+                    id: savedMsg.sender_id,
+                    name: `${savedMsg.first_name || ''} ${savedMsg.last_name || ''}`.trim(),
+                },
+                content: savedMsg.message,
+                message_type: savedMsg.message_type,
+                timestamp: normalizeTimestamp(savedMsg.created_at),
+
             };
 
+            // Emit to chat room and sender
             if (io) {
                 io.to(`chat_${chatId}`).emit('chat:new_message', newMessage);
                 io.to(`user_${sender_id}`).emit('chat:list_update:trigger');
@@ -645,6 +672,7 @@ module.exports = (db, io) => {
             res.status(500).json({ success: false, error: 'Failed to send message' });
         }
     });
+
 
     //  POST /chat/read
     router.post('/read', async (req, res) => {

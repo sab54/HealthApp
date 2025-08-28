@@ -30,8 +30,8 @@ function initSchema() {
         longitude REAL DEFAULT NULL,
         created_by INTEGER DEFAULT NULL, -- ID of admin who created this user
         updated_by INTEGER DEFAULT NULL, -- ID of admin who last updated this user
-        created_at TEXT DEFAULT (datetime('now')), -- Timestamp in ISO format
-        updated_at TEXT DEFAULT (datetime('now')), -- Updated manually in app logic
+        created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
         deleted_at TEXT DEFAULT NULL, -- Soft delete timestamp
         UNIQUE(country_code, phone_number)
       )
@@ -140,8 +140,8 @@ function initSchema() {
         longitude REAL DEFAULT NULL,
         radius_km REAL DEFAULT NULL,
         created_by INTEGER DEFAULT NULL,
-        created_at TEXT DEFAULT (datetime('now')),
-        updated_at TEXT DEFAULT (datetime('now')),
+        created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
         FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
       )
 `);
@@ -152,7 +152,7 @@ function initSchema() {
     chat_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     role TEXT CHECK(role IN ('member', 'admin', 'owner')) DEFAULT 'member',
-    joined_at TEXT DEFAULT (datetime('now')),
+    joined_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     PRIMARY KEY (chat_id, user_id),
     FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -169,7 +169,7 @@ function initSchema() {
     message_type TEXT CHECK(message_type IN (
       'text', 'image', 'file', 'location', 'appointment'
     )) DEFAULT 'text',
-    created_at TEXT DEFAULT (datetime('now')),
+    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     edited_at TEXT DEFAULT NULL,
     deleted_at TEXT DEFAULT NULL,
     edited_by INTEGER DEFAULT NULL,
@@ -187,7 +187,7 @@ function initSchema() {
     file_url TEXT NOT NULL,
     file_type TEXT,
     thumbnail_url TEXT,
-    uploaded_at TEXT DEFAULT (datetime('now')),
+    uploaded_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     FOREIGN KEY (message_id) REFERENCES chat_messages(id) ON DELETE CASCADE
   )
 `);
@@ -198,7 +198,7 @@ function initSchema() {
     chat_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     message_id INTEGER NOT NULL,
-    read_at TEXT DEFAULT (datetime('now')),
+    read_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     PRIMARY KEY (chat_id, user_id),
     FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -227,8 +227,8 @@ function initSchema() {
     reason TEXT,
     mode TEXT DEFAULT 'Phone Call',
     status TEXT DEFAULT 'scheduled',
-    created_at TEXT DEFAULT (datetime('now')),
-    updated_at TEXT DEFAULT (datetime('now')),
+    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(doctor_id) REFERENCES users(id)
   )
@@ -244,7 +244,7 @@ function initSchema() {
         mood TEXT NOT NULL CHECK(mood IN ('Feeling great!', 'Not feeling good!')),
         sleep REAL,
         energy REAL,
-        created_at TEXT DEFAULT (datetime('now')),
+        created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
         FOREIGN KEY(user_id) REFERENCES users(id),
         UNIQUE(user_id, date)
       )
@@ -263,7 +263,7 @@ function initSchema() {
   date TEXT NOT NULL,
   time TEXT NOT NULL,
   recovered_at TEXT DEFAULT NULL,
-  created_at TEXT DEFAULT (datetime('now')),
+  created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
   FOREIGN KEY(user_id) REFERENCES users(id),
   UNIQUE(user_id, symptom, date)
 );
@@ -281,7 +281,7 @@ function initSchema() {
         task TEXT NOT NULL,
         done INTEGER DEFAULT 0,
         date TEXT NOT NULL,
-        created_at TEXT DEFAULT (datetime('now')),
+        created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
         FOREIGN KEY(user_id) REFERENCES users(id),
          UNIQUE(user_id, symptom, category, task, date)
       )

@@ -63,7 +63,7 @@ import {
     leaveChat,
     emitEvent,
 } from '../../utils/socket';
-import { getUserLocation } from '../../utils/utils';
+import { getUserLocation, formatTimestamp, parseDate } from '../../utils/utils';
 import { bookAppointment } from '../../store/actions/appointmentActions';
 
 const ChatRoomScreen = () => {
@@ -366,6 +366,8 @@ const ChatRoomScreen = () => {
     const renderItem = ({ item }) => {
         const showUnreadSeparator =
             lastReadMessageId && item.id === lastReadMessageId;
+        console.log("DB timestamp raw:", item.timestamp);
+        console.log("Parsed Date:", parseDate(item.timestamp)?.toString());
 
         return (
             <>
@@ -375,7 +377,10 @@ const ChatRoomScreen = () => {
                     </View>
                 )}
                 <MessageBubble
-                    message={item}
+                    message={{
+                        ...item,
+                        formattedTime: formatTimestamp(item.timestamp),
+                    }}
                     theme={themeColors}
                     senderId={senderId}
                     openThread={() => setThreadMessage(item)}
