@@ -44,26 +44,32 @@ export const verifyOtp = createAsyncThunk(
 
       if (token) await saveToken(token);
       if (user) {
+        // normalize id
+        user.id = user.id || user.user_id;
+
         await AsyncStorage.setItem('userRole', user.role || '');
         await AsyncStorage.setItem('isApproved', String(user.is_approved || 0));
         await AsyncStorage.setItem('user', JSON.stringify(user));
       }
 
-      // ⚠️ Only try to fetch steps if user exists
+      // Now safe to fetch from DB since token + user saved
       if (user?.id) {
         try {
           const daily = await dispatch(fetchDailySteps(user.id)).unwrap();
           const today = daily.find(
             r => r.day === new Date().toISOString().split('T')[0]
           );
+
           if (today) {
-            dispatch(updateCurrentSteps({
-              steps: today.total_steps,
-              distance: today.total_distance,
-            }));
+            dispatch(
+              updateCurrentSteps({
+                steps: today.total_steps,
+                distance: today.total_distance,
+              })
+            );
           }
         } catch (err) {
-          console.warn('Step fetch failed after login:', err.message);
+          console.warn('Step fetch failed after login (DB):', err.message);
         }
       }
 
@@ -73,7 +79,6 @@ export const verifyOtp = createAsyncThunk(
     }
   }
 );
-
 
 // Logout
 export const logout = createAsyncThunk(
@@ -143,6 +148,11 @@ export const initAuth = createAsyncThunk(
       if (!userJson) return null;
 
       const user = JSON.parse(userJson);
+
+      // ⚡ normalize id
+      if (user) {
+        user.id = user.id || user.user_id;
+      }
 
       if (user?.id) {
         try {

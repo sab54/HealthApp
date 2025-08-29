@@ -294,22 +294,24 @@ db.run(`
       )
     `);
 
+    db.run(`
+      CREATE TABLE IF NOT EXISTS user_steps (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        date TEXT NOT NULL, -- YYYY-MM-DD (daily snapshot)
+        steps INTEGER NOT NULL,
+        distance REAL DEFAULT 0, -- meters or km
+        speed REAL DEFAULT 0,    -- km/h
+        calories REAL DEFAULT 0,
+        duration INTEGER DEFAULT 0, -- in seconds
+        created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        UNIQUE(user_id, date) -- enforce one row per user per day
+      )
+    `);
     console.log('Tables created or already exist.');
   });
-
-  db.run(`
-  CREATE TABLE IF NOT EXISTS user_steps (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    steps INTEGER NOT NULL,
-    distance REAL DEFAULT 0, -- meters or km
-    speed REAL DEFAULT 0,    -- km/h
-    calories REAL DEFAULT 0,
-    duration INTEGER DEFAULT 0, -- in seconds
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    FOREIGN KEY(user_id) REFERENCES users(id)
-  )
-`);
 }
 
 module.exports = initSchema;

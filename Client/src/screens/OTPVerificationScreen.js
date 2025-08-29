@@ -16,6 +16,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { verifyOtp, requestOtp } from '../store/actions/loginActions';
 import { BASE_URL } from '../utils/config';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
+// import { fetchDailySteps } from '../store/actions/stepsActions';
 
 const OTPVerificationScreen = () => {
   const { themeColors } = useSelector((state) => state.theme);
@@ -58,15 +59,23 @@ const OTPVerificationScreen = () => {
     }
   }, [autoFillOtp, otpCode]);
 
-  // Handle redirection after verification
-  useEffect(() => {
-    if (isVerified && user?.id) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'MainTabs' }],
+// Handle redirection after verification
+useEffect(() => {
+  if (isVerified && (user?.id || userId)) {
+    const id = user?.id || userId;
+    dispatch(fetchDailySteps(id)).unwrap()
+      .catch((err) => {
+        console.warn("Step fetch failed after login:", err.message);
       });
-    }
-  }, [isVerified, user, navigation]);
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'MainTabs' }],
+    });
+  }
+}, [isVerified, user, userId, navigation, dispatch]);
+
+
 
 
 
