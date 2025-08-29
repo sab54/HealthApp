@@ -25,6 +25,28 @@ import { render, fireEvent } from '@testing-library/react-native';
 import { TouchableOpacity, Linking, Platform, Alert } from 'react-native';
 import MessageBubble from 'src/components/Chat/MessageBubble';
 
+// ---- Targeted suppression: RN Clipboard deprecation warning (install spy before any Clipboard access) ----
+const __originalConsoleWarn = console.warn;
+const __warnSpy = jest.spyOn(console, 'warn').mockImplementation((...args) => {
+  const msg = args?.[0];
+  if (
+    typeof msg === 'string' &&
+    msg.includes('Clipboard has been extracted from react-native core')
+  ) {
+    // Swallow ONLY the Clipboard deprecation warning.
+    return;
+  }
+  return __originalConsoleWarn(...args);
+});
+
+afterAll(() => {
+  if (__warnSpy && typeof __warnSpy.mockRestore === 'function') {
+    __warnSpy.mockRestore();
+  } else {
+    console.warn = __originalConsoleWarn;
+  }
+});
+
 // ---- Mocks (no full 'react-native' mock to avoid TurboModule errors) ----
 
 // Navigation

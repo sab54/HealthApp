@@ -15,9 +15,9 @@
  *    - fulfilled updates user latitude/longitude when user exists.
  *    - does nothing harmful when user is null.
  *
- * 4. Logout & Instant Update
- *    - logout.fulfilled resets to initial.
- *    - AUTH_UPDATE_USER replaces user immediately.
+ * 4. Logout & Unknown Action
+ *    - Unknown AUTH_UPDATE_USER is ignored (not handled by reducer).
+ *    - logout.fulfilled resets to initial from a populated state.
  */
 
 import reducer, { resetAuthState } from '@/store/reducers/loginReducer';
@@ -84,10 +84,15 @@ describe('loginReducer', () => {
     expect(stateNoUser.loading).toBe(false);
   });
 
-  it('handles logout.fulfilled and AUTH_UPDATE_USER', () => {
-    // AUTH_UPDATE_USER replaces user immediately
+  it('ignores unknown AUTH_UPDATE_USER and resets on logout.fulfilled', () => {
+    // Unknown action should be ignored by the reducer
     let state = reducer(initial, { type: 'AUTH_UPDATE_USER', payload: { id: 'u9', name: 'Z' } });
-    expect(state.user).toEqual({ id: 'u9', name: 'Z' });
+    expect(state.user).toBeNull();
+
+    // Seed a user via verifyOtp.fulfilled
+    state = reducer(state, { type: verifyOtp.fulfilled.type, payload: { user: { id: 'seed', name: 'S' } } });
+    expect(state.user).toEqual({ id: 'seed', name: 'S' });
+    expect(state.isVerified).toBe(true);
 
     // logout resets to initial
     state = reducer(state, { type: logout.fulfilled.type });

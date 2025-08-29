@@ -1,5 +1,3 @@
-// Client/__tests__/unit/module/WeatherCard.test.js
-
 /**
  * WeatherCard.test.js
  *
@@ -7,13 +5,13 @@
  * 1) Basic Rendering (no data)
  * 2) Weather Details & Unit Toggle
  * 3) Forecast Toggle with loading spinner
- * 4) Weather Alert
+ * 4) Precautions Rendering (mocked)
  */
 
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react-native';
 
-// Provide MaterialCommunityIcons in this suite (Ionicons/Feather are already stubbed globally)
+// Stub Expo vector icons for RN testing
 jest.mock('@expo/vector-icons', () => {
   const React = require('react');
   const { Text } = require('react-native');
@@ -27,6 +25,11 @@ jest.mock('@expo/vector-icons', () => {
 });
 
 jest.useFakeTimers();
+
+// Mock weatherPrecautions so we can assert a predictable precaution text
+jest.mock('../../../src/utils/weatherPrecautions', () => ({
+  getPrecautions: jest.fn(() => ['High Wind Warning']),
+}));
 
 import WeatherCard from '../../../src/module/WeatherCard';
 
@@ -84,13 +87,13 @@ describe('WeatherCard', () => {
 
     // Default °C
     expect(getByText(/City: London/)).toBeTruthy();
-    expect(getByText(/Temp: 20\.0°C/)).toBeTruthy();
-    expect(getByText(/Feels Like: 21\.0°C/)).toBeTruthy();
+    expect(getByText(/Temp:\s*20\.0°C/)).toBeTruthy();
+    expect(getByText(/Feels Like:\s*21\.0°C/)).toBeTruthy();
 
     // Toggle to °F
     fireEvent.press(getByText('Switch to °F'));
-    expect(queryByText(/Temp: 68\.0°F/)).toBeTruthy();      // 20C -> 68.0°F
-    expect(queryByText(/Feels Like: 69\.8°F/)).toBeTruthy(); // 21C -> 69.8°F
+    expect(queryByText(/Temp:\s*68\.0°F/)).toBeTruthy();      // 20C -> 68.0°F
+    expect(queryByText(/Feels Like:\s*69\.8°F/)).toBeTruthy(); // 21C -> 69.8°F
   });
 
   it('expands to show forecast after loading spinner completes', () => {
@@ -125,10 +128,8 @@ describe('WeatherCard', () => {
     expect(anyTemp.length).toBeGreaterThan(0);
   });
 
-  it('renders an alert box when weatherData.alerts is present', () => {
-    const weatherData = makeWeather({
-      alerts: [{ event: 'High Wind Warning' }],
-    });
+  it('renders precautions section using mocked getPrecautions()', () => {
+    const weatherData = makeWeather();
 
     const { getByText } = render(
       <WeatherCard
@@ -139,6 +140,9 @@ describe('WeatherCard', () => {
       />
     );
 
-    expect(getByText(/High Wind Warning/)).toBeTruthy();
+    // Header for the precautions box
+    expect(getByText('🛡️ Health & Safety Precautions')).toBeTruthy();
+    // Deterministic mocked precaution text
+    expect(getByText('• High Wind Warning')).toBeTruthy();
   });
 });

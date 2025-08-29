@@ -84,7 +84,9 @@ describe('ChatContext', () => {
     expect(chat.members[1].id).toBe('id-3'); // member 2 id
     expect(chat.typing).toBe(false);
 
-    renderer.unmount();
+    act(() => {
+      renderer.unmount();
+    });
   });
 
   it('sendMessage: adds message, sets typing=true, then bot reply after 2s and typing=false', () => {
@@ -115,7 +117,9 @@ describe('ChatContext', () => {
     expect(botMsg.text).toBe('Got it!');
     expect(latest.chats[0].typing).toBe(false);
 
-    renderer.unmount();
+    act(() => {
+      renderer.unmount();
+    });
   });
 
   it('addReply: appends a reply to an existing message', () => {
@@ -139,7 +143,9 @@ describe('ChatContext', () => {
     expect(target.replies.length).toBe(1);
     expect(target.replies[0].text).toBe('Answer');
 
-    renderer.unmount();
+    act(() => {
+      renderer.unmount();
+    });
   });
 
   it('addReaction: appends a reaction to an existing message', () => {
@@ -163,6 +169,8 @@ describe('ChatContext', () => {
     expect(target.reactions.length).toBe(1);
     expect(target.reactions[0].emoji).toBe(':ok:');
 
-    renderer.unmount();
+    act(() => {
+      renderer.unmount();
+    });
   });
 });

@@ -49,6 +49,10 @@ jest.mock('../../../src/store/reducers/appointmentReducers', () =>
 jest.mock('../../../src/store/reducers/themeReducer', () =>
   makeReducer('theme', 'THEME_PING')
 );
+// New slice present in the store
+jest.mock('../../../src/store/reducers/stepsReducer', () =>
+  makeReducer('steps', 'STEPS_PING')
+);
 
 // Helper to obtain a fresh store instance each test
 const getFreshStore = () => {
@@ -82,6 +86,7 @@ describe('Redux Store (src/store/index.js)', () => {
         'chat',
         'appointment',
         'emergency',
+        'steps',
       ].sort()
     );
 
@@ -94,6 +99,7 @@ describe('Redux Store (src/store/index.js)', () => {
     expect(state.chat).toEqual({ marker: 'chat', v: 0 });
     expect(state.appointment).toEqual({ marker: 'appointment', v: 0 });
     expect(state.emergency).toEqual({ marker: 'emergency', v: 0 });
+    expect(state.steps).toEqual({ marker: 'steps', v: 0 });
   });
 
   it('routes dispatch only to the intended slice (auth)', () => {
@@ -112,6 +118,7 @@ describe('Redux Store (src/store/index.js)', () => {
     expect(after.chat).toEqual(before.chat);
     expect(after.appointment).toEqual(before.appointment);
     expect(after.emergency).toEqual(before.emergency);
+    expect(after.steps).toEqual(before.steps);
   });
 
   it('unknown actions do not mutate state', () => {
@@ -139,5 +146,6 @@ describe('Redux Store (src/store/index.js)', () => {
     expect(after.healthlog).toEqual(before.healthlog);
     expect(after.appointment).toEqual(before.appointment);
     expect(after.emergency).toEqual(before.emergency);
+    expect(after.steps).toEqual(before.steps);
   });
 });

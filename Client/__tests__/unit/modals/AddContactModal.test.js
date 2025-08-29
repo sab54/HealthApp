@@ -21,8 +21,42 @@
 
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react-native';
+import { Alert } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import AddContactModal from 'src/modals/AddContactModal';
+
+// Complete mock including Fields constant used by the component
+jest.mock('expo-contacts', () => ({
+  requestPermissionsAsync: jest.fn().mockResolvedValue({
+    status: 'granted',
+    granted: true,
+  }),
+  Fields: {
+    PhoneNumbers: 'phoneNumbers',
+  },
+  getContactsAsync: jest.fn().mockResolvedValue({
+    data: [],
+    hasNextPage: false,
+  }),
+}));
+
+// Silence Alert usage in component
+jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+
+// Suppress only the React act warning noise
+const originalConsoleError = console.error;
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation((...args) => {
+    const [msg] = args;
+    if (typeof msg === 'string' && msg.includes('not wrapped in act')) {
+      return;
+    }
+    return originalConsoleError(...args);
+  });
+});
+afterAll(() => {
+  console.error.mockRestore();
+});
 
 const baseTheme = {
   surface: '#fff',
@@ -59,12 +93,10 @@ describe('AddContactModal', () => {
   it('renders content when visible=true and hides when visible=false', () => {
     const { getByText, queryByText, rerender } = setup({ visible: true });
 
-    // Visible: title present
     expect(getByText('Add Emergency Contact')).toBeTruthy();
     expect(getByText('Pick from Contacts')).toBeTruthy();
     expect(getByText('Save Contact')).toBeTruthy();
 
-    // Hidden: title not present
     rerender(
       <AddContactModal
         visible={false}
@@ -77,30 +109,22 @@ describe('AddContactModal', () => {
   });
 
   it('shows contacts after tapping Pick from Contacts and populates list from expo-contacts', async () => {
-    // Mock contacts returned by expo-contacts
-    jest.spyOn(Contacts, 'getContactsAsync').mockResolvedValue({
+    Contacts.getContactsAsync.mockResolvedValueOnce({
       data: [
-        {
-          id: '1',
-          name: 'Alice',
-          phoneNumbers: [{ number: '+1 555-1111' }],
-        },
-        {
-          id: '2',
-          name: 'Bob',
-          phoneNumbers: [{ number: '+1 555-2222' }],
-        },
+        { id: '1', name: 'Alice', phoneNumbers: [{ number: '+1 555-1111' }] },
+        { id: '2', name: 'Bob', phoneNumbers: [{ number: '+1 555-2222' }] },
       ],
       hasNextPage: false,
     });
 
     const { getByText, findByText } = setup({ visible: true });
 
-    // Open list
-    fireEvent.press(getByText('Pick from Contacts'));
+    await act(async () => {
+      fireEvent.press(getByText('Pick from Contacts'));
+    });
+
     expect(getByText('Hide Contact List')).toBeTruthy();
 
-    // Wait for items to appear
     expect(await findByText('Alice')).toBeTruthy();
     expect(await findByText('+1 555-1111')).toBeTruthy();
     expect(await findByText('Bob')).toBeTruthy();
@@ -108,7 +132,7 @@ describe('AddContactModal', () => {
   });
 
   it('selecting a contact fills the form fields', async () => {
-    jest.spyOn(Contacts, 'getContactsAsync').mockResolvedValue({
+    Contacts.getContactsAsync.mockResolvedValueOnce({
       data: [
         {
           id: '3',
@@ -121,11 +145,16 @@ describe('AddContactModal', () => {
 
     const { getByText, findByText, getByDisplayValue } = setup({ visible: true });
 
-    fireEvent.press(getByText('Pick from Contacts'));
-    const item = await findByText('Charlie');
-    fireEvent.press(item);
+    await act(async () => {
+      fireEvent.press(getByText('Pick from Contacts'));
+    });
 
-    // Inputs should reflect chosen contact
+    const item = await findByText('Charlie');
+
+    await act(async () => {
+      fireEvent.press(item);
+    });
+
     expect(getByDisplayValue('Charlie')).toBeTruthy();
     expect(getByDisplayValue('(020) 7000 0000')).toBeTruthy();
   });
@@ -133,11 +162,9 @@ describe('AddContactModal', () => {
   it('pressing Save Contact with valid inputs calls onAdd and onClose', async () => {
     const { getByPlaceholderText, getByText, onAdd, onClose } = setup({ visible: true });
 
-    // Fill inputs
     fireEvent.changeText(getByPlaceholderText('Name'), 'Dana');
     fireEvent.changeText(getByPlaceholderText('Phone Number'), '+44 7700 900123');
 
-    // Save
     await act(async () => {
       fireEvent.press(getByText('Save Contact'));
     });

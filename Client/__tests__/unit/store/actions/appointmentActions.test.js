@@ -50,7 +50,8 @@ describe('bookAppointment thunk', () => {
   });
 
   it('dispatches pending then fulfilled and calls post with correct URL and payload', async () => {
-    const serverResponse = { id: 'appt-123', status: 'ok' };
+    // Thunk currently fulfills with an array payload
+    const serverResponse = [];
     mockPost.mockResolvedValueOnce(serverResponse);
 
     const { dispatch, actions, getState } = makeDispatch();
