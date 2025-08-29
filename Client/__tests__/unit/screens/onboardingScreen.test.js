@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import OnboardingScreen from '../../../src/screens/onboardingScreen';
+import OnboardingScreen from '@/screens/onboardingScreen';
 
 describe('OnboardingScreen', () => {
   const mockNavigate = jest.fn();

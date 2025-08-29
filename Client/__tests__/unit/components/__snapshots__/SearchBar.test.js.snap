@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchBar Component matches snapshot (dark theme) 1`] = `
+<View
+  collapsable={false}
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#2A2340",
+      "borderColor": "rgba(42, 35, 64, 1)",
+      "borderRadius": 10,
+      "borderWidth": 2,
+      "flexDirection": "row",
+      "marginBottom": 10,
+      "paddingHorizontal": 8,
+      "paddingVertical": 4,
+    }
+  }
+>
+  <Text>
+    Icon: search
+  </Text>
+  <TextInput
+    accessibilityHint="Enter text to search"
+    accessibilityLabel="Search input"
+    accessibilityRole="search"
+    onBlur={[Function]}
+    onChangeText={[Function]}
+    onFocus={[Function]}
+    onSubmitEditing={[Function]}
+    placeholder="Search..."
+    placeholderTextColor="#D1D1FF99"
+    returnKeyType="search"
+    style={
+      [
+        {
+          "flex": 1,
+          "fontFamily": "Poppins",
+          "fontSize": 13,
+          "marginLeft": 8,
+          "paddingVertical": 2,
+        },
+        {
+          "color": "#D1D1FF",
+        },
+      ]
+    }
+    value="dark"
+  />
+  <View
+    collapsable={false}
+    style={
+      {
+        "opacity": 0,
+      }
+    }
+  >
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "opacity": 1,
+        }
+      }
+    >
+      <Text>
+        Icon: close-circle
+      </Text>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`SearchBar Component matches snapshot (light theme) 1`] = `
+<View
+  collapsable={false}
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#ffffff",
+      "borderColor": "rgba(249, 249, 255, 1)",
+      "borderRadius": 10,
+      "borderWidth": 2,
+      "flexDirection": "row",
+      "marginBottom": 10,
+      "paddingHorizontal": 8,
+      "paddingVertical": 4,
+    }
+  }
+>
+  <Text>
+    Icon: search
+  </Text>
+  <TextInput
+    accessibilityHint="Enter text to search"
+    accessibilityLabel="Search input"
+    accessibilityRole="search"
+    onBlur={[Function]}
+    onChangeText={[Function]}
+    onFocus={[Function]}
+    onSubmitEditing={[Function]}
+    placeholder="Search..."
+    placeholderTextColor="#33336699"
+    returnKeyType="search"
+    style={
+      [
+        {
+          "flex": 1,
+          "fontFamily": "Poppins",
+          "fontSize": 13,
+          "marginLeft": 8,
+          "paddingVertical": 2,
+        },
+        {
+          "color": "#333366",
+        },
+      ]
+    }
+    value="light"
+  />
+  <View
+    collapsable={false}
+    style={
+      {
+        "opacity": 0,
+      }
+    }
+  >
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "opacity": 1,
+        }
+      }
+    >
+      <Text>
+        Icon: close-circle
+      </Text>
+    </View>
+  </View>
+</View>
+`;
