@@ -24,25 +24,30 @@ module.exports = (db) => {
       });
     });
 
-  //  POST /appointment/ai-book
-  //  POST /appointment/ai-book
+//  POST /appointment/ai-book
 router.post('/ai-book', async (req, res) => {
-  const { date, time, reason, createdBy, chatId } = req.body;
+  const { date, time, reason, userId, senderId, createdBy, chatId } = req.body;
 
-  if (!date || !time || !createdBy || !chatId) {
+  if (!date || !time || !createdBy || !chatId || !userId || !senderId) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
   try {
-    // Step 1: Save appointment
     const stmt = `
-      INSERT INTO appointment (user_id, date, time, reason, created_at)
-      VALUES (?, ?, ?, ?, datetime('now'))
+      INSERT INTO appointment (user_id, sender_id, chat_id, created_by, date, time, reason, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
     `;
-    const result = await runQuery(stmt, [createdBy, date, time, reason]);
+    const result = await runQuery(stmt, [userId, senderId, chatId, createdBy, date, time, reason]);
     const appointmentId = result.lastID;
 
-    res.json({ success: true, appointmentId });
+    // Fetch the inserted row
+    const rows = await allQuery(`SELECT * FROM appointment WHERE id = ?`, [appointmentId]);
+    const appointment = rows[0];
+
+    res.json({
+      success: true,
+      appointments: [appointment], // 🔑 normalized response
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: err.message || 'Failed to book appointment' });
@@ -50,23 +55,35 @@ router.post('/ai-book', async (req, res) => {
 });
 
 
-  //  GET /appointment/:userId
-  router.get('/:userId', async (req, res) => {
-    const userId = parseInt(req.params.userId);
-    if (isNaN(userId)) {
-      return res.status(400).json({ success: false, message: 'Invalid userId' });
-    }
-    try {
-      const rows = await allQuery(
-        `SELECT * FROM appointment WHERE user_id = ? ORDER BY date, time`,
-        [userId]
-      );
-      res.json({ success: true, appointment: rows });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ success: false, error: err.message || 'Failed to fetch appointment' });
-    }
-  });
+// GET /appointment/:userId
+router.get('/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  console.log("📥 GET /appointment/:userId =", userId);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ success: false, message: 'Invalid userId in params' });
+  }
+
+  try {
+    const rows = await allQuery(
+      `SELECT a.*,
+              u1.first_name AS user_first_name, u1.last_name AS user_last_name,
+              u2.first_name AS sender_first_name, u2.last_name AS sender_last_name
+       FROM appointment a
+       LEFT JOIN users u1 ON a.user_id = u1.id
+       LEFT JOIN users u2 ON a.sender_id = u2.id
+       WHERE a.user_id = ? OR a.sender_id = ?
+       ORDER BY a.date, a.time`,
+      [userId, userId]
+    );
+
+    console.log("📤 DB returned rows:", rows);
+    res.json({ success: true, appointments: rows });
+  } catch (err) {
+    console.error("❌ DB error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
   //  PATCH /appointment/:id
   router.patch('/:id', async (req, res) => {

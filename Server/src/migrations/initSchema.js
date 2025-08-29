@@ -217,23 +217,30 @@ function initSchema() {
   )
 `);
 
-    db.run(`
+db.run(`
   CREATE TABLE IF NOT EXISTS appointment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    doctor_id INTEGER,
-    date TEXT NOT NULL,
-    time TEXT NOT NULL,
+    user_id INTEGER NOT NULL,       -- the patient
+    sender_id INTEGER,              -- the doctor
+    chat_id INTEGER,                -- link to chat
+    created_by INTEGER,             -- who booked the appointment
+    date DATE NOT NULL,             -- real calendar date
+    time TIME NOT NULL,             -- real clock time
     reason TEXT,
     mode TEXT DEFAULT 'Phone Call',
-    status TEXT DEFAULT 'scheduled',
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    status TEXT CHECK(status IN ('scheduled','completed','cancelled','rescheduled')) DEFAULT 'scheduled',
+    cancellation_reason TEXT DEFAULT NULL, -- why cancelled
+    cancelled_at DATETIME DEFAULT NULL,    -- when cancelled
+    rescheduled_from INTEGER DEFAULT NULL, -- old appointment id if rescheduled
+    created_at DATETIME DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at DATETIME DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(doctor_id) REFERENCES users(id)
-  )
+    FOREIGN KEY(sender_id) REFERENCES users(id),
+    FOREIGN KEY(chat_id) REFERENCES chats(id),
+    FOREIGN KEY(created_by) REFERENCES users(id),
+    FOREIGN KEY(rescheduled_from) REFERENCES appointment(id)
+   )
 `);
-
 
 
     db.run(`
@@ -289,6 +296,20 @@ function initSchema() {
 
     console.log('Tables created or already exist.');
   });
+
+  db.run(`
+  CREATE TABLE IF NOT EXISTS user_steps (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    steps INTEGER NOT NULL,
+    distance REAL DEFAULT 0, -- meters or km
+    speed REAL DEFAULT 0,    -- km/h
+    calories REAL DEFAULT 0,
+    duration INTEGER DEFAULT 0, -- in seconds
+    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )
+`);
 }
 
 module.exports = initSchema;

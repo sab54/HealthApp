@@ -8,6 +8,7 @@ const licenseRoute = require('./routes/license');
 const chatRoute = require('./routes/chat');
 const healthlogRoute = require('./routes/healthlog');
 const appointmentRoute = require('./routes/appointment');
+const stepsTrackerRoute = require('./routes/stepsTracker');
 const path = require('path');
 
 const http = require('http');
@@ -55,6 +56,7 @@ app.use('/api/license', licenseRoute(db));
 app.use('/api/chat', chatRoute(db,io));
 app.use('/api/healthlog', healthlogRoute(db));
 app.use('/api/appointment', appointmentRoute(db));
+app.use('/api/steps', stepsTrackerRoute(db));
 
 // Root route
 app.get('/', (req, res) => {

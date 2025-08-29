@@ -1,6 +1,6 @@
 // Client/src/store/reducers/loginReducer.js
 import { createSlice } from '@reduxjs/toolkit';
-import { verifyOtp, logout, updateUserLocation } from '../actions/loginActions';
+import { verifyOtp, logout, updateUserLocation, initAuth } from '../actions/loginActions';
 
 const initialState = {
     loading: false,
@@ -43,16 +43,24 @@ const loginSlice = createSlice({
                     state.user.longitude = action.meta.arg.longitude;
                 }
             })
+            .addCase(initAuth.fulfilled, (state, action) => {
+                if (action.payload?.user) {
+                    state.user = action.payload.user;
+                    state.isVerified = true;
+                }
+            })
+
             .addCase(updateUserLocation.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(logout.fulfilled, () => initialState)
-
-            // Add this to handle instant profile updates
-            .addCase('AUTH_UPDATE_USER', (state, action) => {
-                state.user = action.payload;
-            });
+            .addCase(logout.fulfilled, (state) => {
+                state.loading = false;
+                state.error = null;
+                state.user = null;
+                state.isVerified = false;
+                // ⚠️ Notice: we are NOT resetting steps reducer here
+            })
     },
 });
 

@@ -7,17 +7,26 @@ let distanceToday = 0; // meters
 let lastStepTime = 0;
 let smoothedMagnitude = 0;
 
-const STEP_THRESHOLD = 1.25;   // slightly more sensitive to real steps
+const STEP_THRESHOLD = 1.25;
 const MIN_STEP_INTERVAL = 250;  // keep same, ensures only realistic step intervals
 const ALPHA = 0.25;             // more smoothing to ignore tiny shakes
 
-export const startStepTracking = (callback) => {
-  stepsToday = 0;
-  distanceToday = 0;
-  lastStepTime = 0;
-  smoothedMagnitude = 0;
+// AFTER
+export const startStepTracking = (callback, initialSteps = 0, initialDistance = 0, reset = false) => {
+  if (reset) {
+    stepsToday = 0;
+    distanceToday = 0;
+    lastStepTime = 0;
+    smoothedMagnitude = 0;
+  } else {
+    stepsToday = initialSteps;
+    distanceToday = initialDistance;
+  }
+
 
   accelerometerSubscription = Accelerometer.addListener(({ x, y, z }) => {
+    console.log("Accelerometer data:", x, y, z);
+
     const now = Date.now();
 
     // Calculate total acceleration magnitude
@@ -65,4 +74,11 @@ export const resetSteps = () => {
   distanceToday = 0;
   lastStepTime = 0;
   smoothedMagnitude = 0;
+};
+
+export const stopStepTracking = () => {
+  if (accelerometerSubscription) {
+    accelerometerSubscription.remove();
+    accelerometerSubscription = null;
+  }
 };

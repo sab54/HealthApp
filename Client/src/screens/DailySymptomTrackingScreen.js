@@ -21,7 +21,6 @@ import { API_URL_HEALTHLOG } from '../utils/apiPaths';
 import { BASE_URL } from '../utils/config';
 import { setTodaySymptoms } from '../store/reducers/healthlogReducers';
 
-
 const DailySymptomTrackerScreen = () => {
   const theme = useSelector(state => state.theme.themeColors);
   const insets = useSafeAreaInsets();
@@ -46,7 +45,7 @@ const DailySymptomTrackerScreen = () => {
   const fetchTodaySymptoms = async () => {
     if (!userId) return;
     const fullUrl = `${API_URL_HEALTHLOG}/today?userId=${userId}`;
-    console.log('Fetching symptoms from:', BASE_URL + fullUrl);
+    // console.log('Fetching symptoms from:', BASE_URL + fullUrl);
     setLoading(true);
     try {
       const cached = await AsyncStorage.getItem(`recoveredSymptoms-${userId}-${today}`);

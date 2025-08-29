@@ -191,7 +191,7 @@ const chatSlice = createSlice({
     state.loading = false;
     let newChat = action.payload;
 
-    if (!newChat.members) newChat.members = []; // ✅ fix here
+    if (!newChat.members) newChat.members = [];
 
     newChat = {
         ...newChat,

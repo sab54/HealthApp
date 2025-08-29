@@ -121,15 +121,12 @@ const TabNavigator = () => {
         }, [user?.id, dispatch])
     );
 
-
-
-
     const CustomTabBarButton = ({ children, accessibilityState }) => {
         const focused = accessibilityState?.selected;
         const todayUnrecovered = todaySymptoms.filter(s => !s.recovered_at).length;
         const totalSymptomsCount = todayUnrecovered + addedSymptoms.length;
 
-        console.log('todayUnrecovered:', todayUnrecovered, 'addedSymptoms:', addedSymptoms);
+        // console.log('todayUnrecovered:', todayUnrecovered, 'addedSymptoms:', addedSymptoms);
 
         const disabled = todayUnrecovered + addedSymptoms.length >= MAX_SYMPTOMS || addingSymptom;
 

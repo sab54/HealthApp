@@ -1,5 +1,5 @@
 // Client/src/screens/HomeScreen.js
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,18 +14,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 
-// // Weather + News Actions
-// import { fetchWeatherData, fetchForecastData } from '../store/actions/weatherActions';
-
-// HealthLog Actions
+//Actions
 import { fetchTodayMood } from '../store/actions/healthlogActions';
+import { fetchAppointments } from '../store/actions/appointmentActions';
 
 // Modules
-// import WeatherCard from '../module/WeatherCard';
 import DailyWellnessCard from '../module/DailyWellnessCard';
+import UpcomingAppointmentCard from '../module/UpcomingAppointmentsCard';
 
 // Components
 import Footer from '../components/Footer';
+
+import { getUpcomingAppointment } from '../utils/dateHelpers';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -33,17 +33,14 @@ const HomeScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  // const {
-  //   current: weatherData,
-  //   forecast: forecastData,
-  //   loading: loadingWeather,
-  //   error,
-  // } = useSelector((state) => state.weather);
+  const { moodToday, sleepToday, energyToday, todaySymptoms } = useSelector(
+    (state) => state.healthlog
+  );
 
-  const { moodToday, sleepToday, energyToday, todaySymptoms } = useSelector(state => state.healthlog);
+  const { appointments, loading: loadingAppointments } = useSelector(
+    (state) => state.appointment
+  );
 
-
-  // const [refreshing, setRefreshing] = useState(false);
   const [fontsLoaded] = useFonts({
     Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
   });
@@ -51,7 +48,7 @@ const HomeScreen = () => {
   const [userRole, setUserRole] = useState('');
   const [isApproved, setIsApproved] = useState(true);
 
-  // Fetch user role & approval from AsyncStorage
+  // Fetch user role & approval
   useEffect(() => {
     const fetchUserStatus = async () => {
       try {
@@ -81,23 +78,46 @@ const HomeScreen = () => {
     fetchHealth();
   }, [dispatch]);
 
+  // Fetch user appointments
+  // Fetch user appointments
+  useEffect(() => {
+    const fetchUserAppointments = async () => {
+      const storedId = await AsyncStorage.getItem('userId');
+      if (storedId) {
+        const userId = parseInt(storedId, 10);   // 🔑 convert to number
+        try {
+          await dispatch(fetchAppointments(userId));
+        } catch (err) {
+          console.error('Failed to fetch appointments:', err);
+        }
+      }
+    };
+    fetchUserAppointments();
+  }, [dispatch]);
 
-  // // Weather Data Fetch
-  // const onRefresh = useCallback(() => {
-  //   setRefreshing(true);
-  //   Promise.all([
-  //     dispatch(fetchWeatherData()),
-  //     dispatch(fetchForecastData()),
-  //   ]).finally(() => {
-  //     setTimeout(() => setRefreshing(false), 1000);
-  //   });
-  // }, [dispatch]);
+  const today = new Date();
+  const normalizedAppointments = appointments || [];
 
-  // useEffect(() => {
-  //   dispatch(fetchWeatherData());
-  //   dispatch(fetchForecastData());
-  // }, [dispatch]);
 
+  const futureAppointments = normalizedAppointments
+    .filter((a) => a && a.date && a.time)
+    .map((a) => {
+      let dateObj;
+      if (typeof a.date === "string" && a.date.includes("/")) {
+        const [day, month, year] = a.date.split("/");
+        dateObj = new Date(`${year}-${month}-${day}T${a.time}:00`);
+      } else {
+        dateObj = new Date(`${a.date}T${a.time}:00`);
+      }
+      return { ...a, dateObj };
+    })
+    .filter((a) => a.dateObj && a.dateObj >= today)
+    .sort((a, b) => a.dateObj - b.dateObj);
+
+  const nextAppointment = futureAppointments.length > 0 ? futureAppointments[0] : null;
+
+  // console.log("Raw appointments:", appointments);
+  // console.log("Flattened appointments:", normalizedAppointments);
 
   const styles = createStyles(theme, insets);
 
@@ -127,31 +147,18 @@ const HomeScreen = () => {
         />
       ),
     },
-    // {
-    //   key: 'weather',
-    //   render: () => (
-    //     <View style={styles.blockSpacing}>
-    //       <WeatherCard
-    //         weatherData={weatherData}
-    //         forecastData={forecastData}
-    //         loadingWeather={loadingWeather}
-    //         theme={theme}
-    //       />
-    //     </View>
-    //   ),
-    // },
-    // ...(error
-    //   ? [
-    //     {
-    //       key: 'error',
-    //       render: () => (
-    //         <Text style={[styles.errorText, { color: theme.danger || 'red' }]}>
-    //           ⚠️ Weather fetch failed: {error}
-    //         </Text>
-    //       ),
-    //     },
-    //   ]
-    //   : []),
+    {
+      key: 'upcomingAppointment',
+      render: () => (
+        <UpcomingAppointmentCard
+          appointments={nextAppointment ? [nextAppointment] : []}
+          loading={loadingAppointments}
+          theme={theme}
+          navigation={navigation}
+        />
+      ),
+    },
+
     {
       key: 'footer',
       render: () => (
@@ -167,14 +174,14 @@ const HomeScreen = () => {
       data={contentBlocks}
       keyExtractor={(item) => item.key}
       renderItem={({ item }) => item.render()}
-      contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: theme.background },
+      ]}
       showsVerticalScrollIndicator={false}
-      // refreshing={refreshing}
-      // onRefresh={onRefresh}
     />
   );
 };
-
 
 const createStyles = (theme, insets) =>
   StyleSheet.create({
@@ -193,26 +200,6 @@ const createStyles = (theme, insets) =>
     loadingText: {
       marginTop: 10,
       fontFamily: 'Poppins',
-    },
-    headerWrapper: {
-      alignItems: 'center',
-      marginBottom: 24,
-    },
-    headerText: {
-      fontSize: 26,
-      fontWeight: '700',
-      fontFamily: 'PoppinsBold',
-      textAlign: 'center',
-    },
-    subtitle: {
-      fontSize: 16,
-      marginTop: 1,
-      opacity: 0.7,
-      fontFamily: 'PoppinsBold',
-      textAlign: 'center',
-    },
-    blockSpacing: {
-      marginBottom: 18,
     },
     errorText: {
       fontSize: 14,

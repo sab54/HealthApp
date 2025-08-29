@@ -10,6 +10,7 @@ import chatReducer from './reducers/chatReducer';
 import settingsReducer from './reducers/settingsReducer';
 import healthlogReducer from './reducers/healthlogReducers';
 import appointmentReducers from './reducers/appointmentReducers';
+import stepsReducer from './reducers/stepsReducer';
 
 //  UI-related
 import themeReducer from './reducers/themeReducer';
@@ -20,7 +21,7 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   settings: settingsReducer,
   healthlog: healthlogReducer,
-
+  steps: stepsReducer,
   weather: weatherReducer,
   chat: chatReducer,
   appointment: appointmentReducers,

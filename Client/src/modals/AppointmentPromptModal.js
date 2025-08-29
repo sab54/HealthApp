@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Feather } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AppointmentPromptModal = ({
   visible,
@@ -29,16 +30,31 @@ const AppointmentPromptModal = ({
     notes: '',
   });
 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
   useEffect(() => {
-    // Update patient name whenever modal is opened or initialPatientName changes
     setForm((prev) => ({
       ...prev,
       patientName: initialPatientName || ''
     }));
-  }, [initialPatientName,initialPatientContact, visible]);
+  }, [initialPatientName, initialPatientContact, visible]);
 
-  const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      const isoDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      setForm((prev) => ({ ...prev, appointmentDate: isoDate }));
+    }
+  };
+
+  const handleTimeChange = (event, selectedTime) => {
+    setShowTimePicker(false);
+    if (selectedTime) {
+      const hours = String(selectedTime.getHours()).padStart(2, '0');
+      const minutes = String(selectedTime.getMinutes()).padStart(2, '0');
+      setForm((prev) => ({ ...prev, appointmentTime: `${hours}:${minutes}` }));
+    }
   };
 
   const handleSubmit = () => {
@@ -62,12 +78,7 @@ const AppointmentPromptModal = ({
   const styles = createStyles(theme);
 
   return (
-    <Modal
-      isVisible={visible}
-      onBackdropPress={onClose}
-      avoidKeyboard
-      style={styles.modal}
-    >
+    <Modal isVisible={visible} onBackdropPress={onClose} avoidKeyboard style={styles.modal}>
       <View style={styles.modalContent}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Feather name="x" size={20} color={theme.text} />
@@ -75,55 +86,77 @@ const AppointmentPromptModal = ({
 
         <Text style={styles.title}>Book Doctor Appointment</Text>
 
+        {/* Patient name input */}
         <TextInput
           style={styles.input}
           placeholder="Patient Name"
           placeholderTextColor={theme.placeholder}
           value={form.patientName}
-          onChangeText={(text) => handleChange('patientName', text)}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, patientName: text }))}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Appointment Date (YYYY-MM-DD)"
-          placeholderTextColor={theme.placeholder}
-          value={form.appointmentDate}
-          onChangeText={(text) => handleChange('appointmentDate', text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Appointment Time (HH:MM)"
-          placeholderTextColor={theme.placeholder}
-          value={form.appointmentTime}
-          onChangeText={(text) => handleChange('appointmentTime', text)}
-        />
+
+        {/* Date picker */}
+        <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+          <Text style={{ color: form.appointmentDate ? theme.inputText : theme.placeholder }}>
+            {form.appointmentDate || 'Select Appointment Date'}
+          </Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            value={form.appointmentDate ? new Date(form.appointmentDate) : new Date()}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
+        {/* Time picker */}
+        <TouchableOpacity style={styles.input} onPress={() => setShowTimePicker(true)}>
+          <Text style={{ color: form.appointmentTime ? theme.inputText : theme.placeholder }}>
+            {form.appointmentTime || 'Select Appointment Time'}
+          </Text>
+        </TouchableOpacity>
+        {showTimePicker && (
+          <DateTimePicker
+            value={new Date()}
+            mode="time"
+            display="default"
+            onChange={handleTimeChange}
+          />
+        )}
+
+        {/* Mode, purpose, etc. remain as inputs */}
         <TextInput
           style={styles.input}
           placeholder="Mode of Appointment"
           placeholderTextColor={theme.placeholder}
           value={form.mode}
-          onChangeText={(text) => handleChange('mode', text)}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, mode: text }))}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Purpose of Visit"
           placeholderTextColor={theme.placeholder}
           value={form.purpose}
-          onChangeText={(text) => handleChange('purpose', text)}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, purpose: text }))}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Previous Visit (Yes/No)"
           placeholderTextColor={theme.placeholder}
           value={form.previousVisit}
-          onChangeText={(text) => handleChange('previousVisit', text)}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, previousVisit: text }))}
         />
+
         <TextInput
           style={[styles.input, { height: 60 }]}
           placeholder="Notes (Optional)"
           placeholderTextColor={theme.placeholder}
           multiline
           value={form.notes}
-          onChangeText={(text) => handleChange('notes', text)}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, notes: text }))}
         />
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>

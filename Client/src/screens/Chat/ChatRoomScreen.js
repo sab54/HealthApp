@@ -325,18 +325,19 @@ const ChatRoomScreen = () => {
         if (!chatId || !senderId || !form.patientName) return;
 
         try {
-            // Call backend to actually book
+            const otherUser = chat?.members?.find(u => u.id !== senderId);
             const appointment = await dispatch(
                 bookAppointment({
                     date: form.appointmentDate,
                     time: form.appointmentTime,
                     reason: form.purpose,
-                    createdBy: senderId,
+                    createdBy: senderId,    // who created it
                     chatId,
+                    userId: otherUser?.id,  // patient
+                    senderId               // doctor / me
                 })
             ).unwrap();
 
-            // Then send a chat message so everyone sees it
             const appointmentMessage = {
                 chatId,
                 senderId,
@@ -350,6 +351,7 @@ const ChatRoomScreen = () => {
             Alert.alert('Error', 'Failed to create appointment.');
         }
     };
+
 
 
     const handleScroll = (event) => {

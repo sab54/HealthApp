@@ -1,173 +1,176 @@
 C:.
-�   .gitignore
-�   README.md
-�
+    .gitignore
+    README.md
+ 
 +---.vscode
-�
+ 
 +---Client
-�   �   App.js
-�   �   app.json
-�   �   babel.config.js
-�   �   index.js
-�   �   jest.config.js
-�   �   package-lock.json
-�   �   package.json
-�   �
-�   +---.expo
-�   �
-�   +---node_modules
-�   �
-�   +---src
-�   �   +---assets
-�   �   �   �   adaptive-icon.png
-�   �   �   �   doctor.jpg
-�   �   �   �   favicon.png
-�   �   �   �   icon.png
-�   �   �   �   illustration onboardingscreeen2.png
-�   �   �   �   illustration onboardingscreeen3.png
-�   �   �   �   illustration onboardingscreeen2.png
-�   �   �   �   login_image.png
-�   �   �   �   map.png
-�   �   �   �   no-chats2.png
-�   �   �   �   splash-icon.png
-�   �   �   �
-�   �   �   +---fonts/
-�   �   �   +---symptoms/
-�   �   �
-�   �   +---components
-�   �   �   �   ConfirmationModal.js
-�   �   �   �   CurvedBackground.js
-�   �   �   �   DailyMoodReminder.js
-�   �   �   �   Footer.js
-�   �   �   �   RadioButton.js
-�   �   �   �   SearchBar.js
-�   �   �   �   SidebarMenu.js
-�   �   �   �   SwipeableList.js
-�   �   �   �   Tabs.js
-�   �   �   �
-�   �   �   +---Chat
-�   �   �           MessageBubble.js
-�   �   �           ReactionPicker.js
-�   �   �           TypingIndicator.js
-�   �   �
-�   �   +---context
-�   �   �       ChatContext.js
-�   �   �
-�   �   +---data
-�   �   �       mockData.js
-�   �   �       weatherHealth.json
-|   |   |       symptomHealth.json
-�   �   �
-�   �   +---modals
-�   �   �       ActionModal.js
-�   �   �       AddContactModal.js
-|   |   |       EditUserInfo.js
-�   �   �       GroupInfoModal.js
-�   �   �       QuizPromptModal.js
-�   �   �       SymptomsDetailModal.js
-�   �   �       SymptomsModal.js
-�   �   �       ThreadModal.js
-�   �   �
-�   �   +---module
-�   �   �       ChatList.js
-�   �   �       DailyWellnessCard.js
-�   �   �       EmergencyShortcuts.js
-�   �   �       WeatherCard.js
-�   �   �
-�   �   +---navigation
-�   �   �       AppNavigator.js
-�   �   �       TabNavigator.js
-�   �   �
-�   �   +---screens
-�   �   �   �   CalendarScreen.js
-�   �   �   �   DailySymptomTrackingScreen.js
-�   �   �   �   DoctorLicenseUpload.js
-�   �   �   �   HealthlogScreen.js
-�   �   �   �   HealthTrackingScreen.js
-�   �   �   �   HomeScreen.js
-�   �   �   �   LoginScreen.js
-�   �   �   �   onboardingScreen.js
-�   �   �   �   OTPVerificationScreen.js
-�   �   �   �   RegistrationScreen.js
-�   �   �   �   ResourcesScreen.js
-�   �   �   �   SettingsScreen.js
-�   �   �   �   StepsTrackerScreen.js
-�   �   �   �   SymptomRecoveryPlanScreen.js
-�   �   �   �
-�   �   �   +---Chat
-�   �   �           AddPeopleScreen.js
-�   �   �           ChatRoomScreen.js
-�   �   �           ChatScreen.js
-�   �   �
-�   �   +---store
-�   �   �   �   index.js
-�   �   �   �
-�   �   �   +---actions
-�   �   �   �       chatActions.js
-�   �   �   �       emergencyActions.js
-�   �   �   �       healthlogActions.js
-�   �   �   �       loginActions.js
-�   �   �   �       quizActions.js
-�   �   �   �       registrationActions.js
-�   �   �   �       settingActions.js
-�   �   �   �       themeActions.js
-�   �   �   �       weatherActions.js
-�   �   �   �
-�   �   �   +---reducers
-�   �   �   �       chatReducer.js
-�   �   �   �       emergencyReducer.js
-�   �   �   �       healthlogReducers.js
-�   �   �   �       loginReducer.js
-�   �   �   �       registrationReducer.js
-�   �   �   �       settingsReducer.js
-�   �   �   �       themeReducer.js
-�   �   �   �       weatherReducer.js
-�   �   �   �
-�   �   �   +---selectors
-�   �   �           chatSelectors.js
-�   �   �
-�   �   +---theme
-�   �   �       themeTokens.js
-�   �   �
-�   �   +---utils
-�   �           api.js
-�   �           apiPaths.js
-�   �           config.js
-�   �           socket.js
-�   �           tokenHelper.js
-�   �           utils.js
-�   �
-+---Server
-    �   .env
-    �   eng.traineddata
-    �   package-lock.json
-    �   package.json
-    �   trustcura.db
-    �
+        App.js
+        app.json
+        babel.config.js
+        index.js
+        jest.config.js
+        package-lock.json
+        package.json
+     
+    +---.expo
+     
+    +---node_modules
+     
     +---src
-    �   �   server.js
-    �   �
-    �   +---config
-    �   �       db.js
-    �   +---data
-    �   �       symptomHealth.js
-    �   �
-    �   +---middleware
-    �   �       authMiddleware.js
-    �   �       decryptMiddleware.js
-    �   �       encryptMiddleware.js
-    �   �
-    �   +---migrations
-    �   �       initSchema.js
-    �   �
-    �   +---routes
-    �   �       auth.js
-    �   �       chat.js
-    �   �       license.js
-    �   �       healthlog.js
-    �   �       user.js
-    �   �
-    �   +---sockets
-    �           index.js
-    �
+        +---assets
+                adaptive-icon.png
+                doctor.jpg
+                favicon.png
+                icon.png
+                illustration onboardingscreeen2.png
+                illustration onboardingscreeen3.png
+                illustration onboardingscreeen2.png
+                login_image.png
+                map.png
+                no-chats2.png
+                splash-icon.png
+             
+            +---fonts/
+            +---symptoms/
+         
+        +---components
+                ConfirmationModal.js
+                CurvedBackground.js
+                DailyMoodReminder.js
+                DoctorLicenseUpload.js
+                Footer.js
+                RadioButton.js
+                SearchBar.js
+                SidebarMenu.js
+                SwipeableList.js
+                Tabs.js
+             
+            +---Chat
+                    MessageBubble.js
+                    ReactionPicker.js
+                    TypingIndicator.js
+         
+        +---context
+                ChatContext.js
+         
+        +---data
+                weatherHealth.json
+|   |   |       symptomHealth.js
+         
+        +---modals
+                ActionModal.js
+                AddContactModal.js
+                AppointmentPromptModal.js
+|   |   |       EditUserInfo.js
+                GroupInfoModal.js
+                MoodDetailsModal.js
+                QuizPromptModal.js
+                SymptomsDetailModal.js
+                SymptomsModal.js
+                ThreadModal.js
+         
+        +---module
+                ChatList.js
+                DailyWellnessCard.js
+                EmergencyShortcuts.js
+                WeatherCard.js
+         
+        +---navigation
+                AppNavigator.js
+                TabNavigator.js
+         
+        +---screens
+                CalendarScreen.js
+                DailySymptomTrackingScreen.js
+                HealthlogScreen.js
+                HealthTrackingScreen.js
+                HomeScreen.js
+                LoginScreen.js
+                onboardingScreen.js
+                OTPVerificationScreen.js
+                RegistrationScreen.js
+                ResourcesScreen.js
+                SettingsScreen.js
+                StepsTrackerScreen.js
+                SymptomRecoveryPlanScreen.js
+             
+            +---Chat
+                    AddPeopleScreen.js
+                    ChatRoomScreen.js
+                    ChatScreen.js
+         
+        +---store
+                index.js
+             
+            +---actions
+                    appointmentActions.js
+                    chatActions.js
+                    emergencyActions.js
+                    healthlogActions.js
+                    loginActions.js
+                    registrationActions.js
+                    settingActions.js
+                    themeActions.js
+                    weatherActions.js
+             
+            +---reducers
+                    appointmentReducers.js
+                    chatReducer.js
+                    emergencyReducer.js
+                    healthlogReducers.js
+                    loginReducer.js
+                    registrationReducer.js
+                    settingsReducer.js
+                    themeReducer.js
+                    weatherReducer.js
+             
+            +---selectors
+                    chatSelectors.js
+         
+        +---theme
+                themeTokens.js
+         
+        +---utils
+                api.js
+                apiPaths.js
+                config.js
+                socket.js
+                tokenHelper.js
+                utils.js
+     
++---Server
+        .env
+        eng.traineddata
+        package-lock.json
+        package.json
+        trustcura.db
+     
+    +---src
+            server.js
+         
+        +---config
+                db.js
+        +---data
+                symptomHealth.js
+         
+        +---middleware
+                authMiddleware.js
+                decryptMiddleware.js
+                encryptMiddleware.js
+         
+        +---migrations
+                initSchema.js
+         
+        +---routes
+                appointment.js
+                auth.js
+                chat.js
+                license.js
+                healthlog.js
+                user.js
+         
+        +---sockets
+                index.js
+     
     +---uploads
