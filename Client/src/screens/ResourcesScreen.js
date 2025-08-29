@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect  } from 'react';
 import {
     View,
     Text,
@@ -10,11 +10,17 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { useFonts } from 'expo-font';
 
+import {
+    fetchWeatherData,
+    fetchForecastData,
+} from '../store/actions/weatherActions';
+
 import EmergencyShortcuts from '../module/EmergencyShortcuts';
 import Footer from '../components/Footer';
 import WeatherCard from '../module/WeatherCard';
 
 const ResourcesScreen = () => {
+    const dispatch = useDispatch();
     const theme = useSelector((state) => state.theme.themeColors);
     const [fontsLoaded] = useFonts({
         Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
@@ -23,14 +29,6 @@ const ResourcesScreen = () => {
 
     const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1000);
-    }, []);
-
     const styles = createStyles(theme);
 
     const primaryColor = theme.primary || theme.info || '#0078D4';
@@ -38,6 +36,21 @@ const ResourcesScreen = () => {
     const weatherData = useSelector(state => state.weather.current);
     const forecastData = useSelector(state => state.weather.forecast);
     const loadingWeather = useSelector(state => state.weather.loading);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        Promise.all([
+            dispatch(fetchWeatherData()),
+            dispatch(fetchForecastData()),
+        ]).finally(() => {
+            setTimeout(() => setRefreshing(false), 1000);
+        });
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(fetchWeatherData());
+        dispatch(fetchForecastData());
+    }, [dispatch]);
 
     if (!fontsLoaded) {
         return (
