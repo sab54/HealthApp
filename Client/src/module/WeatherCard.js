@@ -11,6 +11,7 @@ import {
     UIManager,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { getPrecautions } from '../utils/weatherPrecautions';
 
 if (
     Platform.OS === 'android' &&
@@ -53,13 +54,14 @@ const WeatherCard = ({ weatherData, forecastData, loadingWeather, theme }) => {
     const hasWeatherData =
         weatherData?.main && weatherData?.weather?.[0] && weatherData?.name;
 
+    const precautions = hasWeatherData ? getPrecautions(weatherData) : [];
+
     const handleForecastToggle = () => {
         setLoadingForecast(true);
         toggleForecast();
-        // Simulate loading for forecast data if required (or actual data fetching can go here)
         setTimeout(() => {
-            setLoadingForecast(false); // Remove loading state after fetching
-        }, 1500); // Adjust delay based on actual fetch timing
+            setLoadingForecast(false);
+        }, 1500);
     };
 
     return (
@@ -88,30 +90,9 @@ const WeatherCard = ({ weatherData, forecastData, loadingWeather, theme }) => {
             </TouchableOpacity>
 
             {loadingWeather ? (
-                <ActivityIndicator size='small' color={theme.text} />
+                <ActivityIndicator size="small" color={theme.text} />
             ) : hasWeatherData ? (
                 <>
-                    {weatherData.alerts && (
-                        <View
-                            style={[
-                                styles.alertBox,
-                                {
-                                    backgroundColor: theme.warningBackground,
-                                    borderLeftColor: theme.warning,
-                                },
-                            ]}
-                        >
-                            <Text
-                                style={[
-                                    styles.alertText,
-                                    { color: theme.text },
-                                ]}
-                            >
-                                ⚠️ {weatherData.alerts[0].event}
-                            </Text>
-                        </View>
-                    )}
-
                     <View style={styles.weatherInfoRow}>
                         <MaterialCommunityIcons
                             name={getWeatherIcon(weatherData.weather[0].main)}
@@ -127,8 +108,7 @@ const WeatherCard = ({ weatherData, forecastData, loadingWeather, theme }) => {
                                 Temp: {convertTemp(weatherData.main.temp)}
                             </Text>
                             <Text style={[styles.label, { color: theme.text }]}>
-                                Feels Like:{' '}
-                                {convertTemp(weatherData.main.feels_like)}
+                                Feels Like: {convertTemp(weatherData.main.feels_like)}
                             </Text>
                         </View>
                         <View style={styles.weatherDetails}>
@@ -228,7 +208,34 @@ const WeatherCard = ({ weatherData, forecastData, loadingWeather, theme }) => {
             )}
 
             {forecastData?.length > 0 && showForecast && loadingForecast && (
-                <ActivityIndicator size='small' color={theme.text} />
+                <ActivityIndicator size="small" color={theme.text} />
+            )}
+
+            {/* Precautions shown at the END of card */}
+            {precautions.length > 0 && (
+                <View
+                    style={[
+                        styles.alertBox,
+                        {
+                            backgroundColor: theme.warningBackground,
+                            borderLeftColor: theme.warning,
+                        },
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.alertText,
+                            { color: theme.text, marginBottom: 6 },
+                        ]}
+                    >
+                        🛡️ Health & Safety Precautions
+                    </Text>
+                    {precautions.map((p, i) => (
+                        <Text key={i} style={[styles.label, { color: theme.text }]}>
+                            • {p}
+                        </Text>
+                    ))}
+                </View>
             )}
         </View>
     );
@@ -319,7 +326,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 4,
         padding: 10,
         borderRadius: 6,
-        marginBottom: 10,
+        marginTop: 15,
     },
     alertText: {
         fontFamily: 'Poppins',

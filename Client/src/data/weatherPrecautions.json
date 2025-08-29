@@ -1,0 +1,195 @@
+{
+  "version": "1.3.0",
+  "source": "OpenWeatherMap (Current Weather / One Call) fields: weather[0].main, main.temp",
+  "unitsNote": "Temperatures assume units=metric (°C). If using default Kelvin, convert before matching.",
+  "matchOrder": ["byMain", "byTemp", "fallback"],
+  "byMain": {
+    "Thunderstorm": {
+      "precautions": [
+        "Move indoors to reduce lightning injury risk.",
+        "Avoid bathing/showers during active lightning.",
+        "If outside, minimize ground contact; avoid tall isolated objects."
+      ]
+    },
+    "Drizzle": {
+      "precautions": [
+        "Wear a light waterproof layer to prevent chilling.",
+        "Use non-slip footwear to reduce fall injuries.",
+        "Asthma: damp air may trigger symptoms—carry reliever inhaler."
+      ]
+    },
+    "Rain": {
+      "light": [
+        "Use a waterproof layer to prevent prolonged skin chilling.",
+        "Dry feet promptly to prevent blisters and skin irritation."
+      ],
+      "moderate": [
+        "Wear waterproof clothing to reduce hypothermia risk from wet exposure.",
+        "Use non-slip footwear to prevent fall injuries."
+      ],
+      "heavy": [
+        "Limit time outdoors to prevent hypothermia and skin maceration.",
+        "Migraine-prone: rest and hydrate—pressure shifts can be a trigger."
+      ]
+    },
+    "Snow": {
+      "precautions": [
+        "Layer clothing and cover extremities to prevent hypothermia/frostbite.",
+        "Use ice grips or deep-tread footwear to prevent falls.",
+        "Shovel with small loads and breaks to reduce cardiac strain."
+      ]
+    },
+    "Clear": {
+      "day": [
+        "Apply broad-spectrum SPF 30+ every 2 hours.",
+        "Wear UV400 sunglasses and a brimmed hat.",
+        "Hydrate regularly to prevent dehydration/heat illness."
+      ],
+      "night": [
+        "Add a warm layer if temps drop to prevent chills.",
+        "Support sleep health by dimming screens 1 hour before bed."
+      ]
+    },
+    "Clouds": {
+      "few": [
+        "UV can still be high—use sunscreen if outdoors >15 minutes.",
+        "Hydrate during activity to prevent headache/fatigue."
+      ],
+      "scattered": [
+        "Carry a light layer to avoid wind-chill discomfort.",
+        "Light sensitivity (migraines): sunglasses may help."
+      ],
+      "broken": [
+        "Be prepared for brief showers to avoid getting chilled."
+      ],
+      "overcast": [
+        "Low light may affect mood—short outdoor walks can help circadian rhythm."
+      ]
+    },
+    "Mist": {
+      "precautions": [
+        "Asthma/COPD: limit outdoor exertion; carry reliever inhaler.",
+        "Walk carefully to avoid slips on damp surfaces."
+      ]
+    },
+    "Smoke": {
+      "precautions": [
+        "Limit outdoor activity; close windows to reduce particulate inhalation.",
+        "Use a well-fitting respirator (FFP2/N95) if you must be outside.",
+        "Heart/lung disease: follow your action plan and monitor symptoms."
+      ]
+    },
+    "Haze": {
+      "precautions": [
+        "Reduce prolonged outdoor exertion to lower inhaled irritants.",
+        "Rinse eyes with clean water if irritated; stay hydrated."
+      ]
+    },
+    "Dust": {
+      "precautions": [
+        "Wear protective eyewear and a high-filtration mask outdoors.",
+        "Avoid contact lenses if eyes are irritated.",
+        "Asthma/COPD: keep preventer/reliever meds accessible."
+      ]
+    },
+    "Fog": {
+      "precautions": [
+        "Avoid strenuous outdoor exercise; cold, damp air can irritate airways.",
+        "Walk carefully to prevent slips on wet surfaces."
+      ]
+    },
+    "Sand": {
+      "precautions": [
+        "Protect eyes with wraparound glasses; use a mask to reduce inhalation.",
+        "Limit outdoor exposure during blowing sand; rinse eyes/skin after."
+      ]
+    },
+    "Ash": {
+      "precautions": [
+        "Stay indoors; keep windows closed to reduce ash inhalation.",
+        "Use a tight-fitting respirator (FFP2/N95) and eye protection if outside.",
+        "Avoid contact lenses during ash fall."
+      ]
+    },
+    "Squall": {
+      "precautions": [
+        "Seek sturdy shelter to reduce debris-related injuries.",
+        "Shield eyes from wind-borne particles."
+      ]
+    },
+    "Tornado": {
+      "precautions": [
+        "Shelter in an interior room on the lowest floor; avoid windows.",
+        "Protect head/neck with sturdy items (helmet, mattress)."
+      ]
+    }
+  },
+  "byTemp": [
+    {
+      "band": "≤ -10",
+      "precautions": [
+        "Limit time outdoors; risk of frostbite and hypothermia is high.",
+        "Cover head, hands, and feet; use thermal layers and windproof outerwear.",
+        "Warm inhalers/medications near body temperature before use."
+      ]
+    },
+    {
+      "band": "-10 to 0",
+      "precautions": [
+        "Wear insulated layers and waterproof footwear to prevent cold injuries.",
+        "Take warm breaks; watch for numb, pale, or hard skin (frostnip)."
+      ]
+    },
+    {
+      "band": "0 to 5",
+      "precautions": [
+        "Use waterproof outer layers; damp cold increases hypothermia risk.",
+        "Older adults/heart disease: avoid overexertion in cold."
+      ]
+    },
+    {
+      "band": "5 to 15",
+      "precautions": [
+        "Layer so you can shed sweat-wet clothing after activity.",
+        "Change promptly out of wet gear to avoid post-exercise chill."
+      ]
+    },
+    {
+      "band": "15 to 25",
+      "precautions": [
+        "Maintain hydration during outdoor activity.",
+        "Use sunscreen if outdoors >15 minutes."
+      ]
+    },
+    {
+      "band": "25 to 32",
+      "precautions": [
+        "Increase fluids; seek shade and schedule rest breaks.",
+        "Wear light, breathable clothing; avoid alcohol before strenuous activity."
+      ]
+    },
+    {
+      "band": "32 to 40",
+      "precautions": [
+        "High heat stress risk—limit vigorous activity to cooler hours.",
+        "Use water plus electrolytes during prolonged exertion.",
+        "Check on vulnerable people (elderly, infants, chronic illness)."
+      ]
+    },
+    {
+      "band": "> 40",
+      "precautions": [
+        "Very high risk of heat stroke—stay in cooled environments when possible.",
+        "Use cooling methods (cool showers, damp cloths) and aggressive hydration.",
+        "Know red-flag symptoms: confusion, fainting, hot dry skin—seek urgent care."
+      ]
+    }
+  ],
+  "fallback": {
+    "precautions": [
+      "Dress for temperature to prevent heat or cold stress.",
+      "Hydrate and take breaks during outdoor activity.",
+      "Carry prescribed emergency meds (e.g., inhalers, epinephrine) if applicable."
+    ]
+  }
+}
