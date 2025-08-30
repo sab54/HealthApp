@@ -1,3 +1,31 @@
+/**
+ * weatherActions.js
+ *
+ * This file defines actions for fetching and managing weather data, including current weather and forecast data,
+ * for a user's location. The actions interact with the OpenWeather API and manage state using Redux. It also checks
+ * if enough time has passed since the last fetch (one hour) and uses cached data if available.
+ * Additionally, the actions support a development mode (`DEV_MODE`) where mock data can be used for testing purposes.
+ *
+ * Features:
+ * - Fetches current weather data using the OpenWeather API based on the user's location.
+ * - Fetches the 5-day forecast data (midday) from the OpenWeather API.
+ * - Uses cached weather data if the last fetch was recent or if in `DEV_MODE`.
+ * - Stores timestamps for the last fetch to ensure data is refreshed after one hour.
+ * - Handles loading and error states for fetching data.
+ *
+ * This file uses the following libraries:
+ * - Redux for managing weather-related state (loading, error, data).
+ * - `fetch` for making HTTP requests to the OpenWeather API.
+ * - Utility functions like `getUserLocation` to retrieve the user's current location.
+ * - A mock data option in `DEV_MODE` for testing purposes.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ * - react-native
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { DEV_MODE, OPENWEATHER_API_KEY } from '../../utils/config';
 import {
     setWeatherData,

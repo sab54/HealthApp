@@ -1,4 +1,30 @@
 // Client/src/utils/weatherPrecautions.js
+/**
+ * weatherPrecautions.js
+ *
+ * This file provides utility functions to map OpenWeather's current weather data to corresponding safety precautions and tips.
+ * It includes logic to analyze weather conditions like temperature, rain intensity, and cloud coverage, and provides relevant 
+ * precautions based on predefined sets in `weatherPrecautions.json`. This file also handles day/night differentiation for clear weather 
+ * and maps these conditions to precautionary advice.
+ *
+ * Features:
+ * - `isDaytime`: Determines if the current time is between sunrise and sunset to differentiate between day and night conditions.
+ * - `parseCloudsSubtype`: Maps the cloud description (e.g., 'scattered', 'broken') to predefined subtypes.
+ * - `rainIntensityFromRate`: Classifies rain intensity based on the rate of rainfall in mm/hr.
+ * - `tempBand`: Maps temperature (°C) to predefined temperature bands (e.g., '0 to 5', '25 to 32').
+ * - `getPrecautions`: Main function that computes a list of precautions based on the current weather data. It uses the conditions 
+ *   (e.g., rain, temperature, clouds) to select and return relevant safety tips from `weatherPrecautions.json`.
+ * - `getPrecautionsFromForecastItem`: A helper function to extract precautions from a forecast item (forecast data from OpenWeather).
+ *
+ * This file uses the following libraries:
+ * - `expo-location`: For handling the weather data fetching (though not directly used in this file).
+ *
+ * Dependencies:
+ * - None (standard JavaScript and data from `weatherPrecautions.json`).
+ *
+ * Author: Sunidhi Abhange
+ */
+
 // Maps OpenWeather current conditions to your weatherPrecuations.json tips.
 
 import precautionsData from '../data/weatherPrecautions.json';

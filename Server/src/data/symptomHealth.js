@@ -1,4 +1,27 @@
 // Server/src/data/symptomHealth.js
+/**
+ * symptomHealth.js
+ *
+ * This file contains a dataset for various symptoms and their corresponding health-related advice. It categorizes symptoms into 
+ * different severity levels (mild, moderate, and severe) and provides a structured set of recommendations for each level. 
+ * These include possible causes, precautions, food recommendations, medications, exercises, treatments, and specific timing for each.
+ *
+ * The structure of the dataset is as follows:
+ * - `symptom`: The name of the symptom (e.g., "Headache", "Runny Nose").
+ * - `severity_levels`: An object containing different severity levels (mild, moderate, severe), with detailed advice for each.
+ * - Each severity level includes:
+ *   - `description`: A brief description of the severity level.
+ *   - `possible_causes`: An array of possible causes for the symptom at that severity level.
+ *   - `precautions`: A list of precautions to take.
+ *   - `what_to_eat`: Recommended foods to eat.
+ *   - `medicines`: Suggested medications (if any).
+ *   - `what_not_to_take`: Foods or substances to avoid.
+ *   - `exercises`: Recommended exercises or physical activities.
+ *   - `treatment`: Suggested treatments for alleviating the symptom.
+ *   - `timing`: A set of recommended times for precautions, eating, medicines, exercises, and treatment.
+ *
+ * Author: [Your Name]
+ */
 
 const symptomHealth = [
   {

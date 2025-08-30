@@ -1,4 +1,28 @@
 // Client/src/store/reducers/loginReducer.js
+/**
+ * loginReducer.js
+ *
+ * This file defines the Redux slice for managing the authentication state in the application, including user verification,
+ * user location updates, and handling login/logout operations. It integrates with asynchronous actions such as verifying OTP,
+ * updating user location, and initializing authentication. The slice also manages loading and error states, as well as user
+ * details within the Redux store.
+ *
+ * Features:
+ * - Manages state for the authentication process, including user verification, loading, and error handling.
+ * - Handles user logout, resetting the state and clearing user data from the store.
+ * - Supports updating the user's location and storing latitude/longitude in the state.
+ * - Initializes the authentication state by checking the user's status and loading user data.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing authentication-related state and async actions.
+ * - Async actions to interact with the backend for OTP verification, location updates, and authentication initialization.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createSlice } from '@reduxjs/toolkit';
 import { verifyOtp, logout, updateUserLocation, initAuth } from '../actions/loginActions';
 

@@ -1,4 +1,30 @@
 // Client/src/screens/SettingsScreen.js
+/**
+ * SettingsScreen.js
+ * 
+ * This screen allows users to view and edit their account settings, including user information and doctor verification status. 
+ * It displays the user's name, email, and role, and provides an option to upload a doctor license for verification if the user is a doctor.
+ * The screen also supports the editing of user profile details, and provides a modal for updating the first and last names.
+ * 
+ * Key Features:
+ * - Displays user profile with options to edit user info.
+ * - Doctor verification section with upload functionality.
+ * - Displays user status and role.
+ * - Includes feedback for pending or approved doctor license status.
+ * - Allows navigation back to the previous screen or profile update.
+ * 
+ * Dependencies:
+ * - `react-native` for UI components.
+ * - `react-redux` for state management.
+ * - `expo-font` for custom font loading.
+ * - `react-navigation` for navigation handling.
+ * - `react-native-safe-area-context` for safe area insets.
+ * - `DoctorLicenseUpload` for handling doctor license uploads.
+ * - `EditUserInfoModal` for editing user details.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Button, Platform } from 'react-native';

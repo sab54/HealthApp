@@ -1,3 +1,48 @@
+// /src/module/EmergencyShortcuts.js
+/**
+ * EmergencyShortcuts.js
+ * 
+ * This component provides a quick access interface for emergency services, allowing users to:
+ * - View and interact with emergency services like medical, dentist, and pharmacy.
+ * - Call emergency numbers specific to the user's region.
+ * - Share the user's location with emergency contacts.
+ * - Add custom emergency contacts for easy access.
+ * - Send predefined emergency messages via SMS.
+ * 
+ * Key Features:
+ * - Displays a list of emergency services (Medical, Dentist, Pharmacy) with icons, descriptions, and call actions.
+ * - Allows users to locate nearby services using the map.
+ * - Users can send SMS with predefined messages to emergency numbers.
+ * - Custom emergency contacts can be added by users for quick dialing and SMS communication.
+ * 
+ * Props:
+ * - `theme`: The current theme used for styling the component (colors, fonts, etc.).
+ * 
+ * States:
+ * - `expanded`: A state to manage which service descriptions are expanded.
+ * - `pulse`: A state used to animate the "call" button with a pulse effect.
+ * - `customContacts`: An array of custom contacts added by the user.
+ * - `modalVisible`: Controls the visibility of the modal for adding contacts.
+ * - `smsModalVisible`: Controls the visibility of the modal for selecting and sending SMS messages.
+ * - `selectedService`: Stores the selected service for SMS or location sharing.
+ * 
+ * Helper Functions:
+ * - `startPulse`: Initiates a looping pulse animation for the "call" button.
+ * - `openMapWithQuery`: Opens the device's map application with a search query (e.g., 'Hospital').
+ * - `sendSMS`: Sends an SMS to a specified phone number with a message.
+ * - `handleShareLocation`: Shares the user's current location with a given contact via SMS.
+ * - `handleAddContact`: Adds custom emergency contacts to the list.
+ * 
+ * Dependencies:
+ * - `expo-location`: Used to access the user's current location for location sharing.
+ * - `expo-localization`: Used to detect the user's region for default emergency numbers.
+ * - `react-native`: Used for UI components and animations.
+ * - `@react-navigation/native`: For navigation actions within the app.
+ * - `react-redux`: For state management and dispatching actions.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState } from 'react';
 import {
     View,

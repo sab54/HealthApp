@@ -1,4 +1,30 @@
 // Client/src/screens/SymptomRecoveryPlanScreen.js
+/**
+ * SymptomRecoveryPlanScreen.js
+ * 
+ * This screen displays a user's recovery plan for a specific symptom. It shows tasks for the user to complete based on their recovery journey, categorized by types like precautions, medicine, food, exercises, and what to avoid.
+ * The screen also includes a progress bar that tracks the completion of tasks and provides details on the symptom severity and when it was recorded.
+ * 
+ * Key Features:
+ * - Displays symptom-specific tasks grouped by categories.
+ * - Shows the user's progress in completing recovery tasks.
+ * - Allows the user to toggle task completion (done or not done).
+ * - Provides severity details based on the symptom's severity level.
+ * - Allows for task updates via Redux actions.
+ * - Fetches recovery tasks and symptom details from an API and updates the state accordingly.
+ * 
+ * Dependencies:
+ * - `react-native` for UI components and navigation.
+ * - `react-redux` for state management.
+ * - `react-navigation` for navigation between screens.
+ * - `react-native-progress` for displaying a progress circle.
+ * - `react-native-vector-icons` for icons (Feather, Ionicons).
+ * - `utils/api` for API requests.
+ * - `store/actions/healthlogActions` for updating the user's recovery plan.
+ * - `data/symptomHealth` for getting severity details.
+ * 
+ * Author: Sunidhi Abhange
+ */
 
 import React, { useEffect, useState, useCallback } from 'react';
 import {

@@ -1,3 +1,26 @@
+/**
+ * Appointment Routes (appointment.js)
+ *
+ * This file defines the routes for appointment-related actions, including booking, fetching,
+ * and updating appointments. It uses SQLite for database interactions and Express.js for routing.
+ * 
+ * Features:
+ * - POST /appointment/ai-book: Allows the creation of an appointment with specified details.
+ * - GET /appointment/:userId: Fetches appointments for a specific user based on their userId.
+ * - PATCH /appointment/:id: Allows updating the details of an existing appointment (status, date, time, reason).
+ * 
+ * Helper Functions:
+ * - `runQuery`: A helper function to execute SQL queries that modify the database.
+ * - `allQuery`: A helper function to execute SQL queries that retrieve multiple rows from the database.
+ * 
+ * This file uses the following libraries:
+ * - express: Web framework for building API routes.
+ * - body-parser: Middleware for parsing incoming request bodies.
+ * - SQLite: Used for database interactions, specifically for appointments.
+ * 
+ * Author: [Your Name or Author Name]
+ */
+
 const express = require('express');
 const bodyParser = require('body-parser');
 

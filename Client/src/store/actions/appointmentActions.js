@@ -1,4 +1,22 @@
 // Client/src/actions/appointmentActions.js
+/**
+ * appointmentActions.js
+ * 
+ * This file contains actions related to appointments, using Redux Toolkit's `createAsyncThunk` for async actions.
+ * 
+ * Key Features:
+ * - `bookAppointment`: This action handles the booking of appointments via an AI system. It takes the appointment's details (e.g., date, time, reason, user IDs) and sends a request to the server. Upon success, it normalizes the response into a flat array and returns it. If an error occurs, it rejects with an error message.
+ * 
+ * - `fetchAppointments`: This action fetches all appointments for a user from the backend. It sends a request with the user's ID and returns the list of appointments. If the request fails, it rejects with an error message.
+ * 
+ * Dependencies:
+ * - `@reduxjs/toolkit`: For Redux Toolkit's `createAsyncThunk`.
+ * - `utils/api`: For making GET, POST, and PATCH requests to the backend.
+ * - `utils/apiPaths`: For the API path constants used in requests.
+ * 
+ * Author: [Your Name]
+ */
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_APPOINTMENT } from '../../utils/apiPaths';
 import { get, post, patch } from '../../utils/api';

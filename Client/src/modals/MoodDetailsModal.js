@@ -1,4 +1,32 @@
-// client/src/modals/MoodDetailsModal.js
+// Client/src/modals/MoodDetailsModal.js
+/**
+ * MoodDetailsModal.js
+ * 
+ * This file defines the `MoodDetailsModal` component, which allows the user to reflect
+ * on their current mood by providing input on their sleep hours and energy level.
+ * The modal is used to capture mood-related data, which can then be submitted for further
+ * processing, such as tracking or analysis.
+ * 
+ * Features:
+ * - Displays the selected mood along with sliders for sleep hours and energy level.
+ * - The user can adjust the sliders to indicate their sleep duration (0-24 hours) and 
+ *   energy level (1-10 scale).
+ * - Submitting the form sends the mood, sleep, and energy values to a callback function.
+ * 
+ * Props:
+ * - `visible`: A boolean controlling the visibility of the modal.
+ * - `selectedMood`: The mood selected by the user, displayed in the modal.
+ * - `onSubmit`: Callback function that is called when the user submits the form.
+ * - `theme`: The theme object used to style the modal's components, including colors 
+ *   for the background, sliders, and text.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@react-native-community/slider`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';

@@ -1,4 +1,31 @@
 //client/store/actions/loginActions.js
+/**
+ * loginActions.js
+ *
+ * This file defines actions related to user authentication and session management, including requesting and verifying OTPs,
+ * logging the user out, and updating user location. It utilizes Redux Toolkit's `createAsyncThunk` to handle asynchronous
+ * operations such as API calls and token management. The actions also interact with AsyncStorage for persisting user data 
+ * and session information, and integrate with a sensor tracking utility for step tracking.
+ *
+ * Features:
+ * - Requests OTP for user login and verifies the OTP.
+ * - Logs the user out by saving current step data and clearing AsyncStorage.
+ * - Updates user location data via the backend API.
+ * - Initializes the authentication state, loading user data and fetching daily steps upon app startup.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing authentication state and async actions.
+ * - AsyncStorage for persisting session and user data locally on the device.
+ * - SensorTracker for managing step tracking and accelerometer data.
+ * - API utilities for interacting with user and step-related endpoints.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ * - @react-native-async-storage/async-storage
+ *
+ * Author: Sunidhi Abhange
+ */
+
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';

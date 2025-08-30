@@ -1,4 +1,33 @@
 // Server/src/server.js
+/**
+ * Server Setup (server.js)
+ *
+ * This file sets up the Express server, configures WebSocket support using Socket.IO, 
+ * and mounts the various API routes for user authentication, health tracking, chat, 
+ * appointments, and other functionalities. It also sets up the server for serving static files.
+ * 
+ * Features:
+ * - Express Server: Configures the server to handle HTTP requests and APIs.
+ * - WebSocket Support: Integrates Socket.IO to provide real-time functionality (e.g., chat updates, notifications).
+ * - Route Handling: Mounts various API routes such as `/api/users`, `/api/auth`, and `/api/healthlog`.
+ * - Static File Handling: Serves static files (e.g., uploaded certificates) through the `/uploads` endpoint.
+ * - CORS: Configures Cross-Origin Resource Sharing (CORS) headers for API access from different origins.
+ * 
+ * Key Functionality:
+ * - `socketHandler(io)`: Initializes the WebSocket event handlers for user and chat room interactions.
+ * - `initSchema()`: Initializes the database schema using migration files.
+ * - API Routes: The server is configured to handle various routes including user management, chat, health logs, and appointments.
+ * - CORS: Ensures that the API is accessible from different origins with appropriate headers.
+ * 
+ * Dependencies:
+ * - express: Web framework for handling HTTP requests and API routes.
+ * - socket.io: Library for WebSocket-based communication to enable real-time features.
+ * - http: Core Node.js module for creating the HTTP server.
+ * - path: Module for handling file and directory paths, particularly for serving static files.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 const express = require('express');
 const db = require('./config/db');
 const initSchema = require('./migrations/initSchema');

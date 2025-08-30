@@ -1,4 +1,31 @@
 // Client/src/screens/StepsTrackerScreen.js
+/**
+ * StepsTrackerScreen.js
+ * 
+ * This screen tracks and displays the user's step data in real-time. It allows users to start, pause, and view their step progress.
+ * It also shows detailed statistics, including the total number of steps, distance walked, and calories burned. 
+ * Users can track their progress on a weekly basis and save their daily steps when the app goes to the background or when the hardware back button is pressed.
+ * 
+ * Key Features:
+ * - Displays a progress circle indicating the current step count towards a goal.
+ * - Shows daily statistics like calories burned and distance walked.
+ * - Allows the user to start, pause, or resume step tracking.
+ * - Saves step data when the app goes into the background or the user presses the back button.
+ * - Tracks the user’s steps over the past week and visually indicates if they met their daily step goal.
+ * 
+ * Dependencies:
+ * - `react-native` for UI components.
+ * - `react-redux` for state management.
+ * - `expo-font` for custom font loading.
+ * - `react-native-progress` for the progress circle component.
+ * - `react-navigation` for navigation.
+ * - `react-native-safe-area-context` for safe area handling.
+ * - `SensorTracker` for step tracking.
+ * - `stepsActions` for saving and fetching step data from the backend.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform, BackHandler, AppState } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';

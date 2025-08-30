@@ -1,4 +1,38 @@
 // Client/src/modals/AppointmentPromptModal.js
+/**
+ * AppointmentPromptModal.js
+ * 
+ * This file defines the `AppointmentPromptModal` component, which provides a modal 
+ * interface for booking doctor appointments. The modal allows the user to enter 
+ * patient details, select the appointment date and time, choose the mode of appointment, 
+ * and provide additional information such as the purpose of the visit and any notes. 
+ * It uses `DateTimePicker` for selecting dates and times and includes form validation 
+ * before submission.
+ * 
+ * Features:
+ * - Allows users to input patient details (name, contact) and appointment information.
+ * - Supports date and time picking using the `@react-native-community/datetimepicker`.
+ * - Provides options for selecting the mode of appointment (e.g., "Phone Call").
+ * - Handles form validation to ensure required fields are filled.
+ * - Customizable theme for the modal, including colors for text, input fields, and buttons.
+ * 
+ * Props:
+ * - `visible`: Boolean that controls whether the modal is visible or not.
+ * - `onClose`: Callback function to close the modal.
+ * - `onSubmit`: Callback function triggered when the form is successfully submitted.
+ * - `theme`: Theme object to customize the modal's appearance (colors, text, etc.).
+ * - `patientName`: The initial name of the patient, if provided (optional).
+ * - `patientContact`: The initial contact details of the patient, if provided (optional).
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-native-modal`
+ * - `@react-native-community/datetimepicker`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
   View,

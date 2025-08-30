@@ -1,4 +1,38 @@
 //Client/src/components/ConfirmationModal.js
+/**
+ * ConfirmationModal.js
+ * 
+ * This file defines the `ConfirmationModal` component, which presents a modal dialog
+ * to confirm or cancel an action. The modal includes customizable title, description, 
+ * and button labels. It can also display an optional icon to emphasize the action.
+ * 
+ * Features:
+ * - Displays a title, description, and optional children components within the modal.
+ * - Allows customization of button labels for both confirm and cancel actions.
+ * - Supports an optional icon to highlight the action (e.g., warning or error).
+ * - Configurable to show one or two buttons depending on the `multipleButtons` prop.
+ * - Customizable styling based on the provided `theme` prop.
+ * 
+ * Props:
+ * - `visible`: Boolean to control the visibility of the modal.
+ * - `onClose`: Function to handle closing the modal.
+ * - `onConfirm`: Function to handle the confirm action.
+ * - `title`: The title of the modal (default: 'Are you sure?').
+ * - `description`: The description text (default: empty).
+ * - `confirmLabel`: The label for the confirm button (default: 'Confirm').
+ * - `cancelLabel`: The label for the cancel button (default: 'Cancel').
+ * - `multipleButtons`: Boolean to determine if both confirm and cancel buttons are shown (default: true).
+ * - `children`: Optional custom content that can be rendered inside the modal.
+ * - `theme`: The theme object for styling the modal's colors, borders, buttons, etc.
+ * - `icon`: Optional icon name (e.g., warning or error icon from Ionicons) to display in the modal.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React from 'react';
 import {
     Modal,

@@ -1,4 +1,38 @@
 // Client/src/components/DailyMoodReminder.js
+/**
+ * DailyMoodReminder.js
+ * 
+ * This file defines the `DailyMoodReminder` component, which shows a reminder modal to 
+ * users who have skipped entering their mood for the day. The reminder appears periodically 
+ * based on a set interval. The component checks if the user has skipped the mood entry and 
+ * triggers a reminder when necessary. It uses AsyncStorage to track the last reminder and 
+ * whether the user skipped entering their mood.
+ * 
+ * Features:
+ * - Displays a modal reminder to the user if they skipped entering their mood.
+ * - Provides options to enter mood or dismiss the reminder.
+ * - Checks for the mood entry status and triggers the reminder at regular intervals.
+ * - Handles app state changes to ensure the reminder is triggered when the app becomes active.
+ * 
+ * Props:
+ * - No external props are passed to this component.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@react-navigation/native`
+ * - `@react-native-async-storage/async-storage`
+ * - `react-redux`
+ * - `react-native`
+ * 
+ * Key Variables:
+ * - `moodToday`: The current mood status from the Redux store.
+ * - `userId`: The ID of the logged-in user.
+ * - `appState`: Tracks the app's current state (active/inactive).
+ * - `timerRef`: Reference to the reminder interval timer.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';

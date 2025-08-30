@@ -1,4 +1,37 @@
-//Client/src/modals/ActionModal.js
+// Client/src/modals/ActionModal.js
+/**
+ * ActionModal.js
+ * 
+ * This file defines the `ActionModal` component, which displays a modal with a list of 
+ * selectable actions, each represented by an emoji and a label. The modal provides a 
+ * loading state and allows users to select an option, which triggers a callback function. 
+ * The component is customizable with themes, loading messages, and other configurations.
+ * 
+ * Features:
+ * - Displays a modal with a title and a list of action options.
+ * - Options are presented as clickable items with an emoji and a label.
+ * - Supports a loading state with a customizable loading message.
+ * - Customizable theme for modal background, text, and other UI elements.
+ * - Handles closing of the modal and triggering a callback on option selection.
+ * 
+ * Props:
+ * - `visible`: Boolean to control the visibility of the modal.
+ * - `onClose`: Callback function to close the modal.
+ * - `onSelect`: Callback function triggered when an option is selected.
+ * - `theme`: The theme object for styling the modal (includes colors for background, text, etc.).
+ * - `options`: An array of options, each containing an emoji, label, and action.
+ * - `loadingMessage`: A message to show when the modal is in the loading state (default: 'Loading...').
+ * - `onModalHide`: Callback function triggered when the modal is hidden.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-native-modal`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
+
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';

@@ -1,4 +1,43 @@
 // Server/src/migrations/initSchema.js
+/**
+ * initSchema.js
+ *
+ * This script initializes the database schema by creating the necessary tables to store data for various 
+ * features of the application, including user details, chat messages, appointments, user moods, and daily steps.
+ * It ensures that all required tables exist before any data is inserted, and if they do exist, they remain intact 
+ * (i.e., no overwriting or deletion of data). 
+ * 
+ * Tables Created:
+ * 1. **users**: Stores user information such as personal details, role, verification status, etc.
+ * 2. **user_alerts**: Stores notifications or alerts for users (e.g., chat messages, tasks, system alerts).
+ * 3. **otp_logins**: Stores OTP information for login attempts, including the status and expiration.
+ * 4. **doctor_licenses**: Stores doctor license information, including file paths and status of verification.
+ * 5. **chats**: Stores chat group information, such as group details and creation data.
+ * 6. **chat_members**: Stores chat membership details, linking users to chats with roles.
+ * 7. **chat_messages**: Stores messages exchanged in the chat, including sender info, message type, and timestamps.
+ * 8. **chat_attachments**: Stores attachments related to chat messages, such as files and images.
+ * 9. **chat_read_receipts**: Tracks which users have read which messages.
+ * 10. **group_metadata**: Stores metadata for group chats (e.g., icon, rules).
+ * 11. **appointments**: Stores information about appointments, including details about patients, doctors, and appointment statuses.
+ * 12. **user_daily_mood**: Stores daily mood, energy, and sleep data for users.
+ * 13. **user_symptoms**: Stores user-reported symptoms, their severity, and related information (e.g., recovery time).
+ * 14. **user_daily_plan**: Stores tasks or recovery plans for users, based on their symptoms.
+ * 15. **user_steps**: Stores daily step count and fitness data for users.
+ * 
+ * Inserts Initial Data:
+ * - **A sample user** is inserted into the `users` table to provide a starting point for development or testing.
+ * 
+ * Notes:
+ * - Each table is created with various constraints, including primary keys, foreign keys, unique constraints, and checks.
+ * - The `created_at` and `updated_at` fields are automatically populated with the current timestamp to track record creation and updates.
+ * - The `users` table includes fields for user details like phone number, email, address, etc., with certain fields marked as `NOT NULL`.
+ * - Soft delete support is implemented in certain tables using fields like `deleted_at`, which allows for the removal of records without permanent deletion.
+ * 
+ * This script uses SQLite and executes SQL commands in sequence to ensure that all necessary tables are created in the database.
+ * 
+ * Author: [Your Name]
+ */
+
 const db = require('../config/db');
 
 function initSchema() {

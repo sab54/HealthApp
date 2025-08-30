@@ -1,4 +1,28 @@
 //Client/src/store/index.js
+/**
+ * index.js
+ *
+ * This file configures and exports the Redux store for the application. It combines all reducers into a root reducer
+ * using `combineReducers` from Redux Toolkit and configures the store using `configureStore`. The store includes 
+ * reducers for both authentication-related state (e.g., login, registration, emergency contacts) and UI-related state 
+ * (e.g., theme, health log, steps, weather, chat, appointments).
+ *
+ * Features:
+ * - Combines multiple reducers into a single root reducer using `combineReducers`.
+ * - Configures the Redux store with the root reducer using `configureStore` from Redux Toolkit.
+ * - Includes authentication-related reducers (e.g., login, registration) and UI-related reducers (e.g., theme, steps).
+ * - Supports asynchronous actions for various features (e.g., fetching weather, managing chat, tracking steps).
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for configuring the store and managing state.
+ * - `combineReducers` to organize state across multiple feature reducers.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 //  Auth-related reducers

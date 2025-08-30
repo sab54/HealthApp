@@ -1,4 +1,34 @@
 // Server/src/routes/healthlog.js
+/**
+ * Healthlog Routes (healthlog.js)
+ *
+ * This file defines the routes for managing health logs, including submitting and retrieving
+ * mood, symptoms, and daily plans. It also supports the generation of health plans based on
+ * symptoms and severity, as well as tracking trends in mood, sleep, and energy over time.
+ *
+ * Features:
+ * - GET /: Basic healthcheck endpoint to verify that the Healthlog API is working.
+ * - GET /today: Retrieves today's health log for a specific user, including mood, sleep, energy, and symptoms.
+ * - POST /submit: Allows the submission of mood, sleep, energy, and symptoms for a given user.
+ * - POST /generatePlan: Generates a daily health plan based on the user's symptoms and severity level.
+ * - GET /plan: Retrieves the daily health plan for a given user, optionally filtered by symptom and severity.
+ * - POST /updatePlanTask: Allows the update of a specific task in the user's daily health plan.
+ * - GET /trends/:userId: Retrieves the health trends for a user over a specified number of days, including mood, energy, and sleep.
+ * - POST /recoverSymptom: Marks a specific symptom as recovered for the user on a given date.
+ * 
+ * Helper Functions:
+ * - `insertPlan`: Helper function to insert daily plan tasks based on the severity of a symptom.
+ * - `CATEGORY_MAP`: Maps keys from the symptom health data to database categories (e.g., "precautions" to "Care").
+ * 
+ * Dependencies:
+ * - express: Web framework for building API routes.
+ * - body-parser: Middleware for parsing request bodies.
+ * - symptomHealth: Data used for generating daily health plans based on symptoms.
+ * - SQLite: Used for storing and retrieving user health data, including mood, symptoms, and plans.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 const express = require('express');
 const router = express.Router();
 const symptomHealth = require("../data/symptomHealth");

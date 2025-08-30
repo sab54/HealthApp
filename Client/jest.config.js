@@ -35,5 +35,13 @@ module.exports = {
       displayName: 'android',
       ...baseConfig,
     },
+    {
+      displayName: 'ios',
+      ...baseConfig,
+    },
+    {
+      displayName: 'node',
+      ...baseConfig,
+    },
   ],
 };

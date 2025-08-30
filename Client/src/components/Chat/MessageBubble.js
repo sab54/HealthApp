@@ -1,4 +1,28 @@
-//Client/src/components/Chat/MessageBubble.js
+/**
+ * MessageBubble.js
+ * 
+ * This file defines the `MessageBubble` component, which represents a single message bubble
+ * in a chat interface. It handles user interactions such as long-pressing on a message to show 
+ * action options, including replying, copying, reacting, and deleting. The component also 
+ * supports displaying different message types like text, location, quiz, and polls.
+ * 
+ * Features:
+ * - Displays message content with sender name, message text, and timestamp.
+ * - Supports long-press interactions to trigger actions like reply, copy, and react.
+ * - Handles displaying location messages with an image linked to a map.
+ * - Handles quiz messages with an option to take the quiz.
+ * - Displays poll options and lets users vote on them.
+ * - Shows reactions added to messages.
+ * - Handles the deletion of messages if the sender is the user.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-navigation`
+ * - `expo-haptics`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
 import React, { useState } from 'react';
 import {
     View,

@@ -1,4 +1,34 @@
-// Client/src/module/DailyWellnessCard.js
+// /src/module/DailyWellnessCard.js
+/**
+ * DailyWellnessCard.js
+ * 
+ * This component represents a card displaying a daily wellness summary, including mood, sleep, energy, and any logged symptoms.
+ * The card also provides a link to a more detailed daily log view.
+ * 
+ * Key Features:
+ * - Displays the user's mood, sleep, and energy data for the day.
+ * - Logs and displays any symptoms recorded for the day, including severity.
+ * - A button to navigate to a detailed daily log page.
+ * 
+ * Props:
+ * - `moodToday`: The user's recorded mood for the day.
+ * - `sleepToday`: The number of hours of sleep the user had today.
+ * - `energyToday`: The user's energy level for the day (numeric value).
+ * - `todaySymptoms`: Array of symptoms logged by the user today.
+ * - `navigation`: The navigation object to navigate to the daily log.
+ * - `theme`: The current theme used for styling the component.
+ * 
+ * Helper Functions:
+ * - `formatSleep`: Formats the sleep data into hours and minutes.
+ * - `formatEnergy`: Converts numeric energy levels into a descriptive string.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@react-navigation/native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 

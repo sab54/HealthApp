@@ -1,4 +1,35 @@
 // Client/src/components/Tabs.js
+/**
+ * Tabs.js
+ * 
+ * This file defines the `Tabs` component, which displays a row of tab items, each of which can 
+ * be selected. The component supports animated tab indicators, customizable colors, and optional 
+ * scrollability. It allows users to switch between different tabs, with the active tab being 
+ * highlighted and an animated indicator moving to the selected tab. The tabs are designed to 
+ * be responsive, with support for both fixed and scrollable layouts.
+ * 
+ * Features:
+ * - Displays a list of tabs that can be selected.
+ * - Animated indicator that moves smoothly between the selected tabs.
+ * - Customizable theme for colors, including text, background, and indicator color.
+ * - Support for scrollable tabs if there are too many to fit in a single row.
+ * - Disabled state for tabs to prevent selection.
+ * - Accessibility support, including roles and states for screen readers.
+ * 
+ * Props:
+ * - `tabs`: An array of tab objects, where each object contains a `key`, `label`, and an optional `disabled` flag.
+ * - `selectedTab`: The key of the currently selected tab.
+ * - `onTabSelect`: Callback function that is triggered when a tab is selected.
+ * - `theme`: The theme object for customizing colors like `primary`, `text`, `muted`, and `surface`.
+ * - `scrollable`: Boolean flag to enable horizontal scrolling for the tabs (default is `false`).
+ * - `indicatorColor`: The color of the animated indicator (defaults to `theme.primary`).
+ * 
+ * Dependencies:
+ * - `react-native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useRef, useState } from 'react';
 import {
     View,

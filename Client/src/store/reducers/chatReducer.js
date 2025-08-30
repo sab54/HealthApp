@@ -1,4 +1,31 @@
 //Client/src/store/reducers/chatReducer.js
+/**
+ * chatReducer.js
+ *
+ * This file defines the Redux slice for managing the state related to chat functionality, including active chats, messages,
+ * and user interactions. It includes reducers for handling various chat actions such as fetching active chats, sending messages,
+ * creating and deleting chats, managing typing users, and updating chat state from the server. It integrates with asynchronous 
+ * actions (like `fetchActiveChats`, `startDirectMessage`, `sendMessage`, etc.) to manage chat-related data and ensure the 
+ * state reflects the latest changes.
+ *
+ * Features:
+ * - Handles state for active chats, user suggestions, and messages by chat ID.
+ * - Supports actions for managing group chats, direct messages, and messages (sending, receiving, marking as read).
+ * - Manages chat state based on actions such as chat creation, deletion, and updates.
+ * - Supports managing queued messages, typing indicators, and draft group users.
+ * - Updates Redux state on successful actions, ensuring UI is in sync with chat state.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing chat-related state and asynchronous actions.
+ * - `createSlice` to define reducers and state logic for chat management.
+ * - Asynchronous actions for interacting with the backend (API) and handling user interactions.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createSlice } from '@reduxjs/toolkit';
 import {
     fetchUserSuggestions,

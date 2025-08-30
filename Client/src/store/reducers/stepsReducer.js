@@ -1,4 +1,27 @@
 // Client/src/store/reducers/stepsReducer.js
+/**
+ * stepsReducer.js
+ *
+ * This file defines the Redux slice for managing the steps tracking functionality within the application. It handles
+ * actions related to saving step entries, fetching daily steps, and retrieving the full history of steps. The slice
+ * manages state for current steps, distance, and historical data, as well as the paused state of the step tracking.
+ *
+ * Features:
+ * - Manages state for current steps and distance, including the daily total and full history.
+ * - Supports actions for saving new step entries and updating the current step count and distance.
+ * - Tracks the paused state of the step tracking (e.g., if the user is currently active or paused).
+ * - Fetches daily step totals and full step history.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing steps-related state and async actions.
+ * - Actions for interacting with the backend and updating the steps state.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createSlice } from '@reduxjs/toolkit';
 import { saveStepEntry, fetchDailySteps, fetchStepsHistory } from '../actions/stepsActions.js';
 

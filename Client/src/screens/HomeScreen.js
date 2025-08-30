@@ -1,4 +1,36 @@
 // Client/src/screens/HomeScreen.js
+/**
+ * HomeScreen.js
+ * 
+ * This file defines the `HomeScreen` component, which serves as the main dashboard for 
+ * the user, displaying their daily wellness data, upcoming appointments, and other relevant 
+ * health-related information. The screen dynamically fetches and displays data such as the user's 
+ * mood, symptoms, and next appointment, and allows the user to navigate to detailed pages.
+ * 
+ * Features:
+ * - Displays the user's mood, sleep, and energy levels for the day.
+ * - Shows the user's next upcoming appointment, with details about the appointment date and time.
+ * - Provides loading indicators and error handling for fetching data from the server.
+ * - Dynamically updates based on the user's health data, appointments, and symptom tracking.
+ * - Displays content in a scrollable list with multiple content blocks, such as wellness data and appointments.
+ * 
+ * This component integrates with the following libraries:
+ * - Redux for managing health log data, user data, and appointments.
+ * - React Navigation for navigating between screens.
+ * - Expo for custom font loading.
+ * - React Native components like `FlatList`, `TouchableOpacity`, `ActivityIndicator`, and `Text`.
+ * - AsyncStorage for storing user-related data such as role and approval status.
+ * 
+ * Dependencies:
+ * - `react-redux`
+ * - `react-navigation`
+ * - `expo-font`
+ * - `react-native`
+ * - `@react-native-async-storage/async-storage`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState } from 'react';
 import {
   View,

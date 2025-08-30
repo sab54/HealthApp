@@ -1,4 +1,31 @@
 //Client/src/store/actions/chatActions.js
+/**
+ * chatActions.js
+ *
+ * This file defines various actions related to the chat functionality in the application. It includes actions
+ * for fetching and managing active chats, sending and receiving messages, creating or deleting chats, and managing
+ * group memberships. The actions are implemented using Redux Toolkit's `createAsyncThunk` to handle asynchronous
+ * operations, such as making API requests to the backend for chat management.
+ *
+ * Features:
+ * - Fetches active chats and user suggestions.
+ * - Starts or reuses direct messages and creates group chats.
+ * - Adds and removes users from group chats.
+ * - Manages chat deletion and message sending.
+ * - Supports local draft management for group chats.
+ * - Marks chats as read and manages message queues on reconnection.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing state and asynchronous actions.
+ * - Axios-based utility for making API requests (GET, POST, DELETE).
+ * - API endpoints for interacting with the chat and user services.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_CHAT, API_URL_USERS } from '../../utils/apiPaths.js';
 import { get, post, del } from '../../utils/api';

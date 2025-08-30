@@ -1,3 +1,37 @@
+/**
+ * WeatherCard.js
+ * 
+ * This file defines the `WeatherCard` component, which is responsible for displaying 
+ * weather data including the current weather, a 5-day forecast, and any relevant 
+ * health and safety precautions based on the weather conditions. The component allows 
+ * users to toggle between Celsius and Fahrenheit, and dynamically shows/hides the 5-day 
+ * weather forecast. It also handles loading states and ensures smooth transitions when 
+ * expanding the forecast section.
+ * 
+ * Features:
+ * - Displays current weather information, including city name, temperature, humidity, 
+ *   wind speed, and weather description.
+ * - Allows toggling between Celsius and Fahrenheit temperature units.
+ * - Shows a 5-day weather forecast with icons and temperatures.
+ * - Provides health and safety precautions based on the weather conditions.
+ * - Smooth animation when toggling the forecast section.
+ * 
+ * This component integrates with the following libraries:
+ * - React Native for UI components and hooks (e.g., useState, useEffect).
+ * - Expo for weather icons, fonts, and platform-specific adjustments.
+ * - Ionicons and MaterialCommunityIcons for displaying weather-related icons.
+ * - Utility functions for fetching weather-related precautions.
+ * 
+ * Dependencies:
+ * - `@expo/vector-icons`
+ * - `react-native`
+ * - `expo-font`
+ * - `expo-constants`
+ * - `react-native-gesture-handler`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState } from 'react';
 import {
     View,

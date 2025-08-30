@@ -1,4 +1,37 @@
 // Client/src/screens/LoginScreen.js
+/**
+ * LoginScreen.js
+ * 
+ * This file defines the `LoginScreen` component, which is responsible for user login through 
+ * phone number authentication. It allows users to enter their phone number, select their country 
+ * code, and request an OTP (One-Time Password) for authentication. The screen integrates with 
+ * Redux for state management, AsyncStorage for persisting user data, and Expo for UI components.
+ * 
+ * Features:
+ * - Users can enter their phone number and select a country code.
+ * - Requests an OTP for user verification and navigates to the OTP verification screen.
+ * - Displays loading indicators and error messages during the login process.
+ * - Uses animated transitions and gradient backgrounds for a smooth user experience.
+ * - Stores user-related data (such as the country code and phone number) locally using AsyncStorage.
+ * 
+ * This component integrates with the following libraries:
+ * - Redux for managing authentication state.
+ * - Expo for custom animations, gradients, and fonts.
+ * - React Navigation for navigating between screens.
+ * - React Native components like `TextInput`, `TouchableOpacity`, `ActivityIndicator`, and `Alert`.
+ * - `react-native-country-codes-picker` for selecting country codes.
+ * 
+ * Dependencies:
+ * - `react-redux`
+ * - `react-navigation`
+ * - `expo-font`
+ * - `react-native`
+ * - `react-native-country-codes-picker`
+ * - `@react-native-async-storage/async-storage`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
     View,

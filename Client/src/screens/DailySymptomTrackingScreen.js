@@ -1,4 +1,37 @@
 // Client/src/screens/DailySymptomTrackerScreen.js
+/**
+ * DailySymptomTrackerScreen.js
+ * 
+ * This file defines the `DailySymptomTrackerScreen` component, which manages the user's daily 
+ * symptom tracking. It allows users to view, add, and mark symptoms as recovered. The screen 
+ * fetches symptom data from an API, displays them in a list, and supports modal interactions 
+ * for adding and editing symptoms. It also ensures the user can only track a limited number of 
+ * symptoms per day.
+ * 
+ * Features:
+ * - Fetches the user's symptoms for the day from an API.
+ * - Allows the user to add new symptoms to their daily log (with a limit on the number of symptoms).
+ * - Provides an option to mark symptoms as recovered, updating both the local state and the server.
+ * - Displays symptoms in a list, with details about their severity, onset time, and recovery status.
+ * - Handles modals for adding and editing symptoms.
+ * - Supports navigation to a "StepsTracker" screen for additional health tracking.
+ * 
+ * This component integrates with the following libraries:
+ * - Redux for managing application state (e.g., user symptoms).
+ * - React Navigation for navigation between screens.
+ * - AsyncStorage for caching recovered symptoms to persist the data.
+ * - React Native components like `FlatList`, `Text`, `ActivityIndicator`, `TouchableOpacity`, and `Alert`.
+ * - Utility functions for handling API requests.
+ * 
+ * Dependencies:
+ * - `react-redux`
+ * - `react-native`
+ * - `@react-navigation/native`
+ * - `@react-native-async-storage/async-storage`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,

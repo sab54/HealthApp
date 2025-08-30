@@ -1,4 +1,41 @@
 // src/navigation/AppNavigator.js
+/**
+ * AppNavigator.js
+ * 
+ * This file defines the `AppNavigator` component, which is responsible for managing 
+ * the application's navigation logic. It includes both authentication-related screens 
+ * (e.g., Onboarding, Login, Registration) and authenticated app screens (e.g., HealthLog, 
+ * MainTabs, Chat, Settings). The navigation is handled using React Navigation, and the 
+ * app initializes by checking the user's onboarding status and loading essential data like 
+ * mood and location information. 
+ * 
+ * Features:
+ * - Conditional navigation based on the user's authentication status.
+ * - Dynamic loading of initial route (Onboarding or Login) based on onboarding status.
+ * - Checks if the user has logged their mood for the day and updates the navigation accordingly.
+ * - Requests location permissions and tracks the user's location for location-based features.
+ * - Displays a splash screen while resources like fonts are loading.
+ * 
+ * This navigator integrates with the following libraries:
+ * - React Navigation for screen transitions.
+ * - Redux for managing the application's state (e.g., user authentication, theme).
+ * - Expo for location permissions, splash screen, and font loading.
+ * - React Native Gesture Handler for handling gestures.
+ * - Safe Area Context for managing screen insets across devices.
+ * 
+ * Dependencies:
+ * - `@react-navigation/native`
+ * - `@react-navigation/native-stack`
+ * - `react-redux`
+ * - `expo-splash-screen`
+ * - `expo-location`
+ * - `react-native-gesture-handler`
+ * - `react-native-safe-area-context`
+ * - `@expo-google-fonts/poppins`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,

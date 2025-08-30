@@ -1,4 +1,31 @@
 // Server/src/middleware/decryptMiddleware.js
+/**
+ * decryptMiddleware.js
+ *
+ * This middleware is responsible for decrypting the encrypted payloads in the request body and query parameters 
+ * to ensure they can be processed correctly in subsequent middleware or route handlers.
+ *
+ * Key functionalities:
+ * - **Decryption of Request Body**: The middleware checks if the request contains a payload in its body (in JSON format). 
+ *   If present, it decrypts the payload using the provided encryption key and IV length, then updates the request body with the decrypted data.
+ * - **Decryption of Query Parameters**: It also supports the decryption of payloads in query parameters for specific HTTP methods (GET, DELETE, HEAD).
+ * - **Error Handling**: If there is an issue with the decryption process, such as an incorrect format or failed decryption, the middleware returns a 400 error with an appropriate message.
+ * 
+ * Middleware Flow:
+ * 1. Check if the request is of type `application/json` and if the body contains a payload to be decrypted.
+ * 2. Decrypt the body payload using the provided `ENCRYPTION_KEY` and `IV`.
+ * 3. For certain HTTP methods (GET, DELETE, HEAD), check and decrypt query parameters.
+ * 4. If the decryption fails (e.g., due to incorrect format or invalid payload), return a 400 error.
+ * 5. Otherwise, the decrypted data is passed on to the next middleware or route handler.
+ * 
+ * Notes:
+ * - The middleware ensures that encryption and decryption are properly handled in line with security standards 
+ *   to prevent unauthorized access to sensitive data.
+ * - The encryption key used must be exactly 32 characters long for proper AES-256 encryption.
+ *
+ * Author: [Your Name]
+ */
+
 const crypto = require('crypto');
 const Config = require('../../config');
 

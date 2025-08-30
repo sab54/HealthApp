@@ -1,4 +1,36 @@
 // Server/src/middleware/encryptMiddleware.js
+/**
+ * encryptMiddleware.js
+ *
+ * This middleware is responsible for encrypting the response payload before sending it to the client. 
+ * It ensures that sensitive data is securely encrypted using AES-256-CBC encryption to protect it from unauthorized access.
+ *
+ * Key functionalities:
+ * - **Encryption of Response Payload**: The middleware intercepts the `res.json` function, ensuring that 
+ *   the response payload is encrypted before being sent to the client. The encryption uses the specified `ENCRYPTION_KEY` 
+ *   and an initialization vector (`IV`) of the specified length.
+ * - **Validation of Encryption Settings**: 
+ *   - It ensures that the encryption key (`ENCRYPTION_KEY`) is exactly 32 characters long, as required for AES-256 encryption.
+ *   - It also validates the length of the IV (`IV_LENGTH`), ensuring it is between 12 and 32 bytes.
+ * - **Error Handling**: If any encryption-related error occurs, the middleware logs the error and returns a response 
+ *   indicating the failure of the encryption process.
+ *
+ * Middleware Flow:
+ * 1. The middleware checks if the response is ready to be sent (via `res.json`).
+ * 2. It intercepts the `res.json` function to perform encryption on the response data.
+ * 3. The response data is converted to a JSON string, then encrypted using the provided `ENCRYPTION_KEY` and `IV`.
+ * 4. The resulting encrypted payload is formatted as `iv:encryptedData` and returned as the response.
+ * 5. If encryption fails, the middleware logs the error and responds with an error message indicating the failure.
+ * 
+ * Notes:
+ * - The encryption key and IV are critical to ensuring the security of the response data. 
+ * - This middleware helps protect sensitive information during transmission by making the response payload unreadable 
+ *   to unauthorized parties.
+ * - The encryption process uses the AES-256-CBC encryption standard to ensure strong data protection.
+ *
+ * Author: [Your Name]
+ */
+
 const crypto = require('crypto');
 const Config = require('../../config');
 

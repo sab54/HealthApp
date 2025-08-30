@@ -1,3 +1,32 @@
+/**
+ * stepTracking.js
+ *
+ * This file contains utilities for tracking the user's steps using the accelerometer data from the device. It integrates
+ * with the `expo-sensors` package to listen to accelerometer data and determine when the user takes a step based on 
+ * acceleration magnitude. The system processes data to count steps, calculate distance, and categorize activity (idle, walking, or running).
+ *
+ * Features:
+ * - `startStepTracking`: Starts step tracking by subscribing to accelerometer data and calculating steps and distance.
+ *   - Uses a low-pass filter to smooth out small fluctuations in accelerometer data.
+ *   - Detects steps based on acceleration magnitude exceeding a defined threshold.
+ *   - Categorizes activity as 'Idle', 'Walking', or 'Running' based on step rate.
+ * - `resetSteps`: Resets the step count, distance, and other state variables.
+ * - `stopStepTracking`: Stops the accelerometer listener and unsubscribes from the accelerometer data stream.
+ *
+ * Constants:
+ * - `STEP_THRESHOLD`: The minimum magnitude above which a step is considered.
+ * - `MIN_STEP_INTERVAL`: The minimum time interval (in ms) between valid steps.
+ * - `ALPHA`: The smoothing factor used for the low-pass filter to ignore small, unimportant shakes.
+ *
+ * This file uses the following libraries:
+ * - `expo-sensors`: Provides access to accelerometer data in React Native apps.
+ * 
+ * Dependencies:
+ * - expo-sensors
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { Accelerometer } from 'expo-sensors';
 
 let accelerometerSubscription = null;

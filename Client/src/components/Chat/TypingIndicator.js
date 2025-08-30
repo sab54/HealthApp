@@ -1,4 +1,26 @@
-//Client/src/components/Chat/TypingIndicator.js
+/**
+ * TypingIndicator.js
+ * 
+ * This file defines the `TypingIndicator` component, which visually represents the typing status
+ * of users in a chat interface using animated dots. It can display the typing status for a 
+ * single user, two users, or multiple users based on the provided `usernames` array. The 
+ * animation loop creates a "typing..." effect with three dots that alternate in opacity.
+ * 
+ * Features:
+ * - Displays a message indicating who is typing (e.g., one or more users).
+ * - Animates dots to represent typing activity.
+ * - Customizable theme to adjust appearance based on the app's design.
+ * 
+ * Props:
+ * - `theme`: The theme object for styling, which includes `surface`, `text`, and `link` colors.
+ * - `usernames` (optional): An array of user names that represent the users typing.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, Text } from 'react-native';

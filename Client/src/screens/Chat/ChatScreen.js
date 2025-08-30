@@ -1,4 +1,39 @@
 // Client/src/screens/Chat/ChatScreen.js
+/**
+ * ChatScreen.js
+ * 
+ * This file defines the `ChatScreen` component, which serves as the main interface for 
+ * displaying and managing active chat rooms. It supports real-time updates for new messages, 
+ * chat group interactions, and sending of new messages. The screen includes functionality for 
+ * starting new chats, joining local groups, and integrating location-based features. 
+ * 
+ * Features:
+ * - Real-time chat updates using WebSockets, including message sending and receiving.
+ * - Location-based chat grouping, allowing users to join local groups based on their GPS location.
+ * - Chat list rendering with sorting based on last activity or proximity to the user.
+ * - Action modal for initiating new chats, joining local groups, or interacting with AI chat.
+ * - Loading states, error handling, and UI feedback for user interactions.
+ * - Integration with Redux for managing the state of active chats, messages, and user information.
+ * 
+ * This component integrates with the following libraries:
+ * - React Navigation for managing navigation between screens.
+ * - Redux for managing app state, including active chats and messages.
+ * - Expo for location fetching and haptic feedback.
+ * - React Native components like `FlatList`, `TextInput`, `ActivityIndicator`, and `TouchableOpacity`.
+ * 
+ * Dependencies:
+ * - `@react-navigation/native`
+ * - `react-redux`
+ * - `expo-font`
+ * - `expo-haptics`
+ * - `react-native`
+ * - `@expo/vector-icons`
+ * - `@react-native-community/netinfo`
+ * - `react-native-safe-area-context`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
     View,

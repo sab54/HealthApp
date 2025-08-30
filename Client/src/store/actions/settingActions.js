@@ -1,4 +1,27 @@
 // src/actions/settingsActions.js
+/**
+ * settingsActions.js
+ *
+ * This file contains actions for managing user settings, including updating the user's profile information.
+ * The `updateUserProfile` action sends a request to update the user's first and last name, dispatches relevant
+ * actions to update the Redux store, and saves the updated user data in AsyncStorage for persistence.
+ *
+ * Features:
+ * - Sends a POST request to update the user's profile with new first and last names.
+ * - Dispatches actions to update the user profile and authentication state in the Redux store.
+ * - Saves updated user information to AsyncStorage for persistence across app sessions.
+ *
+ * This file uses the following libraries:
+ * - Redux for managing state updates in the store.
+ * - Fetch API for sending HTTP requests to update user data.
+ * - AsyncStorage for persisting user data locally on the device.
+ *
+ * Dependencies:
+ * - @react-native-async-storage/async-storage
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { API_URL_USERS } from '../../utils/apiPaths';
 import { BASE_URL } from '../../utils/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';

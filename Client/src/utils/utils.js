@@ -1,4 +1,29 @@
 // Client/src/utils/utils.js
+/**
+ * utils.js
+ *
+ * This file defines utility functions that handle common tasks such as retrieving the user's location, parsing and
+ * formatting dates, truncating text, and formatting time. The utilities are used throughout the application to
+ * process data, display human-readable time formats, and interact with location services.
+ *
+ * Features:
+ * - `getUserLocation`: Requests permission to access the user's location and returns the latitude and longitude.
+ * - `parseDate`: Parses a date string into a JavaScript `Date` object, handling specific formats like SQLite DATETIME.
+ * - `formatTimeAgo`: Formats a date into a "time ago" string (e.g., "5 min ago", "2 hr ago", "3 days ago").
+ * - `truncate`: Truncates a string to a specified length and adds an ellipsis ("...") if the text exceeds that length.
+ * - `formatTime`: Formats a date into a 12-hour clock format (e.g., "5:30 PM").
+ * - `formatTimestamp`: Formats a timestamp into a time string (e.g., "12:30 PM").
+ *
+ * This file uses the following libraries:
+ * - `expo-location`: To request and access the user's location.
+ * - Native JavaScript `Date` object for parsing and formatting date and time.
+ *
+ * Dependencies:
+ * - expo-location
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import * as Location from 'expo-location';
 
 export const getUserLocation = async () => {

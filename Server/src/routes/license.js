@@ -1,3 +1,32 @@
+
+/**
+ * License Upload and Verification Routes (license.js)
+ *
+ * This file defines the route for uploading and processing user licenses. The route uses 
+ * OCR (Optical Character Recognition) to extract text from the uploaded image and 
+ * verify whether the license corresponds to a doctor. If valid, the license is approved 
+ * and saved into the database. If not, the file is discarded.
+ * 
+ * Features:
+ * - POST /upload-license: Handles the uploading of a user's license image, performs OCR 
+ *   to extract text, and verifies whether the license is valid (i.e., associated with a doctor).
+ *   If valid, the license is saved, and the user is approved. If not, an error message is returned.
+ * 
+ * Dependencies:
+ * - express: Web framework for building API routes.
+ * - multer: Middleware for handling file uploads.
+ * - fs: File system module for handling file operations (e.g., deleting uploaded files).
+ * - path: Path module for handling file and directory paths.
+ * - tesseract.js: Library for performing Optical Character Recognition (OCR) on image files.
+ * 
+ * Key Functionality:
+ * - File Upload: The uploaded image is processed and stored in the `uploads` directory.
+ * - OCR Processing: Tesseract.js is used to extract text from the uploaded license image.
+ * - License Validation: The extracted text is analyzed to determine if the license is valid (e.g., by checking for doctor-related keywords).
+ * - Database Operations: If the license is valid, the corresponding data is saved in the database, and the user's status is updated.
+ * 
+ * Author: Sunidhi Abhange
+ */
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');

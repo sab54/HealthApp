@@ -1,3 +1,28 @@
+/**
+ * encryption.js
+ *
+ * This file contains utility functions for encrypting and decrypting data using AES-256-CBC encryption. It utilizes 
+ * the `crypto-js` library and the Web Crypto API to securely handle encryption and decryption operations. The functions 
+ * work in React Native by utilizing the `react-native-get-random-values` package to generate random initialization vectors (IVs).
+ *
+ * Features:
+ * - `getRandomBytes`: Generates secure random bytes for initialization vectors (IV) using the Web Crypto API.
+ * - `encryptBody`: Encrypts a JavaScript object into a string using AES-256-CBC encryption (with PKCS7 padding).
+ *   - Output format: `{ payload: 'ivHex:encryptedHex' }`.
+ * - `decryptBody`: Decrypts the encrypted string back into a JavaScript object. Expects input in the format `'ivHex:encryptedHex'`.
+ * - Uses `ENCRYPTION_KEY` (32 characters) for AES encryption and decryption.
+ *
+ * This file uses the following libraries:
+ * - `crypto-js`: A library for cryptographic algorithms like AES encryption.
+ * - `react-native-get-random-values`: Ensures Web Crypto API works in React Native for generating random values.
+ *
+ * Dependencies:
+ * - crypto-js
+ * - react-native-get-random-values
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import 'react-native-get-random-values'; // MUST BE FIRST
 import CryptoJS from 'crypto-js';
 import { ENCRYPTION_KEY, IV_LENGTH } from './config'; // Ensure ENCRYPTION_KEY is 32 characters

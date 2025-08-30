@@ -1,5 +1,35 @@
 // Server/src/routes/user.js
-const express = require('express');
+
+const express = require('express');/**
+ * User Routes (user.js)
+ *
+ * This file defines routes for managing user-related actions, including user registration, 
+ * OTP verification, profile updates, and user suggestions. The routes also handle user location 
+ * updates and provide user information based on the provided token or IP address.
+ * 
+ * Features:
+ * - GET /user: Retrieves user information either by token or IP address.
+ * - POST /register: Handles new user registration with validation and OTP generation.
+ * - POST /request-otp: Requests OTP for phone verification.
+ * - POST /verify-otp: Verifies OTP for user authentication and updates phone verification status.
+ * - PATCH /user/:userId/location: Updates the user's location information.
+ * - GET /user/suggestions: Provides user search functionality to find active users based on search criteria.
+ * - POST /update-profile: Allows users to update their first and last names.
+ * 
+ * Dependencies:
+ * - express: Web framework for building API routes.
+ * - body-parser: Middleware for parsing request bodies.
+ * - geoip-lite: Used for determining geolocation based on IP address.
+ * 
+ * Key Functionality:
+ * - User Registration: Verifies required fields, checks for existing users, generates OTP, and inserts new users into the database.
+ * - OTP Verification: Handles the generation, validation, and tracking of OTPs for phone verification.
+ * - User Profile Update: Allows updating user profile details, specifically the first and last names.
+ * - User Search: Provides search functionality for active users based on parameters like name, email, phone number, and location.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 const bodyParser = require('body-parser');
 const geoip = require('geoip-lite');
 

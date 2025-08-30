@@ -1,4 +1,34 @@
 // Client/src/components/DoctorLicenseUpload.js
+/**
+ * DoctorLicenseUpload.js
+ * 
+ * This file defines the `DoctorLicenseUpload` component, which allows users to upload 
+ * and verify their medical license image. The component uses the `expo-image-picker` 
+ * to allow users to select an image, and then uploads the image to a server for verification. 
+ * If the verification is successful, the user's status is updated, and a success message is displayed.
+ * 
+ * Features:
+ * - Allows users to pick an image of their medical license using `expo-image-picker`.
+ * - Uploads the selected image to verify the user's medical license using an API call.
+ * - Displays the result of the verification (success or failure).
+ * - Includes a button to trigger the upload and show a status message.
+ * - Conditional button states for uploading, with a disabled state during image upload.
+ * 
+ * Props:
+ * - `theme`: The theme object used to style the component (including colors for borders, text, buttons, etc.).
+ * - `userId`: The user ID of the logged-in user.
+ * - `onVerified`: A callback function that is triggered when the license is successfully verified.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@react-native-async-storage/async-storage`
+ * - `expo-image-picker`
+ * - `@expo/vector-icons`
+ * - `verifyDoctorLicense`: A utility function for making API calls to verify the medical license.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -1,4 +1,32 @@
 // Client/src/screens/RegistrationScreen.js
+/**
+ * RegistrationScreen.js
+ * 
+ * This screen allows users to create a new account by entering their personal information,
+ * including first name, last name, email, phone number, and role. It also handles country code selection.
+ * Once the form is validated and submitted, the user is redirected to the OTP verification screen.
+ * 
+ * Features:
+ * - Input fields for first name, last name, email, phone number, and role selection.
+ * - Country picker to choose the user's country code.
+ * - Validates the form before enabling the "Register" button.
+ * - Handles location fetching to add user's latitude and longitude.
+ * - After successful registration, the user is navigated to the OTP verification screen.
+ * 
+ * Dependencies:
+ * - `react-native` for UI components.
+ * - `react-navigation` for screen navigation.
+ * - `react-redux` for managing application state.
+ * - `CountryPicker` for country code selection.
+ * - `expo-location` for fetching user's location.
+ * - `ActivityIndicator` for showing loading state.
+ * 
+ * API Interaction:
+ * - Uses `registerUser` from Redux actions to register the user.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
     View,

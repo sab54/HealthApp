@@ -1,4 +1,29 @@
 // Client/src/store/actions/healthlogActions.js
+/**
+ * healthlogActions.js
+ *
+ * This file contains actions for managing the user's health log, including submitting mood, energy, sleep data,
+ * fetching today's mood and symptoms, marking symptoms as recovered, and managing daily health plans. These actions
+ * interact with a backend API to retrieve and store health-related information. The actions are implemented using
+ * Redux Toolkit's `createAsyncThunk` to handle asynchronous operations and manage state updates in the Redux store.
+ *
+ * Features:
+ * - Submits mood, symptoms, sleep, and energy data for the user.
+ * - Fetches today's mood, symptoms, and health plan based on user ID.
+ * - Marks a symptom as recovered and updates the health log accordingly.
+ * - Fetches and updates daily health plans based on symptoms and severity.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for state management and async actions.
+ * - Axios-based API utility for making network requests.
+ * - Date manipulation for filtering symptoms and updating plan tasks.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_HEALTHLOG } from '../../utils/apiPaths';
 import { post, get } from '../../utils/api';

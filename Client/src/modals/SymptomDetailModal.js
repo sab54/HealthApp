@@ -1,4 +1,34 @@
 // Client/src/modals/SymptomDetailModal.js
+/**
+ * SymptomDetailModal.js
+ * 
+ * This file defines the `SymptomDetailModal` component, which allows users to input and save 
+ * details about their symptoms, including the severity, onset time, duration, and additional notes. 
+ * The modal is used to capture symptoms related to the user's health, which are then sent to the backend 
+ * and stored in the user's health log.
+ * 
+ * Features:
+ * - Allows the user to select the severity of the symptom (Mild, Moderate, Severe).
+ * - User can choose the onset time of the symptom using a time picker.
+ * - Provides inputs for the symptom's duration and additional notes.
+ * - Saves the data to the user's health log and generates a health plan if necessary.
+ * - After submission, the modal closes, and the user is redirected to the 'DailyLog' screen.
+ * 
+ * Props:
+ * - `visible`: A boolean controlling the visibility of the modal.
+ * - `symptom`: The selected symptom for which the user is providing details.
+ * - `onClose`: Callback function to close the modal after submission.
+ * - `onPlanGenerated`: Callback function that is called when a health plan is generated for the symptom.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@react-native-community/datetimepicker`
+ * - `react-redux`
+ * - `@react-navigation/native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';

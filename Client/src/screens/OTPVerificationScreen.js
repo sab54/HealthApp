@@ -1,4 +1,35 @@
 // src/screens/OTPVerificationScreen.js
+/**
+ * OTPVerificationScreen.js
+ * 
+ * This screen allows the user to verify their phone number by entering a 6-digit OTP (One-Time Password).
+ * It provides functionality for users to input their OTP, automatically verifies it when all digits are entered, 
+ * and shows a countdown timer for resending the OTP. 
+ * After successful verification, the user is redirected to the main app screens.
+ * 
+ * Features:
+ * - OTP input with auto focus and validation.
+ * - Timer countdown for OTP resend.
+ * - Resend OTP option after timer expires.
+ * - Automatic OTP fill and submission if provided (useful for integration with auto-filling OTPs).
+ * - Displays an error message if OTP verification fails.
+ * - Handles both manual and auto verification of OTP.
+ * 
+ * Dependencies:
+ * - `react-native` for UI components and animations.
+ * - `react-navigation` for navigation between screens.
+ * - `react-redux` for managing application state.
+ * - `@react-navigation/native` for routing and navigation.
+ * - `ActivityIndicator` for showing loading state.
+ * - `Platform` for adapting UI to Android/iOS.
+ * 
+ * API Interaction:
+ * - Uses `verifyOtp` and `requestOtp` from Redux actions to communicate with the server for OTP verification.
+ * - The `API_URL_HEALTHLOG` endpoint handles OTP requests and verification.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View,

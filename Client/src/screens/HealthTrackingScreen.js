@@ -1,4 +1,32 @@
-// Client/src/screens/HealthTrackingScreen.js
+/**
+ * HealthTrackingScreen.js
+ * 
+ * This file defines the `HealthTrackingScreen` component, which is responsible for 
+ * displaying various health tracking trends of a user, including mood, energy, 
+ * and sleep data. The screen retrieves data from an API and visualizes it using 
+ * charts such as bar and line charts. It supports dynamic selection of the 
+ * number of days (3 or 15) to display trends.
+ *
+ * Features:
+ * - Displays mood trends (Feeling great vs Not good) using a bar chart.
+ * - Displays energy levels (1-10) over time using a line chart.
+ * - Displays sleep hours per day using a line chart with color-coded markers.
+ * - Allows the user to toggle between displaying 3 days or 15 days of data.
+ * 
+ * This screen makes use of the following libraries:
+ * - React Native for UI components and hooks (useState, useEffect).
+ * - Redux for managing theme colors.
+ * - React Native Chart Kit for rendering line and bar charts.
+ * - React Navigation for passing `userId` via route params.
+ * - Safe Area Context for handling screen insets in a cross-platform way.
+ * 
+ * Dependencies:
+ * - `react-native-chart-kit`
+ * - `react-redux`
+ * - `react-native-safe-area-context`
+ * 
+ * Author: Sunidhi Abhange
+ */
 
 import React, { useEffect, useState } from 'react';
 import {

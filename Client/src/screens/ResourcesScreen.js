@@ -1,3 +1,30 @@
+/**
+ * ResourcesScreen.js
+ * 
+ * This screen displays emergency resources, including the current weather and a forecast. 
+ * Users can also refresh the weather data by pulling down the screen. It integrates with external modules 
+ * like `WeatherCard` to display weather information and `EmergencyShortcuts` for quick access to critical resources.
+ * 
+ * Key Features:
+ * - Displays the current weather and a weather forecast.
+ * - Refreshes weather data when the user pulls to refresh.
+ * - Includes emergency resource shortcuts for quick access.
+ * - Uses Redux to manage and fetch weather data.
+ * - Displays loading indicator while data is being fetched.
+ * 
+ * Dependencies:
+ * - `react-native` for UI components.
+ * - `react-redux` for state management.
+ * - `expo-font` for custom font loading.
+ * - `WeatherCard` for displaying weather details.
+ * - `EmergencyShortcuts` for quick access to emergency resources.
+ * 
+ * API Interaction:
+ * - Uses `fetchWeatherData` and `fetchForecastData` to get weather information.
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useCallback, useEffect  } from 'react';
 import {
     View,

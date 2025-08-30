@@ -1,4 +1,27 @@
 // Client/src/store/actions/registrationActions.js
+/**
+ * registrationActions.js
+ *
+ * This file defines actions related to user registration. The primary action is `registerUser`, which sends a request
+ * to register a new user by submitting their data to the backend API. The action also handles storing some user details
+ * in AsyncStorage (such as phone number and country code) for future use. 
+ *
+ * Features:
+ * - Registers a user by submitting their details (e.g., phone number, country code, latitude, longitude).
+ * - Stores registration details such as phone number and country code in AsyncStorage for persistence.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing state and async actions.
+ * - AsyncStorage for persisting user data locally.
+ * - API utilities (`post` and `patch`) for making HTTP requests.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ * - @react-native-async-storage/async-storage
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL_USERS } from '../../utils/apiPaths.js';

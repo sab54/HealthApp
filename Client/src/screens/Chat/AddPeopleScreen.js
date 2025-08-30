@@ -1,4 +1,37 @@
 //Client/src/screens/Chat/AddPeopleScreen.js
+/**
+ * AddPeopleScreen.js
+ * 
+ * This file defines the `AddPeopleScreen` component, which allows users to search for 
+ * other users, select them, and add them to a draft group for creating a group chat or 
+ * starting a direct message. The screen supports user search with debounce, selecting 
+ * and deselecting users, and either adding them to an existing group or creating a new 
+ * group chat. It also includes a modal for entering a group name before creating a chat. 
+ * 
+ * Features:
+ * - User search functionality with debounce for efficient fetching of user suggestions.
+ * - Select and deselect users to add them to a draft group.
+ * - Option to select all users or clear the selection.
+ * - Create a new group chat with a custom name.
+ * - Modal for confirming the group name before creating a group.
+ * - Handling of loading and error states during user fetching and group creation.
+ * 
+ * This component integrates with the following libraries:
+ * - React Navigation for handling navigation and routing.
+ * - Redux for state management (e.g., fetching user suggestions, managing draft group users).
+ * - Expo for loading custom fonts and handling platform-specific styling.
+ * - React Native for UI components such as `FlatList`, `TouchableOpacity`, and `Modal`.
+ * 
+ * Dependencies:
+ * - `@react-navigation/native`
+ * - `react-redux`
+ * - `expo-font`
+ * - `react-native`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState, useRef } from 'react';
 import {
     View,

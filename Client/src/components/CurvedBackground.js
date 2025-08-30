@@ -1,3 +1,28 @@
+//Client/src/components/CurvedBackground.js
+/**
+ * CurvedBackground.js
+ * 
+ * This file defines the `CurvedBackground` component, which creates an animated 
+ * curved background effect for the UI. The component uses an animated gradient 
+ * background, a lavender glow in the middle, and a white core to create a smooth, 
+ * layered visual effect. It also supports translation animation based on the `translateY` prop.
+ * 
+ * Features:
+ * - Displays an animated gradient background using `LinearGradient` from `expo-linear-gradient`.
+ * - Includes a lavender-colored glow layer to create a soft, glowing effect.
+ * - Features a white core for a clean and smooth finish.
+ * - Supports vertical translation animation using the `translateY` prop for dynamic effects.
+ * 
+ * Props:
+ * - `translateY`: The animated translation value (used to move the background vertically).
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `expo-linear-gradient`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';

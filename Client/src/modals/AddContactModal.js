@@ -1,4 +1,36 @@
-//Client/src/modals/AddContactModal.js
+// Client/src/modals/AddContactModal.js
+/**
+ * AddContactModal.js
+ * 
+ * This file defines the `AddContactModal` component, which allows the user to add 
+ * an emergency contact by either selecting a contact from their phone or manually 
+ * entering a name and phone number. The modal supports loading contacts from the 
+ * device using the `expo-contacts` API and provides validation for the input fields. 
+ * The modal can be closed or the contact saved based on user interaction.
+ * 
+ * Features:
+ * - Allows users to add emergency contacts either by selecting from their phone contacts 
+ *   or manually entering the contact details (name and phone number).
+ * - Contacts from the device are fetched using `expo-contacts` API with permission checks.
+ * - Provides validation for empty fields and invalid phone numbers.
+ * - Customizable theme to match the app's design.
+ * - Displays a loading state for fetching contacts.
+ * 
+ * Props:
+ * - `visible`: Boolean that controls the visibility of the modal.
+ * - `onClose`: Callback function to close the modal.
+ * - `onAdd`: Callback function triggered when a new contact is successfully added.
+ * - `theme`: The theme object for customizing the appearance of the modal (colors, text, etc.).
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-native-modal`
+ * - `expo-contacts`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
     View,

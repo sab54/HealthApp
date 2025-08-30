@@ -1,4 +1,42 @@
-//Client/src/context/ChatContext.js
+// Client/src/context/ChatContext.js
+/**
+ * ChatContext.js
+ * 
+ * This file defines the `ChatContext` and `ChatProvider`, which manage the state and 
+ * actions related to chat functionality in the app. It provides a context for managing 
+ * multiple chats, sending messages, adding reactions, and handling replies. The `ChatProvider` 
+ * encapsulates the app’s chat state and provides functions for creating new chats, 
+ * sending messages, and handling user interactions like replies and reactions.
+ * 
+ * Features:
+ * - Manages a list of chats, each with messages, members, and typing status.
+ * - Provides functions to start new chats and send messages.
+ * - Simulates bot responses for each new message sent in a chat.
+ * - Allows adding replies and reactions to specific messages.
+ * - Uses `uuid` for generating unique IDs for chats, messages, and replies.
+ * - Wraps the app in a `ChatContext` that provides access to the chat data and actions.
+ * 
+ * Context:
+ * - `ChatContext`: Provides access to the `chats` state, and functions like `startNewChat`, `sendMessage`, `addReply`, and `addReaction`.
+ * 
+ * Functions:
+ * - `startNewChat`: Creates a new chat with default members and an empty message list.
+ * - `sendMessage`: Sends a new message to a specific chat and triggers a simulated typing event.
+ * - `simulateTyping`: Simulates a typing status and a bot response after a delay.
+ * - `addReply`: Adds a reply to a specific message within a chat.
+ * - `addReaction`: Adds a reaction (emoji) to a specific message within a chat.
+ * 
+ * Props:
+ * - `children`: The children components wrapped by the `ChatProvider` to access chat state.
+ * 
+ * Dependencies:
+ * - `react`
+ * - `react-native`
+ * - `react-native-uuid`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { createContext, useState } from 'react';
 import uuid from 'react-native-uuid';
 

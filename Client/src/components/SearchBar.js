@@ -1,4 +1,37 @@
-//Client/src/components/SearchBar.js
+// Client/src/components/SearchBar.js
+/**
+ * SearchBar.js
+ * 
+ * This file defines the `SearchBar` component, which provides a customizable search 
+ * input with features such as debounce handling, voice input (optional), and a clear button. 
+ * The search input is designed with animated effects to enhance the user experience when 
+ * focusing, typing, or clearing the input. The component can be themed based on the `theme` 
+ * prop, and it supports accessibility for better usability.
+ * 
+ * Features:
+ * - Debounced input change to limit unnecessary calls during typing (via lodash `debounce`).
+ * - Clear button that appears when there is input and can reset the search field.
+ * - Voice input button (optional) to trigger voice search (functionality placeholder).
+ * - Animated border and button opacity that responds to focus and input changes.
+ * - Accessibility features, including labels and hints for better screen reader support.
+ * 
+ * Props:
+ * - `query`: The initial search query value (used to set the default value of the input).
+ * - `onChange`: Callback function to handle input changes.
+ * - `theme`: The theme object to customize colors for background, text, borders, etc.
+ * - `placeholder`: Placeholder text for the input field (default is "Search...").
+ * - `debounceTime`: Time (in milliseconds) to debounce input changes (default is 300ms).
+ * - `onSubmit`: Function triggered when the search is submitted (via "Enter" or "Search" button).
+ * - `showVoice`: Boolean to control whether the voice input button is displayed.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `@expo/vector-icons`
+ * - `lodash`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
     View,

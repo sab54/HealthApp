@@ -1,4 +1,34 @@
-//Client/src/modals/GroupInfoModal.js
+// Client/src/modals/GroupInfoModal.js
+/**
+ * GroupInfoModal.js
+ * 
+ * This file defines the `GroupInfoModal` component, which displays the details and 
+ * participants of a group chat. It allows the user to view the members of a group, 
+ * remove members (if the current user is the owner), and add new members to the group. 
+ * It also supports dynamic theming based on light or dark mode.
+ * 
+ * Features:
+ * - Displays a list of group members with their names, roles, and avatars.
+ * - The owner can remove members from the group.
+ * - The owner can add new members to the group by navigating to the "Add People" screen.
+ * - Displays a confirmation modal before removing a user.
+ * 
+ * Props:
+ * - `visible`: A boolean controlling the visibility of the modal.
+ * - `onClose`: Callback function to close the modal.
+ * - `chat`: The group chat object containing chat details and participants.
+ * - `theme`: The theme colors used for styling the modal components.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-native-modal`
+ * - `react-redux`
+ * - `@react-navigation/native`
+ * - `react-native-safe-area-context`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React from 'react';
 import {
     View,

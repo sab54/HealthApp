@@ -1,4 +1,32 @@
 // /src/modals/ThreadModal.js
+/**
+ * ThreadModal.js
+ * 
+ * This file defines the `ThreadModal` component, which enables users to view and reply to messages in a chat thread. 
+ * The modal displays the selected message, along with its replies, and allows users to add their own replies. 
+ * The modal is designed for chat thread management within the application, providing users a simple interface to 
+ * engage with conversation threads.
+ * 
+ * Features:
+ * - Displays the selected message and its replies.
+ * - Allows users to write and send replies to the selected message.
+ * - Implements message formatting and time for better conversation tracking.
+ * 
+ * Props:
+ * - `visible`: A boolean controlling the visibility of the modal.
+ * - `onClose`: Callback function to close the modal.
+ * - `message`: The message to be displayed and responded to in the modal.
+ * - `chatId`: The ID of the current chat.
+ * - `theme`: Theme data used for styling the modal.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-redux`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useContext } from 'react';
 import {
     Modal,

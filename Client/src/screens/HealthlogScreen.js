@@ -1,4 +1,39 @@
 // client/src/screens/HealthlogScreen.js
+/**
+ * HealthLogScreen.js
+ * 
+ * This file defines the `HealthLogScreen` component, which serves as the main screen 
+ * for tracking the user's mood and symptoms on a daily basis. The screen allows users 
+ * to select their mood and symptoms for the day, and provides modals for further 
+ * interaction, including viewing symptom details and entering recovery plans. 
+ * It ensures that users can track their health status and tailor their experience 
+ * based on their responses.
+ * 
+ * Features:
+ * - Allows users to select their mood for the day and provides options to mark it as "Feeling great!" or "Not feeling good!".
+ * - Fetches and displays the user's symptoms for the day, with the option to mark symptoms as recovered.
+ * - Provides modals to view and edit symptoms and mood details.
+ * - Automatically navigates to the main screen if the mood and symptoms have already been recorded for the day.
+ * - Displays loading and error states when fetching data.
+ * 
+ * This component integrates with the following libraries:
+ * - Redux for managing health log data and user state.
+ * - React Navigation for navigation and handling modal visibility.
+ * - AsyncStorage for caching mood data.
+ * - `date-fns` for formatting dates.
+ * - React Native components such as `ActivityIndicator`, `FlatList`, `TouchableOpacity`, and `Alert`.
+ * 
+ * Dependencies:
+ * - `react-redux`
+ * - `react-navigation`
+ * - `react-native`
+ * - `@react-native-async-storage/async-storage`
+ * - `date-fns`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';

@@ -1,4 +1,33 @@
 // Client/src/modals/EditUserInfoModal.js
+/**
+ * EditUserInfoModal.js
+ * 
+ * This file defines the `EditUserInfoModal` component, which provides a modal for 
+ * editing the user's first and last name. The modal includes input fields for both 
+ * names, a save button to confirm the changes, and a close button to exit without saving. 
+ * The component supports dynamic theming based on light or dark mode.
+ * 
+ * Features:
+ * - Allows users to edit their first and last name.
+ * - The modal is designed with customizable theme colors, including background, text, and buttons.
+ * - Includes validation to ensure both fields are filled before saving.
+ * - Supports automatic reset of fields whenever the modal becomes visible.
+ * 
+ * Props:
+ * - `visible`: A boolean controlling the visibility of the modal.
+ * - `onClose`: Callback function to close the modal without saving.
+ * - `onSave`: Callback function triggered when the save button is pressed, passing the updated names.
+ * - `firstName`: The initial first name of the user, used to pre-fill the input (optional).
+ * - `lastName`: The initial last name of the user, used to pre-fill the input (optional).
+ * - `isDarkMode`: Boolean indicating whether dark mode is enabled (default: false).
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-native-modal`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';

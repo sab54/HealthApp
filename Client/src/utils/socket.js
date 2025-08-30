@@ -1,4 +1,32 @@
 // Client/src/utils/socket.js
+/**
+ * socket.js
+ *
+ * This file defines utilities for managing a Socket.IO connection within the application. It includes functions for 
+ * initializing a connection to the server, emitting and listening to events, and joining or leaving chat rooms. The 
+ * functions help facilitate real-time communication, such as user connection, chat events, and typing indicators.
+ *
+ * Features:
+ * - `initSocket`: Initializes a Socket.IO connection with the server using the provided user ID and token.
+ *   - Connects the socket, joins the user room, and listens for connection and disconnection events.
+ * - `getSocket`: Returns the current socket instance.
+ * - `disconnectSocket`: Disconnects the socket and clears connection state.
+ * - `emitEvent`: Emits a custom event with data to the server if the socket is connected.
+ * - `onEvent`: Listens for a specific event from the server and triggers a callback when the event is received.
+ * - `offEvent`: Removes the event listener for a specified event.
+ * - `joinChat`: Joins a specific chat room by emitting the `join_chat` event with the provided chat ID.
+ * - `leaveChat`: Leaves a specific chat room by emitting the `leave_chat` event with the provided chat ID.
+ * - Typing Indicator Emitters: Emits `chat:typing_start` and `chat:typing_stop` events when a user starts or stops typing in a chat.
+ *
+ * This file uses the following libraries:
+ * - `socket.io-client`: Provides real-time, bidirectional communication between the client and the server.
+ * 
+ * Dependencies:
+ * - socket.io-client
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { io } from 'socket.io-client';
 import { BASE_URL } from './config';
 

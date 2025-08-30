@@ -1,3 +1,38 @@
+/**
+ * Chat Routes (chat.js)
+ *
+ * This file defines the routes for managing chats, including creating, updating, 
+ * retrieving, and deleting chats and their messages. It supports both group and direct 
+ * chats and includes functionality for adding/removing members, sending/receiving messages, 
+ * and handling read receipts.
+ *
+ * Features:
+ * - GET /chat/list/:user_id: Retrieves the list of chats for a user, including 
+ *   group and direct chats, with additional information like last message and members.
+ * - POST /chat/create: Allows the creation of new chats, both group and direct chats.
+ * - POST /chat/:chat_id/add-members: Adds members to an existing chat.
+ * - DELETE /chat/:chat_id/remove-member: Removes a user from the chat (only accessible by chat owner).
+ * - POST /chat/local-groups/join: Allows a user to join nearby local groups based on their location.
+ * - DELETE /chat/:chat_id: Deletes a chat, including its messages and members.
+ * - GET /chat/:chat_id/messages: Retrieves messages in a chat with pagination support.
+ * - POST /chat/:chat_id/messages: Allows sending messages to a chat (supports text and location messages).
+ * - POST /chat/read: Updates the read receipt for a message in a chat.
+ * - GET /chat/:chat_id/read-receipts: Retrieves read receipts for messages in a chat.
+ *
+ * Helper Functions:
+ * - `normalizeTimestamp`: Converts database timestamps into ISO date format.
+ * - `dbAll`, `dbGet`, `dbRun`: Helper functions to interact with the database (retrieving rows, getting a single row, and running queries).
+ *
+ * Dependencies:
+ * - express: Web framework for building API routes.
+ * - body-parser: Middleware for parsing request bodies.
+ * - node-fetch: Used for making external HTTP requests (if applicable).
+ * - socket.io: For real-time updates to clients (e.g., chat updates).
+ * - SQLite: Used for managing chat data and related information in the database.
+ *
+ * Author: Sunidhi Abhange
+ */
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');

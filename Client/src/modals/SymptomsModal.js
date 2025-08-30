@@ -1,4 +1,35 @@
-// client/src/modals/SymptomsModal.js
+// Client/src/modals/SymptomsModal.js
+/**
+ * SymptomsModal.js
+ * 
+ * This file defines the `SymptomsModal` component, which allows users to search and select symptoms 
+ * for their health log. The modal displays a list of available symptoms and allows users to select up 
+ * to a maximum of 3 symptoms per day. The selected symptoms are then added to the user's health log.
+ * 
+ * Features:
+ * - Displays a list of symptoms with corresponding images and names.
+ * - Users can search symptoms using a search bar.
+ * - Limits the selection to a maximum of 3 symptoms per day.
+ * - Prevents re-selection of symptoms that have already been added for the day.
+ * - Allows for closing the modal with or without selecting symptoms.
+ * - Integrates with the Redux store to update the health log.
+ * 
+ * Props:
+ * - `visible`: A boolean controlling the visibility of the modal.
+ * - `onClose`: Callback function to close the modal.
+ * - `addedSymptoms`: Array of symptoms that have already been added for the day.
+ * - `setAddedSymptoms`: Function to update the list of added symptoms.
+ * - `showCloseButton`: Boolean to show or hide the close button.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-redux`
+ * - `@expo/vector-icons`
+ * - `@react-navigation/native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
   Modal,

@@ -1,4 +1,34 @@
 // Client/src/data/symptomHealth.js
+/**
+ * symptomHealth.js
+ * 
+ * This file contains an array of objects that represent common health symptoms, 
+ * such as "Headache", "Runny Nose", "Sore Throat", etc., and provides detailed 
+ * information about each symptom, including descriptions, possible causes, 
+ * precautions, treatment recommendations, medicines, and more. The data is organized 
+ * into severity levels (mild, moderate, severe) for each symptom.
+ * 
+ * Features:
+ * - Provides detailed information about various health symptoms, including severity levels.
+ * - Contains information on what to eat, exercises, and specific treatments for each symptom.
+ * - Includes a method to fetch all severity levels for a given symptom.
+ * 
+ * Functions:
+ * - `getAllSeverities(symptomName)`: Returns all severity levels for a given symptom name. 
+ *   If the symptom is not found, it returns `null`.
+ * 
+ * Data Structure:
+ * - Each symptom object contains:
+ *   - `symptom`: The name of the symptom.
+ *   - `image`: Path to the image associated with the symptom.
+ *   - `severity_levels`: An object containing details for each severity level (mild, moderate, severe) for the symptom.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 
 const symptomHealth = [
   {

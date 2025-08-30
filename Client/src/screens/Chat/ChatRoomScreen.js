@@ -1,4 +1,38 @@
 // Client/src/screens/Chat/ChatRoomScreen.js
+/**
+ * ChatRoomScreen.js
+ * 
+ * This file defines the `ChatRoomScreen` component, which manages the user interface 
+ * for a specific chat room. It handles the display of messages, typing indicators, 
+ * and user interactions like sending messages, scheduling appointments, and accessing 
+ * chat group information. The screen also manages real-time chat functionalities via 
+ * WebSockets and updates the UI accordingly.
+ * 
+ * Features:
+ * - Real-time messaging with socket-based event handling for new messages, typing indicators, and more.
+ * - Supports direct and group chats with specific handling for avatars, chat names, and participants.
+ * - Message sending with an option to schedule appointments or send location-based messages.
+ * - Displays typing indicators and updates the UI based on whether the user is typing.
+ * - Allows for interaction with group info, threads, and action modals.
+ * - Handles network connectivity, ensuring pending messages are sent when reconnected.
+ * 
+ * This component integrates with the following libraries:
+ * - React Navigation for navigating between screens.
+ * - Redux for managing chat state, messages, typing users, and sending actions like sending messages and creating appointments.
+ * - Expo for handling haptic feedback, networking (NetInfo), and other utilities like image loading and location fetching.
+ * - React Native components like `FlatList`, `TextInput`, `TouchableOpacity`, and `ActivityIndicator`.
+ * 
+ * Dependencies:
+ * - `@react-navigation/native`
+ * - `react-redux`
+ * - `expo-haptics`
+ * - `react-native`
+ * - `@react-native-community/netinfo`
+ * - `@expo/vector-icons`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, {
     useEffect,
     useRef,

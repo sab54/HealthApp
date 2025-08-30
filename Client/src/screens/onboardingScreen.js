@@ -1,3 +1,36 @@
+/**
+ * OnboardingScreen.js
+ * 
+ * This component defines the `OnboardingScreen`, which is shown to the user when they first launch the app.
+ * It introduces the app's features through a series of slides, where users can navigate between them to get familiarized with the application.
+ * The screen allows the user to swipe through various onboarding slides, each describing a feature of the app, and it concludes with a "Get Started" button.
+ * 
+ * Features:
+ * - Displays a series of onboarding slides with an image, title, and subtitle.
+ * - Uses animations for smooth transitions between slides.
+ * - The "Next" button progresses to the next slide, while the "Get Started" button redirects the user to the login screen after onboarding is completed.
+ * - The country selection is stored in AsyncStorage to remember the user's country code for the phone number input.
+ * - Uses `react-native-swiper` for managing the slide navigation.
+ * 
+ * This component utilizes the following libraries:
+ * - `react-native-swiper` for slide-based navigation.
+ * - `react-native-async-storage` for storing onboarding progress.
+ * - `react-native-animated` for slide animations.
+ * - `expo-linear-gradient` for creating gradient backgrounds.
+ * - `react-native-country-codes-picker` for country code selection.
+ * - `expo-blur` for blurring background during keyboard interactions.
+ * 
+ * Dependencies:
+ * - `react-native-swiper`
+ * - `@react-native-async-storage/async-storage`
+ * - `react-navigation`
+ * - `react-native-animated`
+ * - `expo-linear-gradient`
+ * - `expo-blur`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useRef, useState, useEffect } from 'react';
 import {
   View,

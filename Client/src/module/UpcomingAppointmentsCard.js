@@ -1,3 +1,34 @@
+// /src/module/UpcomingAppointmentCard.js
+/**
+ * UpcomingAppointmentCard.js
+ * 
+ * This component displays a summary of the user's upcoming appointment, including the appointment's
+ * date, time, and doctor's name or reason for the appointment. It also handles loading states 
+ * and shows a message when there are no upcoming appointments.
+ * 
+ * Key Features:
+ * - Displays a loading indicator while appointments are being fetched.
+ * - Displays a message when there are no upcoming appointments.
+ * - Calculates and displays the number of days until the next appointment.
+ * - Parses and formats appointment dates and times.
+ * - Sorts and filters the upcoming appointments to show the nearest one.
+ * 
+ * Props:
+ * - `appointments`: An array of appointments, each with a `date`, `time`, and `doctor_name` or `reason`.
+ * - `loading`: A boolean that indicates whether the appointments are still being loaded.
+ * - `theme`: The current theme for the app, used for styling the component.
+ * 
+ * States:
+ * - `expanded`: Manages the expanded state of each appointment section (though not used in this version).
+ * 
+ * Helper Functions:
+ * - `parseDate`: A function that parses date and time strings into JavaScript Date objects.
+ * 
+ * Dependencies:
+ * - `react-native`: For UI components and layout.
+ * 
+ * Author: Sunidhi Abhange
+ */
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 

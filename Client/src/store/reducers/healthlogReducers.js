@@ -1,3 +1,28 @@
+/**
+ * healthlogReducer.js
+ *
+ * This file defines the Redux slice for managing the health log state in the application, including mood, sleep,
+ * energy, symptoms, and health plans. It handles actions related to fetching and submitting mood data, marking symptoms
+ * as recovered, and fetching or updating the daily health plan. The slice also tracks loading and error states for
+ * various operations, ensuring the UI remains responsive and up-to-date.
+ *
+ * Features:
+ * - Manages state for today's mood, sleep, energy, symptoms, and health plan.
+ * - Supports actions for fetching, submitting, and marking symptoms as recovered.
+ * - Provides actions to reset mood data or add/update symptoms in the health log.
+ * - Handles loading and error flags to reflect the current status of API operations.
+ * - Updates the daily health plan and tracks task completion.
+ *
+ * This file uses the following libraries:
+ * - Redux Toolkit for managing state and async actions with `createSlice`.
+ * - Async actions for interacting with the backend and fetching/updating health log data.
+ *
+ * Dependencies:
+ * - @reduxjs/toolkit
+ *
+ * Author: Sunidhi Abhange
+ */
+
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchTodayMood, submitMood, markSymptomRecovered, fetchPlan, updatePlanTask } from '../actions/healthlogActions';
 

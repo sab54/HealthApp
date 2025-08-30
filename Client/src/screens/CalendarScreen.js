@@ -1,4 +1,35 @@
 // Client/src/screens/CalendarScreen.js
+/**
+ * CalendarScreen.js
+ * 
+ * This file defines the `CalendarScreen` component, which is responsible for displaying 
+ * the user's daily plan, including tasks and their statuses. The screen allows users 
+ * to navigate between days, view and update their tasks for each day, and fetch task data 
+ * from an API. Tasks can be marked as done, and the screen refreshes automatically to reflect 
+ * the updated task statuses.
+ * 
+ * Features:
+ * - Displays a list of tasks for the selected date.
+ * - Supports navigation between previous and next days.
+ * - Allows users to toggle the completion status of tasks.
+ * - Fetches tasks from an API based on the selected date and user ID.
+ * - Displays loading indicators and handles errors when fetching data.
+ * 
+ * This component integrates with the following libraries:
+ * - Redux for managing user state.
+ * - `date-fns` for formatting dates and handling date calculations.
+ * - React Native components like `FlatList`, `TouchableOpacity`, `ActivityIndicator`, 
+ *   and `Text` for building the user interface.
+ * - A custom `api` utility for making GET and POST requests.
+ * 
+ * Dependencies:
+ * - `react-redux`
+ * - `date-fns`
+ * - `react-native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useSelector } from 'react-redux';

@@ -1,4 +1,32 @@
-//Client/src/module/ChatList.js
+// /src/module/ChatList.js
+/**
+ * ChatList.js
+ * 
+ * This file defines the `ChatList` component, which displays a list of chats with various filtering, search, and pagination features. 
+ * The component allows users to view all, group, or private chats, and perform actions such as viewing individual chat rooms or deleting a chat.
+ * 
+ * Key Features:
+ * - Tabs for viewing all chats, groups, and private messages.
+ * - Search functionality to filter chats by name.
+ * - Swipeable list with the ability to delete chats.
+ * - Pagination for loading more chats.
+ * 
+ * Props:
+ * - `theme`: The theme object used for styling the component.
+ * - `chats`: The list of chat data to be displayed.
+ * - `onRefresh`: A callback function to refresh the list of chats.
+ * - `refreshing`: A boolean indicating whether the chat list is currently refreshing.
+ * - `unreadByChatId`: An object mapping chat IDs to the number of unread messages in each chat.
+ * 
+ * Dependencies:
+ * - `react-native`
+ * - `react-redux`
+ * - `@expo/vector-icons`
+ * - `react-navigation/native`
+ * 
+ * Author: Sunidhi Abhange
+ */
+
 import React, { useRef, useState, useMemo, useEffect, forwardRef } from 'react';
 import {
     View,
