@@ -320,8 +320,15 @@ const SymptomRecoveryPlanScreen = () => {
                            <Text style={{ color: theme.text }}>
                               {t.progress || 0} / {goalInfo.goal} {goalInfo.type}
                            </Text>
-                           <TouchableOpacity onPress={() => handlePlayPause(goalInfo)} style={{ marginLeft: 8 }}>
-                              <Ionicons name={isPaused ? "play" : "pause"} size={24} color={theme.primary} />
+                           <TouchableOpacity
+                              onPress={() => handlePlayPause(goalInfo)}
+                              style={styles.playPauseButton}  // Apply play/pause button styles
+                           >
+                              <Ionicons
+                                 name={isPaused ? "play" : "pause"}
+                                 size={24}
+                                 color={theme.buttonPrimaryText}  // Apply icon color based on the theme
+                              />
                            </TouchableOpacity>
                         </View>
                      )}
@@ -333,7 +340,6 @@ const SymptomRecoveryPlanScreen = () => {
          )}
       </View>
    );
-
 
    return (
       <ScrollView
@@ -420,14 +426,15 @@ const createStyles = (theme) => StyleSheet.create({
       backgroundColor: theme.checkboxChecked, // Background color when checked (purple for dark mode)
    },
    taskCard: { flexDirection: 'row', alignItems: 'center', borderRadius: 12, padding: 12, marginBottom: 10, elevation: 1 },
-   playButton: {
+   // Play/Pause button styles: ensure background color and icon color are dynamically set from the theme
+   playPauseButton: {
       marginLeft: 10,
-      backgroundColor: theme.buttonPrimaryBackground,  // Button background color
+      backgroundColor: theme.buttonPrimaryBackground,  // Dynamically set background color from theme
       padding: 10,
       borderRadius: 30,
    },
-   playButtonIcon: {
-      color: theme.buttonPrimaryText,  // Play button icon color
+   playPauseButtonIcon: {
+      color: theme.buttonPrimaryText,  // Dynamically set icon color from theme (white for light mode, purple for dark mode)
    },
    taskText: { flex: 1, fontSize: 16 },
 
