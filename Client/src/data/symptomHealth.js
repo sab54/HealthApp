@@ -1,31 +1,31 @@
 // Client/src/data/symptomHealth.js
 /**
  * symptomHealth.js
- * 
- * This file contains an array of objects that represent common health symptoms, 
- * such as "Headache", "Runny Nose", "Sore Throat", etc., and provides detailed 
- * information about each symptom, including descriptions, possible causes, 
- * precautions, treatment recommendations, medicines, and more. The data is organized 
+ *
+ * This file contains an array of objects that represent common health symptoms,
+ * such as "Headache", "Runny Nose", "Sore Throat", etc., and provides detailed
+ * information about each symptom, including descriptions, possible causes,
+ * precautions, treatment recommendations, medicines, and more. The data is organized
  * into severity levels (mild, moderate, severe) for each symptom.
- * 
+ *
  * Features:
  * - Provides detailed information about various health symptoms, including severity levels.
  * - Contains information on what to eat, exercises, and specific treatments for each symptom.
  * - Includes a method to fetch all severity levels for a given symptom.
- * 
+ *
  * Functions:
- * - `getAllSeverities(symptomName)`: Returns all severity levels for a given symptom name. 
+ * - `getAllSeverities(symptomName)`: Returns all severity levels for a given symptom name.
  *   If the symptom is not found, it returns `null`.
- * 
+ *
  * Data Structure:
  * - Each symptom object contains:
  *   - `symptom`: The name of the symptom.
  *   - `image`: Path to the image associated with the symptom.
  *   - `severity_levels`: An object containing details for each severity level (mild, moderate, severe) for the symptom.
- * 
+ *
  * Dependencies:
  * - `react-native`
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -399,7 +399,7 @@ const symptomHealth = [
           "Too much sugar"
         ],
         "exercises": [
-          "Morning walk (~2,000 steps)",
+          "Morning walk (~150 steps)",
           "Light stretching"
         ],
         "treatment": "Prioritize sleep, balanced meals, and gentle morning activity.",
@@ -435,8 +435,8 @@ const symptomHealth = [
           "Refined sugar"
         ],
         "exercises": [
-          "Brisk walk (~3,000 steps)",
-          "Light cardio (15–20 minutes)"
+          "Brisk walk (~50 steps)",
+          "Light cardio (2–5 minutes)"
         ],
         "treatment": "Improve sleep hygiene, balanced nutrition, and add regular light physical activity.",
         "timing": {
@@ -963,7 +963,7 @@ const symptomHealth = [
           "Alcohol"
         ],
         "exercises": [
-          "Brisk walking (20 minutes, ~3,000 steps)",
+          "Brisk walking (2 minutes, ~30 steps)",
           "Yoga – Surya Namaskar (5 rounds, ~10 minutes)",
           "Meditation (10 minutes mindfulness breathing)"
         ],

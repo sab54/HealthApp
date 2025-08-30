@@ -21,6 +21,13 @@ export const getThemeColors = (isDarkMode) => ({
     border: isDarkMode ? '#5C4B8A' : '#c5c5ff', // General borders
     focusOutline: isDarkMode ? '#7C5DFF' : '#6C5BCD', // Focus ring color
 
+     // Checkbox styles
+    checkboxBorder: isDarkMode ? '#6C5BCD' : '#9999cc', // Subtle border
+    checkboxBackground: isDarkMode ? '#3A2D5C' : '#ffffff',  // Dark background for unchecked state
+    checkboxChecked: '#6C5BCD', // Purple when checked
+    checkboxHover: isDarkMode ? '#3A2D5C' : '#e2e2ff',  // Hover effect
+    checkboxTick: isDarkMode ? '#ffffffff' : '#ffffffff',  // White for light mode, purple for dark mode
+
     // Buttons
     buttonPrimaryBackground: '#6C5BCD', // Purple primary button
     buttonPrimaryText: '#ffffff',

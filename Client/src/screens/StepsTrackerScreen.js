@@ -1,18 +1,18 @@
 // Client/src/screens/StepsTrackerScreen.js
 /**
  * StepsTrackerScreen.js
- * 
+ *
  * This screen tracks and displays the user's step data in real-time. It allows users to start, pause, and view their step progress.
- * It also shows detailed statistics, including the total number of steps, distance walked, and calories burned. 
+ * It also shows detailed statistics, including the total number of steps, distance walked, and calories burned.
  * Users can track their progress on a weekly basis and save their daily steps when the app goes to the background or when the hardware back button is pressed.
- * 
+ *
  * Key Features:
  * - Displays a progress circle indicating the current step count towards a goal.
  * - Shows daily statistics like calories burned and distance walked.
  * - Allows the user to start, pause, or resume step tracking.
  * - Saves step data when the app goes into the background or the user presses the back button.
  * - Tracks the user’s steps over the past week and visually indicates if they met their daily step goal.
- * 
+ *
  * Dependencies:
  * - `react-native` for UI components.
  * - `react-redux` for state management.
@@ -22,7 +22,7 @@
  * - `react-native-safe-area-context` for safe area handling.
  * - `SensorTracker` for step tracking.
  * - `stepsActions` for saving and fetching step data from the backend.
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -153,104 +153,133 @@ const StepsTrackerScreen = () => {
   const progress = currentSteps / stepGoal;
   const styles = createStyles(theme, insets);
 
-return (
-  <View style={styles.container}>
-    {/* Back Button */}
-    <TouchableOpacity
-      style={styles.backButton}
-      onPress={() => {
-        if (user?.id) {
-          dispatch(saveStepEntry({
-            user_id: user.id,
-            steps: currentSteps,
-            distance: currentDistance,
-            calories,
-            duration: 0,
-          }));
-        }
-        navigation.goBack();
-      }}
-    >
-      <Ionicons name="arrow-back" size={24} color={theme.text} />
-    </TouchableOpacity>
+  const getWeekDays = () => {
+    const today = new Date();
+    const day = today.getDay(); // 0=Sun, 1=Mon, ...
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((day + 6) % 7)); // shift to Monday
 
-    {/* Progress Circle */}
-    <View style={styles.circleWrapper}>
-      <Progress.Circle
-        size={220}
-        progress={progress}
-        showsText={false}
-        color={theme.primary}
-        unfilledColor={theme.surface}
-        borderWidth={0}
-        thickness={15}
-      />
-      <View style={styles.circleContent}>
-        <Text style={styles.steps}>{currentSteps}</Text>
-        <Text style={styles.goal}>/ {stepGoal}</Text>
-        <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
-          <Ionicons
-            name={isPaused ? "play" : "pause"}
-            size={28}
-            color={theme.primary}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+    // Build Mon → Sun
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return d;
+    });
+  };
 
-    {/* Stats row */}
-    <View style={styles.statsRow}>
-      <View style={styles.statBox}>
-        <Ionicons name="time-outline" size={20} color={theme.primary} />
-        <Text style={styles.statValue}>1h 14m</Text>
-        <Text style={styles.statLabel}>time</Text>
-      </View>
-      <View style={styles.statBox}>
-        <Ionicons name="flame-outline" size={20} color={theme.primary} />
-        <Text style={styles.statValue}>{calories}</Text>
-        <Text style={styles.statLabel}>kcal</Text>
-      </View>
-      <View style={styles.statBox}>
-        <Ionicons name="walk-outline" size={20} color={theme.primary} />
-        <Text style={styles.statValue}>{(currentDistance / 1000).toFixed(2)}</Text>
-        <Text style={styles.statLabel}>km</Text>
-      </View>
-    </View>
+  return (
+    <View style={styles.container}>
+      {/* Back Button */}
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => {
+          if (user?.id) {
+            dispatch(saveStepEntry({
+              user_id: user.id,
+              steps: currentSteps,
+              distance: currentDistance,
+              calories,
+              duration: 0,
+            }));
+          }
+          navigation.goBack();
+        }}
+      >
+        <Ionicons name="arrow-back" size={24} color={theme.text} />
+      </TouchableOpacity>
 
-    {/* 🔹 Weekly Row with tick */}
-    <View style={styles.weekRow}>
-      {dailySteps.slice(-7).map((day, index) => {
-        const isToday = day.day === new Date().toISOString().split('T')[0];
-        const goalMet = day.total_steps >= stepGoal;
+      {/* Title */}
+      <Text style={styles.screenTitle}>Step Tracker</Text>
+      <Text style={styles.screenSubtitle}>
+        Track your daily steps and see your weekly progress
+      </Text>
 
-        return (
-          <View key={index} style={styles.weekDay}>
-            <View style={[
-              styles.dayCircle,
-              { borderColor: theme.primary, backgroundColor: theme.surface }
-            ]}>
-              <Text style={{ color: theme.text, fontWeight: '600' }}>
-                {new Date(day.day).getDate()}
+      {/* Progress Circle */}
+      <View style={styles.circleWrapper}>
+        <Progress.Circle
+          size={220}
+          progress={progress}
+          showsText={false}
+          color={theme.primary}
+          unfilledColor={theme.surface}
+          borderWidth={0}
+          thickness={15}
+        />
+        <View style={styles.circleContent}>
+          <Text style={styles.steps}>{currentSteps}</Text>
+          <Text style={styles.goal}>/ {stepGoal}</Text>
+          <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
+            <Ionicons
+              name={isPaused ? "play" : "pause"}
+              size={28}
+              color={theme.primary}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Stats row */}
+      <View style={styles.statsRow}>
+        <View style={styles.statBox}>
+          <Ionicons name="time-outline" size={20} color={theme.primary} />
+          <Text style={styles.statValue}>1h 14m</Text>
+          <Text style={styles.statLabel}>time</Text>
+        </View>
+        <View style={styles.statBox}>
+          <Ionicons name="flame-outline" size={20} color={theme.primary} />
+          <Text style={styles.statValue}>{calories}</Text>
+          <Text style={styles.statLabel}>kcal</Text>
+        </View>
+        <View style={styles.statBox}>
+          <Ionicons name="walk-outline" size={20} color={theme.primary} />
+          <Text style={styles.statValue}>{(currentDistance / 1000).toFixed(2)}</Text>
+          <Text style={styles.statLabel}>km</Text>
+        </View>
+      </View>
+
+
+
+      {/*  Weekly Row with tick */}
+      <View style={styles.weekRow}>
+        {getWeekDays().map((date, index) => {
+          const dayString = date.toISOString().split('T')[0];
+          const isToday = dayString === new Date().toISOString().split('T')[0];
+          const entry = dailySteps.find(row => row.day === dayString);
+          const steps = entry ? entry.total_steps : 0;
+          const goalMet = steps >= stepGoal;
+
+          return (
+            <View key={index} style={styles.weekDay}>
+              <View style={[
+                styles.dayCircle,
+                {
+                  borderColor: goalMet ? theme.buttonPrimaryBackground : theme.border, // ✅ purple if met, gray otherwise
+                  backgroundColor: theme.surface,
+                }
+              ]}>
+                <Text style={{ color: theme.buttonPrimaryBackground, fontWeight: '600' }}>  {/* ✅ always purple text */}
+                  {date.getDate()}
+                </Text>
+                {goalMet && (
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={18}
+                    color={theme.buttonSecondaryBackground}
+                    style={styles.tickIcon}
+                  />
+                )}
+              </View>
+              <Text style={styles.dayLabel}>
+                {isToday
+                  ? "Today"
+                  : date.toLocaleDateString("en-US", { weekday: "short" })}
               </Text>
-              {goalMet && (
-                <Ionicons
-                  name="checkmark-circle"
-                  size={18}
-                  color={theme.primary}
-                  style={styles.tickIcon}
-                />
-              )}
             </View>
-            <Text style={styles.dayLabel}>
-              {isToday ? "Today" : new Date(day.day).toLocaleDateString('en-US', { weekday: 'short' })}
-            </Text>
-          </View>
-        );
-      })}
+          );
+        })}
+      </View>
     </View>
-
-  </View>
-);
+  );
 };
 
 const createStyles = (theme, insets) => StyleSheet.create({
@@ -272,6 +301,20 @@ const createStyles = (theme, insets) => StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 20,
   },
+  screenTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: theme.title,
+    alignSelf: 'flex-start',
+    marginBottom: 4,
+  },
+  screenSubtitle: {
+    fontSize: 14,
+    color: theme.mutedText,
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+  },
+
   circleWrapper: {
     justifyContent: 'center',
     alignItems: 'center',

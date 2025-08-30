@@ -2,8 +2,8 @@
 /**
  * config.js
  *
- * This file contains configuration settings for the application. It defines constants that determine the 
- * operating modes for development, server selection, and OTP auto-set functionality. It also contains the 
+ * This file contains configuration settings for the application. It defines constants that determine the
+ * operating modes for development, server selection, and OTP auto-set functionality. It also contains the
  * base URL for the API server and the API key for the OpenWeather API.
  *
  * Features:
@@ -29,7 +29,7 @@ export const autoSetOTP = true; // ← Flip this to false to disable mode
 export const External_API_MODE = true; // ← Flip this to false to enable mode
 
 export const BASE_URL = isLocalServer
-    ? 'http://192.168.1.100:3000'
+    ? 'http://192.168.1.5:3000'
     : '';
 
 export const OPENWEATHER_API_KEY =

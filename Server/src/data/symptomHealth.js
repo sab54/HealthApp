@@ -2,8 +2,8 @@
 /**
  * symptomHealth.js
  *
- * This file contains a dataset for various symptoms and their corresponding health-related advice. It categorizes symptoms into 
- * different severity levels (mild, moderate, and severe) and provides a structured set of recommendations for each level. 
+ * This file contains a dataset for various symptoms and their corresponding health-related advice. It categorizes symptoms into
+ * different severity levels (mild, moderate, and severe) and provides a structured set of recommendations for each level.
  * These include possible causes, precautions, food recommendations, medications, exercises, treatments, and specific timing for each.
  *
  * The structure of the dataset is as follows:
@@ -388,7 +388,7 @@ const symptomHealth = [
           "Too much sugar"
         ],
         "exercises": [
-          "Morning walk (~2,000 steps)",
+          "Morning walk (~150 steps)",
           "Light stretching"
         ],
         "treatment": "Prioritize sleep, balanced meals, and gentle morning activity.",
@@ -424,8 +424,8 @@ const symptomHealth = [
           "Refined sugar"
         ],
         "exercises": [
-          "Brisk walk (~3,000 steps)",
-          "Light cardio (15–20 minutes)"
+          "Brisk walk (~50 steps)",
+          "Light cardio (2–5 minutes)"
         ],
         "treatment": "Improve sleep hygiene, balanced nutrition, and add regular light physical activity.",
         "timing": {
@@ -947,7 +947,7 @@ const symptomHealth = [
           "Alcohol"
         ],
         "exercises": [
-          "Brisk walking (20 minutes, ~3,000 steps)",
+          "Brisk walking (2 minutes, ~30 steps)",
           "Yoga – Surya Namaskar (5 rounds, ~10 minutes)",
           "Meditation (10 minutes mindfulness breathing)"
         ],
