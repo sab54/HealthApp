@@ -2,11 +2,11 @@
 /**
  * initSchema.js
  *
- * This script initializes the database schema by creating the necessary tables to store data for various 
+ * This script initializes the database schema by creating the necessary tables to store data for various
  * features of the application, including user details, chat messages, appointments, user moods, and daily steps.
- * It ensures that all required tables exist before any data is inserted, and if they do exist, they remain intact 
- * (i.e., no overwriting or deletion of data). 
- * 
+ * It ensures that all required tables exist before any data is inserted, and if they do exist, they remain intact
+ * (i.e., no overwriting or deletion of data).
+ *
  * Tables Created:
  * 1. **users**: Stores user information such as personal details, role, verification status, etc.
  * 2. **user_alerts**: Stores notifications or alerts for users (e.g., chat messages, tasks, system alerts).
@@ -23,18 +23,18 @@
  * 13. **user_symptoms**: Stores user-reported symptoms, their severity, and related information (e.g., recovery time).
  * 14. **user_daily_plan**: Stores tasks or recovery plans for users, based on their symptoms.
  * 15. **user_steps**: Stores daily step count and fitness data for users.
- * 
+ *
  * Inserts Initial Data:
  * - **A sample user** is inserted into the `users` table to provide a starting point for development or testing.
- * 
+ *
  * Notes:
  * - Each table is created with various constraints, including primary keys, foreign keys, unique constraints, and checks.
  * - The `created_at` and `updated_at` fields are automatically populated with the current timestamp to track record creation and updates.
  * - The `users` table includes fields for user details like phone number, email, address, etc., with certain fields marked as `NOT NULL`.
  * - Soft delete support is implemented in certain tables using fields like `deleted_at`, which allows for the removal of records without permanent deletion.
- * 
+ *
  * This script uses SQLite and executes SQL commands in sequence to ensure that all necessary tables are created in the database.
- * 
+ *
  * Author: [Your Name]
  */
 
@@ -78,46 +78,13 @@ function initSchema() {
 
     db.run(`
       INSERT OR IGNORE INTO users (
-        phone_number,
-        country_code,
-        email,
-        first_name,
-        last_name,
-        date_of_birth,
-        gender,
-        address_line1,
-        city,
-        state,
-        postal_code,
-        country,
-        is_phone_verified,
-        role,
-        is_active,
-        is_approved,
-        created_by,
-        updated_by,
-        created_at
-      ) VALUES (
-        '9999999999',
-        '+44',
-        'laura.murphy@example.com',
-        'Laura',
-        'Murphy',
-        '2004-08-10',
-        'female',
-        '13 Example Street',
-        'Birmingham',
-        'Borough',
-        'M1 2BB',
-        'United Kingdom',
-        1,
-        'user',
-        1,
-        1,
-        NULL,
-        NULL,
-        '2025-08-19 00:00:00'
-      )
+        phone_number, country_code, email, first_name, last_name,
+        date_of_birth, gender, address_line1, city, state, postal_code, country,
+        is_phone_verified, role, is_active, is_approved, created_at
+      ) VALUES
+      ('1111111111','+44','dr.sarah.johnson@example.com','Sarah','Johnson','1980-05-15','female','45 Medical Lane','London','Greater London','SW1A 1AA','United Kingdom',1,'doctor',1,1,'2025-08-19 00:00:00'),
+      ('2222222222','+44','dr.michael.brown@example.com','Michael','Brown','1975-11-20','male','22 Clinic Road','Manchester','Greater Manchester','M1 3BB','United Kingdom',1,'doctor',1,0,'2025-08-19 00:00:00'),
+      ('3333333333','+44','john.doe@example.com','John','Doe','1990-03-10','male','78 High Street','Leeds','West Yorkshire','LS1 4AB','United Kingdom',1,'user',1,0,'2025-08-19 00:00:00')
     `);
 
     db.run(`
@@ -168,6 +135,13 @@ function initSchema() {
       )
     `);
 
+    db.run(`
+      INSERT OR IGNORE INTO doctor_licenses (user_id, file_path, status, uploaded_at)
+      VALUES
+      ((SELECT id FROM users WHERE email = 'dr.sarah.johnson@example.com'),'sarah_license.pdf','verified','2025-08-20 09:00:00'),
+      ((SELECT id FROM users WHERE email = 'dr.michael.brown@example.com'),'michael_license.pdf','pending','2025-08-20 09:30:00')
+    `);
+
     // Chat table
 
     db.run(`
@@ -185,6 +159,11 @@ function initSchema() {
       )
 `);
 
+    db.run(`
+      INSERT OR IGNORE INTO chats (is_group, name, created_by, created_at)
+      VALUES (0, NULL,(SELECT id FROM users WHERE email = 'john.doe@example.com'),'2025-08-20 08:00:00')
+    `);
+
     // Chat Members table
     db.run(`
   CREATE TABLE IF NOT EXISTS chat_members (
@@ -197,6 +176,14 @@ function initSchema() {
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   )
 `);
+
+    db.run(`
+      INSERT OR IGNORE INTO chat_members (chat_id, user_id, role)
+      VALUES
+      ((SELECT id FROM chats WHERE created_by = (SELECT id FROM users WHERE email = 'john.doe@example.com') LIMIT 1),(SELECT id FROM users WHERE email = 'john.doe@example.com'),'member'),
+      ((SELECT id FROM chats WHERE created_by = (SELECT id FROM users WHERE email = 'john.doe@example.com') LIMIT 1),(SELECT id FROM users WHERE email = 'dr.sarah.johnson@example.com'),'member')
+    `);
+
 
     // Chat Messages table
     db.run(`
@@ -217,6 +204,13 @@ function initSchema() {
     FOREIGN KEY (edited_by) REFERENCES users(id) ON DELETE SET NULL
   )
 `);
+
+    db.run(`
+      INSERT OR IGNORE INTO chat_messages (chat_id, sender_id, message, message_type, created_at)
+      VALUES
+      ((SELECT id FROM chats WHERE created_by = (SELECT id FROM users WHERE email = 'john.doe@example.com') LIMIT 1),(SELECT id FROM users WHERE email = 'john.doe@example.com'),'Doctor, can I book an appointment on 1st Jan 2026 at 12:30PM?','text','2025-08-31 09:00:00'),
+      ((SELECT id FROM chats WHERE created_by = (SELECT id FROM users WHERE email = 'john.doe@example.com') LIMIT 1),(SELECT id FROM users WHERE email = 'dr.sarah.johnson@example.com'),'📅 Appointment with "John Doe" scheduled for 2026-01-01 at 12:30','appointment','2025-08-31 09:05:00')
+    `);
 
     // Chat Attachments table
     db.run(`
@@ -256,7 +250,7 @@ function initSchema() {
   )
 `);
 
-db.run(`
+    db.run(`
   CREATE TABLE IF NOT EXISTS appointment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,       -- the patient
@@ -281,6 +275,13 @@ db.run(`
    )
 `);
 
+    db.run(`
+      INSERT OR IGNORE INTO appointment (user_id,sender_id,chat_id,created_by,date,time,status,created_at,reason)
+      VALUES
+      ((SELECT id FROM users WHERE email='john.doe@example.com'),(SELECT id FROM users WHERE email='dr.sarah.johnson@example.com'),(SELECT id FROM chats WHERE created_by=(SELECT id FROM users WHERE email='john.doe@example.com') LIMIT 1),(SELECT id FROM users WHERE email='john.doe@example.com'),'2026-01-01','12:30','scheduled','2025-12-15 09:10:00','Headache consultation – booked during chat with Dr. Sarah Johnson'),
+      ((SELECT id FROM users WHERE email='john.doe@example.com'),(SELECT id FROM users WHERE email='dr.sarah.johnson@example.com'),(SELECT id FROM chats WHERE created_by=(SELECT id FROM users WHERE email='john.doe@example.com') LIMIT 1),(SELECT id FROM users WHERE email='john.doe@example.com'),'2025-11-04','14:30','scheduled','2025-10-28 09:30:00','Cold and cough consultation – confirmed in chat with Dr. Sarah Johnson')
+    `);
+
 
     db.run(`
   CREATE TABLE IF NOT EXISTS user_daily_mood (
@@ -294,6 +295,13 @@ db.run(`
         FOREIGN KEY(user_id) REFERENCES users(id),
         UNIQUE(user_id, date)
       )
+    `);
+
+    db.run(`
+      INSERT OR IGNORE INTO user_daily_mood
+      (user_id,date,mood,sleep,energy,created_at) VALUES
+      (1,'2025-08-30','Feeling great!',7,8,'2025-08-30T07:00:00Z'),
+      (1,'2025-08-31','Not feeling good!',5,4,'2025-08-31T07:00:00Z')
     `);
 
     // user_symptoms table
@@ -316,6 +324,24 @@ db.run(`
 
     `);
 
+    // Scenario 1: Fever (still ongoing, NOT recovered yet)
+db.run(`
+  INSERT OR IGNORE INTO user_symptoms
+  (user_id,symptom,severity,onset_time,duration,notes,date,time,created_at) VALUES
+  (1,'Fever','severe','2025-08-30T06:00:00Z','2 days','High temperature, weakness','2025-08-30','06:00','2025-08-30T06:05:00Z')
+`);
+
+// Scenario 2: Cough (already recovered on 1st Aug)
+db.run(`
+  INSERT OR IGNORE INTO user_symptoms
+  (user_id,symptom,severity,onset_time,duration,notes,date,time,recovered_at,created_at) VALUES
+  (1,'Cough','moderate','2025-07-31T08:00:00Z','1 day','Dry cough started in morning','2025-07-31','08:00',
+   '2025-08-01T09:00:00Z','2025-07-31T08:05:00Z')
+`);
+
+
+
+
     //  Recovery Tasks
     db.run(`
       CREATE TABLE IF NOT EXISTS user_daily_plan (
@@ -332,6 +358,26 @@ db.run(`
          UNIQUE(user_id, symptom, category, task, date)
       )
     `);
+
+// Fever tasks
+    db.run(`
+      INSERT OR IGNORE INTO user_daily_plan
+      (user_id,symptom,severity,category,task,done,date,created_at) VALUES
+      (1,'Fever','severe','precautions','Immediate medical attention required',0,'2025-08-31','2025-08-31T09:00:00Z'),
+      (1,'Fever','severe','food','Only as prescribed by doctor',0,'2025-08-31','2025-08-31T09:01:00Z')
+    `);
+
+    // Cough tasks
+    db.run(`
+      INSERT OR IGNORE INTO user_daily_plan
+      (user_id,symptom,severity,category,task,done,date,created_at) VALUES
+      (1,'Cough','moderate','precautions','Avoid cold drinks and rest voice',0,'2025-08-31','2025-08-31T09:10:00Z'),
+      (1,'Cough','moderate','food','Warm fluids like honey water or soup',0,'2025-08-31','2025-08-31T09:11:00Z'),
+      (1,'Cough','moderate','medicines','Cough syrup as prescribed by doctor',0,'2025-08-31','2025-08-31T09:12:00Z'),
+      (1,'Cough','moderate','exercises','Breathing exercises if no fever',0,'2025-08-31','2025-08-31T09:13:00Z'),
+      (1,'Cough','moderate','avoid','Avoid smoking or alcohol',0,'2025-08-31','2025-08-31T09:14:00Z')
+    `);
+
 
     db.run(`
       CREATE TABLE IF NOT EXISTS user_steps (

@@ -3,21 +3,21 @@
  *
  * This file defines the routes for appointment-related actions, including booking, fetching,
  * and updating appointments. It uses SQLite for database interactions and Express.js for routing.
- * 
+ *
  * Features:
  * - POST /appointment/ai-book: Allows the creation of an appointment with specified details.
  * - GET /appointment/:userId: Fetches appointments for a specific user based on their userId.
  * - PATCH /appointment/:id: Allows updating the details of an existing appointment (status, date, time, reason).
- * 
+ *
  * Helper Functions:
  * - `runQuery`: A helper function to execute SQL queries that modify the database.
  * - `allQuery`: A helper function to execute SQL queries that retrieve multiple rows from the database.
- * 
+ *
  * This file uses the following libraries:
  * - express: Web framework for building API routes.
  * - body-parser: Middleware for parsing incoming request bodies.
  * - SQLite: Used for database interactions, specifically for appointments.
- * 
+ *
  * Author: [Your Name or Author Name]
  */
 
@@ -81,8 +81,6 @@ router.post('/ai-book', async (req, res) => {
 // GET /appointment/:userId
 router.get('/:userId', async (req, res) => {
   const userId = parseInt(req.params.userId);
-  console.log("📥 GET /appointment/:userId =", userId);
-
   if (isNaN(userId)) {
     return res.status(400).json({ success: false, message: 'Invalid userId in params' });
   }
@@ -95,15 +93,14 @@ router.get('/:userId', async (req, res) => {
        FROM appointment a
        LEFT JOIN users u1 ON a.user_id = u1.id
        LEFT JOIN users u2 ON a.sender_id = u2.id
-       WHERE a.user_id = ? OR a.sender_id = ?
+       WHERE (a.user_id = ? OR a.sender_id = ?)
        ORDER BY a.date, a.time`,
       [userId, userId]
     );
 
-    console.log("📤 DB returned rows:", rows);
     res.json({ success: true, appointments: rows });
   } catch (err) {
-    console.error("❌ DB error:", err);
+    console.error("DB error:", err);
     res.status(500).json({ success: false, error: err.message });
   }
 });

@@ -1,10 +1,10 @@
 /**
  * HealthTrackingScreen.js
- * 
- * This file defines the `HealthTrackingScreen` component, which is responsible for 
- * displaying various health tracking trends of a user, including mood, energy, 
- * and sleep data. The screen retrieves data from an API and visualizes it using 
- * charts such as bar and line charts. It supports dynamic selection of the 
+ *
+ * This file defines the `HealthTrackingScreen` component, which is responsible for
+ * displaying various health tracking trends of a user, including mood, energy,
+ * and sleep data. The screen retrieves data from an API and visualizes it using
+ * charts such as bar and line charts. It supports dynamic selection of the
  * number of days (3 or 15) to display trends.
  *
  * Features:
@@ -12,19 +12,19 @@
  * - Displays energy levels (1-10) over time using a line chart.
  * - Displays sleep hours per day using a line chart with color-coded markers.
  * - Allows the user to toggle between displaying 3 days or 15 days of data.
- * 
+ *
  * This screen makes use of the following libraries:
  * - React Native for UI components and hooks (useState, useEffect).
  * - Redux for managing theme colors.
  * - React Native Chart Kit for rendering line and bar charts.
  * - React Navigation for passing `userId` via route params.
  * - Safe Area Context for handling screen insets in a cross-platform way.
- * 
+ *
  * Dependencies:
  * - `react-native-chart-kit`
  * - `react-redux`
  * - `react-native-safe-area-context`
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -39,7 +39,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import { LineChart, BarChart } from 'react-native-chart-kit';
+import { LineChart, PieChart, BarChart } from 'react-native-chart-kit';
 import { useSelector } from 'react-redux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { API_URL_HEALTHLOG } from '../utils/apiPaths';
@@ -53,18 +53,18 @@ const HealthTrackingScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [days, setDays] = useState(15);
+  const [symptomRecovery, setSymptomRecovery] = useState([]);
 
   const theme = useSelector((state) => state.theme.themeColors);
   const insets = useSafeAreaInsets();
   const styles = createStyles(theme, insets);
 
-const LegendItem = ({ color, label, theme }) => (
-  <View style={styles.legendItem}>
-    <View style={[styles.legendDot, { backgroundColor: color }]} />
-    <Text style={[styles.legendText, { color: theme.text }]}>{label}</Text>
-  </View>
-);
-
+  const LegendItem = ({ color, label, theme }) => (
+    <View style={styles.legendItem}>
+      <View style={[styles.legendDot, { backgroundColor: color }]} />
+      <Text style={[styles.legendText, { color: theme.text }]}>{label}</Text>
+    </View>
+  );
 
   useEffect(() => {
     if (!userId) {
@@ -92,6 +92,63 @@ const LegendItem = ({ color, label, theme }) => (
 
     fetchTrends();
   }, [userId, days]);
+
+  useEffect(() => {
+  const fetchSymptomRecovery = async () => {
+    try {
+      const res = await get(`${API_URL_HEALTHLOG}/trends/symptomRecovery/${userId}`);
+      if (res.success) {
+        setSymptomRecovery(res.symptomRecovery);
+      }
+    } catch (err) {
+      console.error("Error fetching symptom recovery:", err);
+    }
+  };
+
+  fetchSymptomRecovery();
+}, [userId]);
+
+  const SymptomRecoveryChart = ({ data }) => {
+    const theme = useSelector((state) => state.theme.themeColors);
+
+    // Truncate long labels
+    const labels = data.map((item) =>
+      item.symptom.length > 10 ? item.symptom.slice(0, 9) + "…" : item.symptom
+    );
+    const values = data.map((item) => item.days);
+
+    return (
+      <BarChart
+        data={{
+          labels,
+          datasets: [{ data: values }],
+        }}
+        width={screenWidth - 40}
+        height={260}
+        yAxisSuffix="d"
+        fromZero
+        showValuesOnTopOfBars={true}
+        verticalLabelRotation={30}
+        chartConfig={{
+          backgroundColor: theme.card,
+          backgroundGradientFrom: theme.card,
+          backgroundGradientTo: theme.card,
+          decimalPlaces: 0,
+          color: () => theme.primary,
+          labelColor: () => theme.text,
+          barPercentage: 0.5,
+          propsForBackgroundLines: {
+            strokeDasharray: "",
+            stroke: theme.mutedText,
+          },
+        }}
+        style={{
+          borderRadius: 16,
+          paddingRight: 30,
+        }}
+      />
+    );
+  };
 
   if (loading) {
     return (
@@ -150,38 +207,43 @@ const LegendItem = ({ color, label, theme }) => (
       {/* Mood Card */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Mood Trend</Text>
-        <BarChart
-          data={{
-            labels,
-            datasets: [
-              {
-                data: moodData,
-                colors: moodData.map((v) =>
-                  v === 1 ? () => theme.success : () => theme.error
-                ),
-              },
-            ],
-          }}
-          width={screenWidth - 40}
-          height={220}
+        <PieChart
+          data={[
+            {
+              name: 'Feeling Great',
+              population: moodData.filter((m) => m === 1).length, // Count of Feeling Great
+              color: theme.icon,
+              legendFontColor: theme.text,
+              legendFontSize: 14,
+            },
+            {
+              name: 'Not Good',
+              population: moodData.filter((m) => m === 0).length, // Count of Not Feeling Good
+              color: theme.warning,
+              legendFontColor: theme.text,
+              legendFontSize: 14,
+            },
+          ]}
+          width={screenWidth}
+          height={280}
           chartConfig={{
-            ...chartConfig,
-            color: (opacity = 1, index) =>
-              moodData[index] === 1 ? theme.success : theme.error,
-            labelColor: () => theme.text,
+            backgroundGradientFrom: theme.background,
+            backgroundGradientTo: theme.background,
+            color: (opacity = 1) => theme.text,
+            labelColor: (opacity = 1) => theme.text,
           }}
+          accessor="population"
+          hasLegend={false}
+          backgroundColor="transparent"
+          paddingLeft="15"
           style={styles.chart}
-          fromZero
-          withCustomBarColorFromData
-          flatColor
-          showValuesOnTopOfBars
         />
-        <View style={styles.legendRow}>
-          <LegendItem color={theme.success} label="Feeling Great" theme={theme} />
-          <LegendItem color={theme.error} label="Not Good" theme={theme} />
-        </View>
-      </View>
 
+        <View style={styles.legendRow}>
+    <LegendItem color={theme.icon} label="Feeling Great" theme={theme} />
+    <LegendItem color={theme.warning} label="Not Good" theme={theme} />
+  </View>
+      </View>
       {/* Energy Card */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Energy Trend (1-10)</Text>
@@ -235,6 +297,17 @@ const LegendItem = ({ color, label, theme }) => (
           <LegendItem color={theme.error} label="Unhealthy" theme={theme} />
         </View>
       </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Symptom Recovery</Text>
+        {symptomRecovery.length > 0 ? (
+          <SymptomRecoveryChart data={symptomRecovery} />
+        ) : (
+          <Text style={{ color: theme.text }}>No symptom recovery data</Text>
+        )}
+      </View>
+
+
     </ScrollView>
   );
 };
@@ -323,3 +396,4 @@ const createStyles = (theme, insets) =>
   });
 
 export default HealthTrackingScreen;
+

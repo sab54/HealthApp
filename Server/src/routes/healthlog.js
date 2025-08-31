@@ -15,17 +15,17 @@
  * - POST /updatePlanTask: Allows the update of a specific task in the user's daily health plan.
  * - GET /trends/:userId: Retrieves the health trends for a user over a specified number of days, including mood, energy, and sleep.
  * - POST /recoverSymptom: Marks a specific symptom as recovered for the user on a given date.
- * 
+ *
  * Helper Functions:
  * - `insertPlan`: Helper function to insert daily plan tasks based on the severity of a symptom.
  * - `CATEGORY_MAP`: Maps keys from the symptom health data to database categories (e.g., "precautions" to "Care").
- * 
+ *
  * Dependencies:
  * - express: Web framework for building API routes.
  * - body-parser: Middleware for parsing request bodies.
  * - symptomHealth: Data used for generating daily health plans based on symptoms.
  * - SQLite: Used for storing and retrieving user health data, including mood, symptoms, and plans.
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -401,26 +401,54 @@ router.post("/generatePlan", (req, res) => {
     );
   });
 
-  // Recover a symptom
-  router.post('/recoverSymptom', (req, res) => {
-    const { user_id, symptom, date } = req.body;
-    if (!user_id || !symptom || !date) return res.status(400).json({ success: false, message: 'Missing fields' });
+  // Recover a symptom (with date required)
+router.post('/recoverSymptom', (req, res) => {
+  const { user_id, symptom, date } = req.body;
+  if (!user_id || !symptom || !date)
+    return res.status(400).json({ success: false, message: 'Missing fields' });
 
-    const recoveredAt = new Date().toISOString();
-    db.run(
-      `UPDATE user_symptoms
-       SET recovered_at = ?
-       WHERE user_id = ? AND symptom = ? AND date = ?`,
-      [recoveredAt, user_id, symptom, date],
-      function (err) {
-        if (err) {
-          console.error('DB error marking symptom as recovered:', err);
-          return res.status(500).json({ success: false, message: 'DB error' });
-        }
-        return res.json({ success: true, message: 'Symptom marked as recovered', recovered_at: recoveredAt });
+  const recoveredAt = new Date().toISOString();
+
+  db.run(
+    `UPDATE user_symptoms
+     SET recovered_at = ?
+     WHERE user_id = ? AND symptom = ? AND date = ? AND recovered_at IS NULL`,
+    [recoveredAt, user_id, symptom, date],
+    function (err) {
+      if (err) {
+        console.error('DB error marking symptom as recovered:', err);
+        return res.status(500).json({ success: false, message: 'DB error' });
       }
-    );
-  });
+      return res.json({ success: true, message: 'Symptom marked as recovered', recovered_at: recoveredAt });
+    }
+  );
+});
+
+
+  router.get('/trends/symptomRecovery/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+  if (isNaN(userId)) return res.status(400).json({ success: false, message: 'Invalid user ID' });
+
+  db.all(
+    `SELECT symptom, date, recovered_at
+     FROM user_symptoms
+     WHERE user_id = ? AND recovered_at IS NOT NULL`,
+    [userId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ success: false, message: 'DB error' });
+
+      const data = rows.map(r => {
+        const start = new Date(r.date);
+        const end = new Date(r.recovered_at);
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        return { symptom: r.symptom, days };
+      });
+
+      res.json({ success: true, symptomRecovery: data });
+    }
+  );
+});
+
 
 
   return router;

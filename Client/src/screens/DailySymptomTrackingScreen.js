@@ -1,13 +1,13 @@
 // Client/src/screens/DailySymptomTrackerScreen.js
 /**
  * DailySymptomTrackerScreen.js
- * 
- * This file defines the `DailySymptomTrackerScreen` component, which manages the user's daily 
- * symptom tracking. It allows users to view, add, and mark symptoms as recovered. The screen 
- * fetches symptom data from an API, displays them in a list, and supports modal interactions 
- * for adding and editing symptoms. It also ensures the user can only track a limited number of 
+ *
+ * This file defines the `DailySymptomTrackerScreen` component, which manages the user's daily
+ * symptom tracking. It allows users to view, add, and mark symptoms as recovered. The screen
+ * fetches symptom data from an API, displays them in a list, and supports modal interactions
+ * for adding and editing symptoms. It also ensures the user can only track a limited number of
  * symptoms per day.
- * 
+ *
  * Features:
  * - Fetches the user's symptoms for the day from an API.
  * - Allows the user to add new symptoms to their daily log (with a limit on the number of symptoms).
@@ -15,20 +15,20 @@
  * - Displays symptoms in a list, with details about their severity, onset time, and recovery status.
  * - Handles modals for adding and editing symptoms.
  * - Supports navigation to a "StepsTracker" screen for additional health tracking.
- * 
+ *
  * This component integrates with the following libraries:
  * - Redux for managing application state (e.g., user symptoms).
  * - React Navigation for navigation between screens.
  * - AsyncStorage for caching recovered symptoms to persist the data.
  * - React Native components like `FlatList`, `Text`, `ActivityIndicator`, `TouchableOpacity`, and `Alert`.
  * - Utility functions for handling API requests.
- * 
+ *
  * Dependencies:
  * - `react-redux`
  * - `react-native`
  * - `@react-navigation/native`
  * - `@react-native-async-storage/async-storage`
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -46,6 +46,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SymptomsModal from '../modals/SymptomsModal';
 import SymptomDetailModal from '../modals/SymptomDetailModal';
@@ -169,7 +170,7 @@ const DailySymptomTrackerScreen = () => {
       await post(`${API_URL_HEALTHLOG}/recoverSymptom`, {
         user_id: userId,
         symptom: symptom.symptom,
-        date: symptom.date,
+        date: symptom.date || today,
       });
       await fetchTodaySymptoms();
     } catch (err) {
@@ -195,11 +196,16 @@ const DailySymptomTrackerScreen = () => {
             style={styles.recoverButton}
             onPress={() => handleMarkRecovered(item)}
           >
-            <Text style={styles.recoverButtonText}>Mark as Recovered</Text>
+            <Ionicons
+              name="checkmark-circle"
+              style={styles.recoverButtonIcon}
+            />
+            <Text style={styles.recoverButtonText}>Feeling Better</Text>
           </TouchableOpacity>
+
         ) : (
           <Text style={{ color: theme.success, marginTop: 5 }}>
-            Recovered ✅ ({new Date(item.recovered_at).toLocaleTimeString()})
+            Recovered ({new Date(item.recovered_at).toLocaleTimeString()})
           </Text>
         )}
       </TouchableOpacity>
@@ -261,7 +267,7 @@ const DailySymptomTrackerScreen = () => {
             );
             dispatch(setTodaySymptoms(updated));
 
-            // 🔄 Then force backend refresh so the list is correct
+            // Then force backend refresh so the list is correct
             await fetchTodaySymptoms();
           }}
 
@@ -271,11 +277,15 @@ const DailySymptomTrackerScreen = () => {
       )}
 
       <TouchableOpacity
-        style={[styles.addButton, { marginTop: 10 }]}
-        onPress={() => navigation.navigate('StepsTracker')}
+        style={styles.stepTrackingButton}
+        onPress={() => navigation.navigate('StepsTracker')} // Navigate to the step tracking screen
       >
-        <Text style={styles.addButtonText}>View Steps</Text>
+        <Ionicons
+          name="walk"
+          style={styles.stepTrackingIcon}
+        />
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -333,17 +343,57 @@ const createStyles = (theme, insets) =>
       fontFamily: 'Poppins',
     },
     recoverButton: {
-      backgroundColor: theme.success,
-      padding: 10,
-      borderRadius: 8,
-      marginTop: 10,
+      backgroundColor: theme.buttonPrimaryBackground, // Purple background
+      paddingVertical: 4,  // Reduced vertical padding to make the button shorter
+      paddingHorizontal: 10, // Reduced horizontal padding to make the button narrower
+      borderRadius: 16, // More rounded corners
+      marginTop: 4, // Reduced margin from the top
       alignItems: 'center',
+      justifyContent: 'center',
+      // Removed borderWidth and borderColor to eliminate the blue outline
+      shadowColor: theme.shadow, // Add a subtle shadow for depth
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2, // Lighter shadow
+      shadowRadius: 3,
+      elevation: 2, // For Android shadow effect
     },
+
     recoverButtonText: {
-      color: theme.buttonPrimaryText,
-      fontWeight: '600',
+      color: theme.buttonPrimaryText, // White text from theme
+      fontWeight: '600', // Slightly less bold
+      fontSize: 12, // Even smaller font size for a compact button
+      letterSpacing: 0.5, // Slightly reduced letter spacing
       fontFamily: 'Poppins',
+      marginLeft: 4, // Reduced space between icon and text
     },
+
+    recoverButtonIcon: {
+      color: theme.buttonPrimaryText, // White icon color
+      fontSize: 14, // Smaller icon size to match the smaller button size
+    },
+
+    stepTrackingButton: {
+      position: 'absolute', // Absolute positioning to place it at the corner
+      bottom: 20, // Position it a little above the bottom
+      right: 20, // Align it to the right side
+      width: 60, // Fixed width and height to make it a circle
+      height: 60, // Make the button circular
+      backgroundColor: theme.buttonPrimaryBackground, // Purple background for the button
+      borderRadius: 30, // Half of the width/height to make it a circle
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 5, // For shadow on Android
+      shadowColor: theme.shadow, // Shadow color
+      shadowOffset: { width: 0, height: 2 }, // Shadow position
+      shadowOpacity: 0.2, // Shadow opacity
+      shadowRadius: 5, // Shadow radius
+    },
+
+    stepTrackingIcon: {
+      color: theme.buttonPrimaryText, // White color for the icon
+      fontSize: 30, // Icon size
+    }
+
   });
 
 export default DailySymptomTrackerScreen;
