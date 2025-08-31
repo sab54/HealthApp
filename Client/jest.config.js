@@ -39,7 +39,7 @@ module.exports = {
       displayName: 'ios',
       ...baseConfig,
     },
-    {
+        {
       displayName: 'node',
       ...baseConfig,
     },

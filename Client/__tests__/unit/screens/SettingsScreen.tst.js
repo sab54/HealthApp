@@ -17,6 +17,20 @@ import SettingsScreen from '@/screens/SettingsScreen';
 
 // --- Mocks ------------------------------------------------------------------
 
+// Safe-area: provide hook-safe stubs to avoid invalid hook errors in tests
+jest.mock('react-native-safe-area-context', () => {
+  const React = require('react');
+  return {
+    SafeAreaProvider: ({ children }) => <>{children}</>,
+    useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+    useSafeAreaFrame: () => ({ x: 0, y: 0, width: 360, height: 640 }),
+    SafeAreaView: ({ children, ...props }) => <>{children}</>,
+    EdgeInsetsContext: React.createContext({ top: 0, bottom: 0, left: 0, right: 0 }),
+    SafeAreaInsetsContext: React.createContext({ top: 0, bottom: 0, left: 0, right: 0 }),
+    SafeAreaFrameContext: React.createContext({ x: 0, y: 0, width: 360, height: 640 }),
+  };
+});
+
 // expo-font (control fontsLoaded)
 jest.mock('expo-font', () => ({
   useFonts: jest.fn(() => [true]),
@@ -70,15 +84,6 @@ jest.mock('@/modals/EditUserInfo', () => {
 // useFonts import for per-test overrides
 import { useFonts } from 'expo-font';
 
-// Helper to render within act (prevents act warnings for async effects)
-const renderInAct = async (ui) => {
-  let utils;
-  await act(async () => {
-    utils = render(ui);
-  });
-  return utils;
-};
-
 describe('SettingsScreen', () => {
   const theme = {
     background: '#fff',
@@ -121,7 +126,7 @@ describe('SettingsScreen', () => {
   it('renders gracefully when fonts are not loaded (loading UI OR main UI)', async () => {
     useFonts.mockReturnValueOnce([false]);
 
-    const { queryByText, UNSAFE_queryAllByType } = await renderInAct(<SettingsScreen />);
+    const { queryByText, UNSAFE_queryAllByType } = render(<SettingsScreen />);
 
     const loading = queryByText('Loading fonts...');
     if (loading) {
@@ -147,15 +152,18 @@ describe('SettingsScreen', () => {
       sel(makeState({ settings: { success: true } }))
     );
 
-    const { getByText, UNSAFE_queryAllByType } = await renderInAct(<ScreenWithFreshNav />);
+    const { getByText, UNSAFE_queryAllByType } = render(<ScreenWithFreshNav />);
 
     // Title & user info
-    expect(getByText('Settings')).toBeTruthy();
-    expect(getByText('John Smith')).toBeTruthy();
-    expect(getByText('john@example.com')).toBeTruthy();
+    await waitFor(() => {
+      expect(getByText('Settings')).toBeTruthy();
+      expect(getByText('John Smith')).toBeTruthy();
+      expect(getByText('john@example.com')).toBeTruthy();
+    });
 
     // Press the actual back TouchableOpacity (first touchable in the tree)
-    const backTouchable = UNSAFE_queryAllByType(require('react-native').TouchableOpacity)[0];
+    const backTouchable =
+      UNSAFE_queryAllByType(require('react-native').TouchableOpacity)[0];
     expect(backTouchable).toBeTruthy();
     await act(async () => {
       fireEvent.press(backTouchable);
@@ -179,7 +187,7 @@ describe('SettingsScreen', () => {
       return null;
     });
 
-    const { getByText, getByTestId } = await renderInAct(<SettingsScreen />);
+    const { getByText, getByTestId } = render(<SettingsScreen />);
 
     // Wait for role/approval to be consumed by effects and UI to update
     await waitFor(() => {
@@ -195,7 +203,9 @@ describe('SettingsScreen', () => {
 
     // Now approved note should show
     await waitFor(() => {
-      expect(getByText('Your license has been approved. Full access granted.')).toBeTruthy();
+      expect(
+        getByText('Your license has been approved. Full access granted.')
+      ).toBeTruthy();
     });
 
     // Component exists
@@ -203,7 +213,7 @@ describe('SettingsScreen', () => {
   });
 
   it('opens EditUserInfoModal and saving dispatches updateUserProfile then closes modal', async () => {
-    const { getByText, queryByTestId } = await renderInAct(<SettingsScreen />);
+    const { getByText, queryByTestId } = render(<SettingsScreen />);
 
     // Open modal by tapping the user info row (it has the name & email)
     await act(async () => {
@@ -213,6 +223,8 @@ describe('SettingsScreen', () => {
     // Modal visible with prefilled names
     await waitFor(() => {
       expect(getByText('first:John')).toBeTruthy();
+    });
+    await waitFor(() => {
       expect(getByText('last:Smith')).toBeTruthy();
     });
 
