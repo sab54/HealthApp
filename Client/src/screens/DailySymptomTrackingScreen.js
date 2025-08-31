@@ -187,30 +187,46 @@ const DailySymptomTrackerScreen = () => {
         onPress={() => handleSymptomPress(item)}
         disabled={isDisabled}
       >
-        <Text style={styles.symptomText}>{item.symptom}</Text>
-        <Text style={{ color: theme.mutedText }}>Severity: {item.severity}</Text>
-        <Text style={{ color: theme.mutedText }}>Onset: {item.onsetTime}</Text>
+        {/* LEFT CONTENT */}
+        <View style={styles.symptomInfo}>
+          <Text style={styles.symptomText}>{item.symptom}</Text>
+          <Text style={{ color: theme.mutedText }}>Severity: {item.severity}</Text>
+          <Text style={{ color: theme.mutedText }}>Onset: {item.onsetTime}</Text>
 
-        {!item.recovered_at ? (
-          <TouchableOpacity
-            style={styles.recoverButton}
-            onPress={() => handleMarkRecovered(item)}
-          >
-            <Ionicons
-              name="checkmark-circle"
-              style={styles.recoverButtonIcon}
-            />
-            <Text style={styles.recoverButtonText}>Feeling Better</Text>
-          </TouchableOpacity>
+          {!item.recovered_at ? (
+            <TouchableOpacity
+              style={styles.recoverButton}
+              onPress={() => handleMarkRecovered(item)}
+            >
+              <Ionicons
+                name="checkmark-circle"
+                style={styles.recoverButtonIcon}
+              />
+              <Text style={styles.recoverButtonText}>Feeling Better</Text>
+            </TouchableOpacity>
+          ) : (
+            <Text style={{ color: theme.success, marginTop: 5 }}>
+              Recovered ({new Date(item.recovered_at).toLocaleTimeString()})
+            </Text>
+          )}
+        </View>
 
-        ) : (
-          <Text style={{ color: theme.success, marginTop: 5 }}>
-            Recovered ({new Date(item.recovered_at).toLocaleTimeString()})
-          </Text>
-        )}
+        {/* RIGHT ICON */}
+        <TouchableOpacity
+          onPress={() => handleSymptomPress(item)}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // easier to tap
+        >
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color={theme.mutedText}
+            style={styles.arrowIcon}
+          />
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
+
 
   if (loading) {
     return (
@@ -322,6 +338,9 @@ const createStyles = (theme, insets) =>
       shadowOpacity: 0.1,
       shadowRadius: 3,
       elevation: 2,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
     symptomText: {
       fontSize: 18,
@@ -329,6 +348,10 @@ const createStyles = (theme, insets) =>
       marginBottom: 5,
       color: theme.text,
       fontFamily: 'Poppins',
+      flex: 1,
+    },
+    arrowIcon: {
+      marginLeft: 10,
     },
     addButton: {
       backgroundColor: theme.buttonPrimaryBackground,
