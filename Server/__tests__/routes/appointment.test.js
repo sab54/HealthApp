@@ -38,21 +38,28 @@ let userA; // recipient / patient
 let userB; // sender / requester
 let chatId;
 
+// Generate unique phone numbers to avoid UNIQUE(country_code, phone_number) conflicts
+const uniquePhone = (prefix) =>
+  `${prefix}${Date.now()}${Math.floor(Math.random() * 100000)}`;
+
 beforeAll((done) => {
   db.serialize(() => {
     initSchema(); // run production schema on in-memory DB
 
+    const phoneA = uniquePhone('111');
+    const phoneB = uniquePhone('222');
+
     // Seed users (let DB assign ids)
     db.run(
       `INSERT INTO users (phone_number, first_name, role) VALUES (?, ?, ?)`,
-      ['1111111111', 'Alice', 'user'],
+      [phoneA, 'Alice', 'user'],
       function (err) {
         if (err) return done(err);
         userA = this.lastID;
 
         db.run(
           `INSERT INTO users (phone_number, first_name, role) VALUES (?, ?, ?)`,
-          ['2222222222', 'Bob', 'user'],
+          [phoneB, 'Bob', 'user'],
           function (err2) {
             if (err2) return done(err2);
             userB = this.lastID;
@@ -112,7 +119,7 @@ test('POST /appointment/ai-book creates an appointment (happy path)', async () =
     userId: userA,
     senderId: userB,
     createdBy: userB,
-    chatId: chatId
+    chatId: chatId,
   };
 
   const res = await request(app).post('/appointment/ai-book').send(payload);
@@ -141,7 +148,7 @@ test('GET /appointment/:userId returns appointments for that user with joined na
     userId: userA,
     senderId: userB,
     createdBy: userB,
-    chatId
+    chatId,
   });
 
   const res = await request(app).get(`/appointment/${userA}`);
@@ -167,7 +174,7 @@ test('PATCH /appointment/:id updates date and time (status may not exist in sche
     userId: userA,
     senderId: userB,
     createdBy: userB,
-    chatId
+    chatId,
   });
   const apptId = body.appointments[0].id;
 
@@ -193,7 +200,7 @@ test('Validation: ai-book missing fields 400; get invalid userId 400; patch with
     // missing required fields like time/createdBy/chatId/senderId...
     date: '2030-04-01',
     reason: 'x',
-    userId: userA
+    userId: userA,
   });
   expect(badCreate.status).toBe(400);
   expect(badCreate.body.success).toBe(false);
@@ -212,7 +219,7 @@ test('Validation: ai-book missing fields 400; get invalid userId 400; patch with
     userId: userA,
     senderId: userB,
     createdBy: userB,
-    chatId
+    chatId,
   });
   const id = body.appointments[0].id;
 

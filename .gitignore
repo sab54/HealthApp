@@ -42,3 +42,5 @@ Client/package-lock.json
 Server/package-lock.json
 Server/node_modules/
 Client/node_modules/
+Client/Coverage/
+Server/Coverage
