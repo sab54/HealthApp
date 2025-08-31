@@ -116,20 +116,14 @@ If you previously denied a permission, enable it in your device settings:
 
 ---
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/sab54/HealthApp.git
-cd HealthApp
-```
 
-# OR
-
-### 2. **Unzip the Code**
+### 1. **Unzip the Code**
    - Extract the contents of the downloaded ZIP file to your preferred location.
+   cd TrustCura+
 
 ---
 
-### 3. Backend Setup (Server)
+### 2. Backend Setup (Server)
 
 ```bash
 cd Server
@@ -145,10 +139,8 @@ Server runs on: **http://localhost:3000**
 #### Deployment on AWS EC2
 1. Launch an **Ubuntu EC2 instance**.  
 2. Install Node.js & npm.  
-3. Clone the repo and install dependencies:  
-   ```bash
-   git clone https://github.com/sab54/HealthApp.git
-   cd HEALTHAPP/Server
+
+   cd TrustCura+/Server
    npm install
    ```
 4. Start server with **nohup / pm2**:  
