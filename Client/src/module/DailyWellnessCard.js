@@ -1,15 +1,15 @@
 // /src/module/DailyWellnessCard.js
 /**
  * DailyWellnessCard.js
- * 
+ *
  * This component represents a card displaying a daily wellness summary, including mood, sleep, energy, and any logged symptoms.
  * The card also provides a link to a more detailed daily log view.
- * 
+ *
  * Key Features:
  * - Displays the user's mood, sleep, and energy data for the day.
  * - Logs and displays any symptoms recorded for the day, including severity.
  * - A button to navigate to a detailed daily log page.
- * 
+ *
  * Props:
  * - `moodToday`: The user's recorded mood for the day.
  * - `sleepToday`: The number of hours of sleep the user had today.
@@ -17,15 +17,15 @@
  * - `todaySymptoms`: Array of symptoms logged by the user today.
  * - `navigation`: The navigation object to navigate to the daily log.
  * - `theme`: The current theme used for styling the component.
- * 
+ *
  * Helper Functions:
  * - `formatSleep`: Formats the sleep data into hours and minutes.
  * - `formatEnergy`: Converts numeric energy levels into a descriptive string.
- * 
+ *
  * Dependencies:
  * - `react-native`
  * - `@react-navigation/native`
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -81,16 +81,25 @@ const DailyWellnessCard = ({ moodToday, sleepToday, energyToday, todaySymptoms, 
             </Text>
             {todaySymptoms && todaySymptoms.length > 0 ? (
                 todaySymptoms.map((symptomObj, index) => (
-                    <View key={index} style={[styles.symptomRow, { borderTopColor: theme.border }]}>
-                        <Text style={[styles.symptomText, { color: theme.text }]}>{symptomObj.symptom}</Text>
+                    <View
+                        key={index}
+                        style={[styles.symptomRow, { borderTopColor: theme.border }]}
+                    >
+                        <Text style={[styles.symptomText, { color: theme.text }]}>
+                            {symptomObj.symptom}{" "}
+                            {symptomObj.recovered_at ? "(Recovered)" : ""}
+                        </Text>
                         <Text style={[styles.symptomSeverity, { color: theme.mutedText }]}>
                             {symptomObj.severity} - Updated today
                         </Text>
                     </View>
                 ))
             ) : (
-                <Text style={[styles.cardText, { color: theme.mutedText }]}>No symptoms logged</Text>
+                <Text style={[styles.cardText, { color: theme.mutedText }]}>
+                    No symptoms logged
+                </Text>
             )}
+
 
             <TouchableOpacity
                 style={[styles.viewMoreButton, { backgroundColor: theme.buttonPrimaryBackground }]}
