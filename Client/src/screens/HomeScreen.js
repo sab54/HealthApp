@@ -65,6 +65,8 @@ const HomeScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
+  const user = useSelector((state) => state.auth.user);
+
   const { moodToday, sleepToday, energyToday, todaySymptoms } = useSelector(
     (state) => state.healthlog
   );
@@ -79,6 +81,9 @@ const HomeScreen = () => {
 
   const [userRole, setUserRole] = useState('');
   const [isApproved, setIsApproved] = useState(true);
+  const [firstName, setFirstName] = useState(user?.first_name || '');
+  const [lastName, setLastName] = useState(user?.last_name || '');
+
 
   // Fetch user role & approval
   useEffect(() => {
@@ -86,14 +91,20 @@ const HomeScreen = () => {
       try {
         const role = await AsyncStorage.getItem('userRole');
         const approved = await AsyncStorage.getItem('isApproved');
-        setUserRole(role || '');
-        setIsApproved(approved === '1' || approved === 'true');
+        setUserRole(role || user?.role || '');
+        setIsApproved(approved === '1' || approved === 'true' || user?.isApproved);
+
+        // Fallback: if firstName/lastName not in AsyncStorage, use Redux user
+        const fName = await AsyncStorage.getItem('firstName');
+        const lName = await AsyncStorage.getItem('lastName');
+        setFirstName(fName || user?.first_name || '');
+        setLastName(lName || user?.last_name || '');
       } catch (error) {
         console.error('Error fetching user status:', error);
       }
     };
     fetchUserStatus();
-  }, []);
+  }, [user]);
 
   // Fetch today’s mood & symptoms
   useEffect(() => {
@@ -111,20 +122,20 @@ const HomeScreen = () => {
   }, [dispatch]);
 
   // Fetch user appointments
-useEffect(() => {
-  const fetchUserAppointments = async () => {
-    const storedId = await AsyncStorage.getItem('userId');
-    if (storedId) {
-      const userId = parseInt(storedId, 10);
-      try {
-        dispatch(fetchAppointments({ userId }));
-      } catch (err) {
-        console.error('Failed to fetch appointments:', err);
+  useEffect(() => {
+    const fetchUserAppointments = async () => {
+      const storedId = await AsyncStorage.getItem('userId');
+      if (storedId) {
+        const userId = parseInt(storedId, 10);
+        try {
+          dispatch(fetchAppointments({ userId }));
+        } catch (err) {
+          console.error('Failed to fetch appointments:', err);
+        }
       }
-    }
-  };
-  fetchUserAppointments();
-}, [dispatch]);
+    };
+    fetchUserAppointments();
+  }, [dispatch]);
 
   const today = new Date();
   const normalizedAppointments = appointments || [];
@@ -163,8 +174,27 @@ useEffect(() => {
     );
   }
 
+  let displayName = `${firstName} ${lastName}`.trim();
+  if (userRole?.toLowerCase() === 'doctor') {
+    displayName = isApproved
+      ? `Dr. ${firstName} ${lastName}`.trim()
+      : `Intern Dr. ${firstName} ${lastName}`.trim();
+  }
+  const welcomeText = `Welcome, ${displayName}`;
+
   // Content Blocks for FlatList
   const contentBlocks = [
+    {
+      key: 'profileCard',
+      render: () => (
+        <View style={styles.profileCard}>
+          <Text style={[styles.profileName, { color: theme.text }]}>
+            {welcomeText}
+          </Text>
+        </View>
+      ),
+    },
+
     {
       key: 'dailyWellness',
       render: () => (
@@ -238,6 +268,24 @@ const createStyles = (theme, insets) =>
       textAlign: 'center',
       fontFamily: 'Poppins',
     },
+    profileCard: {
+      backgroundColor: theme.card,
+      padding: 16,
+      borderRadius: 16,
+      marginBottom: 20,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    profileName: {
+      fontFamily: 'Poppins',
+      fontSize: 20,
+      fontWeight: '600',
+    },
+
   });
 
 export default HomeScreen;
