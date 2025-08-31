@@ -1,28 +1,28 @@
 // src/navigation/TabNavigator.js
 /**
  * TabNavigator.js
- * 
- * This file defines the `TabNavigator` component, which manages the bottom tab navigation for 
- * the main app. It handles the navigation between various app screens, including the Home, 
- * Resources, Trends, and Daily Log screens. It includes custom logic for managing symptoms, 
- * and the functionality to add symptoms via a modal, as well as the ability to view symptom details. 
- * The navigator also includes a sidebar with additional options, such as switching between dark and light mode, 
+ *
+ * This file defines the `TabNavigator` component, which manages the bottom tab navigation for
+ * the main app. It handles the navigation between various app screens, including the Home,
+ * Resources, Trends, and Daily Log screens. It includes custom logic for managing symptoms,
+ * and the functionality to add symptoms via a modal, as well as the ability to view symptom details.
+ * The navigator also includes a sidebar with additional options, such as switching between dark and light mode,
  * accessing settings, calendar, and logging out.
- * 
+ *
  * Features:
  * - Custom tab navigation with a dedicated button for adding symptoms.
  * - Sidebar modal with options for theme mode, settings, calendar, and logout.
  * - Symptom tracking functionality with modals for selecting and viewing symptoms.
  * - Animations for sidebar transitions and modal openings.
  * - Responsive design with handling for iOS and Android devices.
- * 
+ *
  * This component integrates with the following libraries:
  * - React Navigation for managing bottom tab navigation.
  * - Redux for managing application state (user authentication, theme, and health log).
  * - React Native for UI components, animations, and modals.
  * - Expo's Ionicons for iconography.
  * - Safe Area Context for handling insets and screen safety across devices.
- * 
+ *
  * Dependencies:
  * - `@react-navigation/native`
  * - `@react-navigation/bottom-tabs`
@@ -30,7 +30,7 @@
  * - `react-native`
  * - `expo-ionicons`
  * - `react-native-safe-area-context`
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -213,11 +213,11 @@ const TabNavigator = () => {
                             </TouchableOpacity>
 
                             {/* Notification Bell */}
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 onPress={() => navigation.navigate('Notifications')}
                             >
                                 <Ionicons name="notifications-outline" size={26} color={themeColors.link} />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     ),
 
