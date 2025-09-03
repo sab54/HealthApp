@@ -3,19 +3,19 @@
  *
  * This file defines routes for managing user steps and activity data. It allows the tracking and updating
  * of daily steps, distance, speed, calories, and duration, and provides endpoints for fetching daily totals.
- * 
+ *
  * Features:
- * - POST /: Submits user activity data (steps, distance, speed, calories, duration) for the current day. 
+ * - POST /: Submits user activity data (steps, distance, speed, calories, duration) for the current day.
  *   If the user already has data for the day, it will only update if the new step count is greater than the previous one.
  * - GET /daily/:user_id: Fetches the daily totals (steps, distance, calories, duration) for a user.
- * 
+ *
  * Dependencies:
  * - express: Web framework for building API routes.
- * 
+ *
  * Key Functionality:
  * - Data Submission: Allows users to submit their steps and activity data, with logic to update existing records only when new data surpasses the previous values.
  * - Daily Totals Retrieval: Fetches the user's daily activity data, including steps, distance, calories, and duration.
- * 
+ *
  * Author: Sunidhi Abhange
  */
 
@@ -34,7 +34,6 @@ module.exports = (db) => {
         if (err) return res.status(500).json({ error: err.message });
 
         if (row) {
-          // ✅ Only update if steps increased
           if (steps > row.steps) {
             db.run(
               `UPDATE user_steps
@@ -52,7 +51,6 @@ module.exports = (db) => {
               }
             );
           } else {
-            // ⚠️ No changes → return existing row
             res.json(row);
           }
         } else {

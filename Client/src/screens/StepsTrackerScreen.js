@@ -91,18 +91,18 @@ const StepsTrackerScreen = () => {
         distance: initialDistance,
       }));
 
-      // ⚠️ Do NOT start tracker automatically here
+      // Do NOT start tracker automatically here
       // User will press Play to start
     };
 
     loadInitialSteps();
   }, [dispatch, user]);
 
-  // 🔹 Handle Android hardware back button
+  // Handle Android hardware back button
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        console.log("📱 Hardware back pressed, saving steps:", currentSteps);
+        console.log("Hardware back pressed, saving steps:", currentSteps);
         if (user?.id) {
           dispatch(saveStepEntry({
             user_id: user.id,
@@ -253,11 +253,11 @@ const StepsTrackerScreen = () => {
               <View style={[
                 styles.dayCircle,
                 {
-                  borderColor: goalMet ? theme.buttonPrimaryBackground : theme.border, // ✅ purple if met, gray otherwise
+                  borderColor: goalMet ? theme.buttonPrimaryBackground : theme.border,
                   backgroundColor: theme.surface,
                 }
               ]}>
-                <Text style={{ color: theme.buttonPrimaryBackground, fontWeight: '600' }}>  {/* ✅ always purple text */}
+                <Text style={{ color: theme.buttonPrimaryBackground, fontWeight: '600' }}>
                   {date.getDate()}
                 </Text>
                 {goalMet && (

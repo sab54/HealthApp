@@ -148,11 +148,11 @@ describe('Tabs Component', () => {
 
     expect(homeButton).toBeTruthy();
     expect(homeButton.props.accessibilityRole).toBe('button');
-    expect(homeButton.props.accessibilityState).toMatchObject({ selected: true }); // ✅ Only assert present fields
+    expect(homeButton.props.accessibilityState).toMatchObject({ selected: true });
 
     expect(settingsButton).toBeTruthy();
     expect(settingsButton.props.accessibilityRole).toBe('button');
-    expect(settingsButton.props.accessibilityState).toEqual({ selected: false, disabled: true }); // ✅ disabled = true is explicitly present
+    expect(settingsButton.props.accessibilityState).toEqual({ selected: false, disabled: true });
   });
 
 

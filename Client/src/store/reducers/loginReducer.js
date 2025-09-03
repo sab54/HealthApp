@@ -83,7 +83,6 @@ const loginSlice = createSlice({
                 state.error = null;
                 state.user = null;
                 state.isVerified = false;
-                // ⚠️ Notice: we are NOT resetting steps reducer here
             })
     },
 });

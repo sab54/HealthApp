@@ -69,7 +69,7 @@ router.post('/ai-book', async (req, res) => {
 
     res.json({
       success: true,
-      appointments: [appointment], // 🔑 normalized response
+      appointments: [appointment],
     });
   } catch (err) {
     console.error(err);

@@ -4,7 +4,7 @@
  *
  * This file defines actions related to user authentication and session management, including requesting and verifying OTPs,
  * logging the user out, and updating user location. It utilizes Redux Toolkit's `createAsyncThunk` to handle asynchronous
- * operations such as API calls and token management. The actions also interact with AsyncStorage for persisting user data 
+ * operations such as API calls and token management. The actions also interact with AsyncStorage for persisting user data
  * and session information, and integrate with a sensor tracking utility for step tracking.
  *
  * Features:
@@ -176,7 +176,7 @@ export const initAuth = createAsyncThunk(
 
       const user = JSON.parse(userJson);
 
-      // ⚡ normalize id
+      // normalize id
       if (user) {
         user.id = user.id || user.user_id;
       }
