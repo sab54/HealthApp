@@ -375,31 +375,34 @@ router.post("/generatePlan", (req, res) => {
     );
   });
 
-  // Fetch trends
-  router.get('/trends/:userId', (req, res) => {
-    const userId = parseInt(req.params.userId);
-    if (isNaN(userId)) return res.status(400).json({ success: false, message: 'Invalid user ID' });
+// Fetch trends
+router.get('/trends/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+  if (isNaN(userId)) return res.status(400).json({ success: false, message: 'Invalid user ID' });
 
-    const { days } = req.query;
-    const limitDays = parseInt(days) || 15;
+  const { days } = req.query;
+  const limitDays = parseInt(days) || 5;
 
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - limitDays + 1);
-    const startStr = startDate.toISOString().split('T')[0];
+  const today = new Date();
+  const endStr = today.toISOString().split('T')[0]; // today's date in YYYY-MM-DD
 
-    db.all(
-      `SELECT date, mood, energy, sleep FROM user_daily_mood
-       WHERE user_id = ? AND date >= ? ORDER BY date ASC`,
-      [userId, startStr],
-      (err, rows) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ success: false, message: 'DB error fetching trends' });
-        }
-        res.json({ success: true, trends: rows });
+  const startDate = new Date();
+  startDate.setDate(today.getDate() - limitDays + 1);
+  const startStr = startDate.toISOString().split('T')[0]; // limitDays days ago
+
+  db.all(
+    `SELECT date, mood, energy, sleep FROM user_daily_mood
+     WHERE user_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC`,
+    [userId, startStr, endStr],
+    (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: 'DB error fetching trends' });
       }
-    );
-  });
+      res.json({ success: true, trends: rows });
+    }
+  );
+});
 
   // Recover a symptom (with date required)
 router.post('/recoverSymptom', (req, res) => {
